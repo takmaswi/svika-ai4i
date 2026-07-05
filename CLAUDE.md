@@ -38,8 +38,15 @@ Reference documents live in the owner's planning folder: PHASE-3-STRATEGY.md (pr
 
 ## Design and UX best practices
 
-- Brand: deep teal `#0A4B5C`, sunset rust `#D9622A`, pale stone `#F2EDE6`, Geist type. Use Mhofu's real logo assets from the repo; never generate a substitute mark.
-- Mobile first always; the reference device is a cheap Android on a slow connection. Test at 360px width. Bundle discipline: no heavy libraries for small jobs.
+- **Brand v2 "Forest / Bone / Signal" is the only truth.** It lives in Mhofu's Claude Design project ("Svika Design System") and is exported into this repo. The teal/rust/Geist palette in older docs is dead; never reintroduce it.
+- Core tokens: forest green `#1F4D2E` (CTAs, headers, wordmark, active states; hover deepens forest to pine), char `#0E1A12` ink, bone `#FFFCEF` background (never pure white), linen `#E9E2C8`, signal coral `#E84C30` as the single accent, moss `#4D5C44`, amber `#F59E0B` for warnings only.
+- Type: DM Sans 700 as the display voice, IBM Plex Sans for body and UI, IBM Plex Mono as the receipt voice (access codes, fares, plates, counts). The wordmark is bespoke: the route-S mark plus "vika" in Baloo 2 700. Use the exported `logo.svg` and `wordmark.svg`; never rebuild or substitute the mark.
+- Surfaces: flat bone or linen, no stock photography, the live map is the only imagery. Glass (frosted bone, 20-28px blur, 10% ink hairline) exists only floating over the map. Cards are opaque bone, 14px radius. Radii scale 8/14/22/24/full. Shadows are always warm green black (`rgba(14,26,18,...)`), never neutral grey; the primary CTA carries the forest glow.
+- Motion: gentle fade ups (280-600ms, ease out), bottom sheet spring `cubic-bezier(0.32,0.72,0,1)`, press feedback is `scale(0.99)` never a colour flash, everything respects reduced motion.
+- Icons: the bespoke chunky rounded set (Icon component) with full block arrows and the kombi glyphs, `fill: currentColor`. No icon fonts, no icon libraries, no emoji anywhere in the product.
+- Copy: second person and direct, short and concrete, bilingual English/Shona by default, sentence case (uppercase only for tiny meta labels), audit language flags patterns and never accuses a person.
+- Token flow: design tokens, components, and assets enter this repo only as exports from the design system project (into `packages/ui`). Hand editing tokens in this repo is forbidden; change the design system, re-export.
+- Mobile first always; reference device is a cheap Android at 360px on a slow connection. Bundle discipline: no heavy libraries for small jobs.
 - Conductor surface: fat finger first. Big targets, high contrast, one action per screen, works in sunlight, works offline, survives a moving kombi.
 - Offline first is architecture, not a feature: conductor PWA syncs a local ticket cache; queued writes reconcile with first sync wins and conflicts flagged.
 - Accessibility is in scope: screen reader labels, large text mode, the voice guidance doubles as the accessibility channel (free tier for blind and low literacy riders).

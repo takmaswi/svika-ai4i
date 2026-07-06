@@ -10,6 +10,7 @@ import { supabase } from "./lib/supabase";
 import { t, type Lang } from "./lib/dict";
 import { appendDigit, eraseDigit, isComplete } from "./lib/keypad";
 import { useOfflineBoarding, isNetworkError } from "./hooks/useOfflineBoarding";
+import { getMeta, setMeta } from "./lib/offlineStore";
 
 type Direction = "outbound" | "inbound";
 
@@ -82,6 +83,9 @@ export default function App() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  // Routes come from the network when there is one and from the offline
+  // store when there is not: a kombi restart in a dead zone still reaches
+  // the keypad. The last shift's route + direction restores the same way.
   useEffect(() => {
     if (!session) return;
     void (async () => {
@@ -98,20 +102,41 @@ export default function App() {
           .eq("direction", "outbound")
           .order("seq"),
       ]);
-      const stopRows = (stopsRes.data ?? []) as unknown as RouteStopRow[];
-      const list = (routesRes.data ?? []).map((r) => {
-        const mine = stopRows.filter((s) => s.route_id === r.id);
-        return {
-          id: r.id as string,
-          code: r.code as string,
-          name: r.name as string,
-          firstStop: stopName(mine[0]?.stops ?? null),
-          lastStop: stopName(mine[mine.length - 1]?.stops ?? null),
-        };
-      });
-      setRoutes(list.filter((r) => r.firstStop && r.lastStop));
+      let list: RouteInfo[];
+      if (routesRes.error || stopsRes.error) {
+        list = (await getMeta<RouteInfo[]>("routes")) ?? [];
+      } else {
+        const stopRows = (stopsRes.data ?? []) as unknown as RouteStopRow[];
+        list = (routesRes.data ?? [])
+          .map((r) => {
+            const mine = stopRows.filter((s) => s.route_id === r.id);
+            return {
+              id: r.id as string,
+              code: r.code as string,
+              name: r.name as string,
+              firstStop: stopName(mine[0]?.stops ?? null),
+              lastStop: stopName(mine[mine.length - 1]?.stops ?? null),
+            };
+          })
+          .filter((r) => r.firstStop && r.lastStop);
+        await setMeta("routes", list);
+      }
+      setRoutes(list);
+
+      // restore the shift: an app killed mid-route reopens on its keypad
+      const shift = await getMeta<{ route: RouteInfo; direction: Direction }>("shift");
+      if (shift && list.some((r) => r.id === shift.route.id)) {
+        setRoute(shift.route);
+        setDirection(shift.direction);
+      }
     })();
   }, [session]);
+
+  const pickRoute = (r: RouteInfo, dir: Direction) => {
+    setRoute(r);
+    setDirection(dir);
+    void setMeta("shift", { route: r, direction: dir });
+  };
 
   const langToggle = (
     <div className="lang-toggle" role="group" aria-label="language">
@@ -366,10 +391,7 @@ export default function App() {
                 key={`${r.id}-${dir}`}
                 type="button"
                 className="hwindi-route touch-target"
-                onClick={() => {
-                  setRoute(r);
-                  setDirection(dir);
-                }}
+                onClick={() => pickRoute(r, dir)}
               >
                 <span className="svika-meta">{r.code}</span>
                 <span className="hwindi-route-name">
@@ -466,6 +488,7 @@ export default function App() {
             onClick={() => {
               setRoute(null);
               setCode("");
+              void setMeta("shift", null);
             }}
           >
             ← {t(lang, "keypad.changeRoute")}

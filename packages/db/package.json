@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Svika database: migrations, RLS security tests, generated types.",
   "scripts": {
-    "security-test": "node test/rls.security.test.mjs"
+    "security-test": "node test/rls.security.test.mjs",
+    "seed": "node seed/seed.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.49.4"

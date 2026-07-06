@@ -22,6 +22,7 @@ export type Database = {
           created_at: string
           direction: Database["public"]["Enums"]["route_direction"]
           id: string
+          purpose: string
           route_id: string
           ticket_id: string
           valid_from: string
@@ -32,6 +33,7 @@ export type Database = {
           created_at?: string
           direction: Database["public"]["Enums"]["route_direction"]
           id?: string
+          purpose?: string
           route_id: string
           ticket_id: string
           valid_from?: string
@@ -42,6 +44,7 @@ export type Database = {
           created_at?: string
           direction?: Database["public"]["Enums"]["route_direction"]
           id?: string
+          purpose?: string
           route_id?: string
           ticket_id?: string
           valid_from?: string
@@ -58,14 +61,14 @@ export type Database = {
           {
             foreignKeyName: "board_codes_ticket_id_fkey"
             columns: ["ticket_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "ticket_status"
             referencedColumns: ["ticket_id"]
           },
           {
             foreignKeyName: "board_codes_ticket_id_fkey"
             columns: ["ticket_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "tickets"
             referencedColumns: ["id"]
           },
@@ -175,6 +178,96 @@ export type Database = {
           },
         ]
       }
+      credit_transfers: {
+        Row: {
+          amount_cents: number
+          claim_code: string
+          created_at: string
+          expires_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          amount_cents: number
+          claim_code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          amount_cents?: number
+          claim_code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_transfers_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fare_segments: {
+        Row: {
+          created_at: string
+          currency: string
+          effective_from: string
+          fare_cents: number
+          from_stop_id: string
+          id: string
+          route_id: string
+          to_stop_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          effective_from?: string
+          fare_cents: number
+          from_stop_id: string
+          id?: string
+          route_id: string
+          to_stop_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          effective_from?: string
+          fare_cents?: number
+          from_stop_id?: string
+          id?: string
+          route_id?: string
+          to_stop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fare_segments_from_stop_id_fkey"
+            columns: ["from_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fare_segments_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fare_segments_to_stop_id_fkey"
+            columns: ["to_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ledger_accounts: {
         Row: {
           created_at: string
@@ -261,6 +354,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["ledger_txn_kind"]
           memo: string | null
           ticket_id: string | null
+          transfer_id: string | null
         }
         Insert: {
           created_at?: string
@@ -269,6 +363,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["ledger_txn_kind"]
           memo?: string | null
           ticket_id?: string | null
+          transfer_id?: string | null
         }
         Update: {
           created_at?: string
@@ -277,6 +372,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["ledger_txn_kind"]
           memo?: string | null
           ticket_id?: string | null
+          transfer_id?: string | null
         }
         Relationships: [
           {
@@ -298,6 +394,13 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_transactions_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "credit_transfers"
             referencedColumns: ["id"]
           },
         ]
@@ -434,6 +537,7 @@ export type Database = {
           id: string
           name: string
           name_sn: string | null
+          typical_duration_minutes: number | null
         }
         Insert: {
           active?: boolean
@@ -442,6 +546,7 @@ export type Database = {
           id?: string
           name: string
           name_sn?: string | null
+          typical_duration_minutes?: number | null
         }
         Update: {
           active?: boolean
@@ -450,6 +555,7 @@ export type Database = {
           id?: string
           name?: string
           name_sn?: string | null
+          typical_duration_minutes?: number | null
         }
         Relationships: []
       }
@@ -554,30 +660,49 @@ export type Database = {
           currency: string
           direction: Database["public"]["Enums"]["route_direction"]
           fare_cents: number
+          from_stop_id: string | null
           id: string
+          kind: Database["public"]["Enums"]["ticket_kind"]
+          payment_method: string
           purchased_at: string
           rider_id: string
           route_id: string
+          to_stop_id: string | null
         }
         Insert: {
           currency?: string
           direction: Database["public"]["Enums"]["route_direction"]
           fare_cents: number
+          from_stop_id?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["ticket_kind"]
+          payment_method?: string
           purchased_at?: string
           rider_id: string
           route_id: string
+          to_stop_id?: string | null
         }
         Update: {
           currency?: string
           direction?: Database["public"]["Enums"]["route_direction"]
           fare_cents?: number
+          from_stop_id?: string | null
           id?: string
+          kind?: Database["public"]["Enums"]["ticket_kind"]
+          payment_method?: string
           purchased_at?: string
           rider_id?: string
           route_id?: string
+          to_stop_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "tickets_from_stop_id_fkey"
+            columns: ["from_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tickets_rider_id_fkey"
             columns: ["rider_id"]
@@ -590,6 +715,142 @@ export type Database = {
             columns: ["route_id"]
             isOneToOne: false
             referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tickets_to_stop_id_fkey"
+            columns: ["to_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transfer_claim_attempts: {
+        Row: {
+          attempted_at: string
+          claimer_id: string
+          code_entered: string
+          id: number
+          outcome: string
+          transfer_id: string | null
+        }
+        Insert: {
+          attempted_at?: string
+          claimer_id: string
+          code_entered: string
+          id?: never
+          outcome: string
+          transfer_id?: string | null
+        }
+        Update: {
+          attempted_at?: string
+          claimer_id?: string
+          code_entered?: string
+          id?: never
+          outcome?: string
+          transfer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfer_claim_attempts_claimer_id_fkey"
+            columns: ["claimer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_claim_attempts_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "credit_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transfer_events: {
+        Row: {
+          actor_profile_id: string | null
+          created_at: string
+          event_type: Database["public"]["Enums"]["transfer_event_type"]
+          id: number
+          transfer_id: string
+        }
+        Insert: {
+          actor_profile_id?: string | null
+          created_at?: string
+          event_type: Database["public"]["Enums"]["transfer_event_type"]
+          id?: never
+          transfer_id: string
+        }
+        Update: {
+          actor_profile_id?: string | null
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["transfer_event_type"]
+          id?: never
+          transfer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfer_events_actor_profile_id_fkey"
+            columns: ["actor_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_events_transfer_id_fkey"
+            columns: ["transfer_id"]
+            isOneToOne: false
+            referencedRelation: "credit_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transfer_points: {
+        Row: {
+          created_at: string
+          from_stop_id: string
+          id: string
+          kind: string
+          notes: string | null
+          to_stop_id: string
+          walk_meters: number
+          walk_minutes: number
+        }
+        Insert: {
+          created_at?: string
+          from_stop_id: string
+          id?: string
+          kind: string
+          notes?: string | null
+          to_stop_id: string
+          walk_meters: number
+          walk_minutes: number
+        }
+        Update: {
+          created_at?: string
+          from_stop_id?: string
+          id?: string
+          kind?: string
+          notes?: string | null
+          to_stop_id?: string
+          walk_meters?: number
+          walk_minutes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transfer_points_from_stop_id_fkey"
+            columns: ["from_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transfer_points_to_stop_id_fkey"
+            columns: ["to_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
             referencedColumns: ["id"]
           },
         ]
@@ -678,13 +939,52 @@ export type Database = {
       }
     }
     Functions: {
+      assert_plausible_fare: { Args: { p_fare: number }; Returns: number }
+      cancel_transfer: { Args: { p_transfer: string }; Returns: undefined }
+      claim_credit: {
+        Args: { p_code: string }
+        Returns: {
+          amount_cents: number
+          outcome: string
+        }[]
+      }
       current_fare_cents: { Args: { p_route: string }; Returns: number }
-      current_owner_id: { Args: never; Returns: string }
-      is_party_to_transaction: { Args: { p_txn: string }; Returns: boolean }
+      owner_revenue_summary: {
+        Args: never
+        Returns: {
+          commission_cents: number
+          day: string
+          gross_cents: number
+          net_cents: number
+          route_code: string
+          route_name: string
+          tickets: number
+        }[]
+      }
+      purchase_parcel: {
+        Args: {
+          p_direction: Database["public"]["Enums"]["route_direction"]
+          p_from_stop: string
+          p_payment?: string
+          p_route: string
+          p_to_stop: string
+          p_valid_minutes?: number
+        }
+        Returns: {
+          collect_code: string
+          fare_cents: number
+          load_code: string
+          ticket_id: string
+          valid_until: string
+        }[]
+      }
       purchase_ticket: {
         Args: {
           p_direction: Database["public"]["Enums"]["route_direction"]
+          p_from_stop?: string
+          p_payment?: string
           p_route: string
+          p_to_stop?: string
           p_valid_minutes?: number
         }
         Returns: {
@@ -692,6 +992,16 @@ export type Database = {
           fare_cents: number
           ticket_id: string
           valid_until: string
+        }[]
+      }
+      record_change_credit: {
+        Args: {
+          p_covered_fares?: number
+          p_note_cents: number
+          p_ticket: string
+        }
+        Returns: {
+          change_cents: number
         }[]
       }
       record_topup: {
@@ -706,8 +1016,23 @@ export type Database = {
           p_vehicle?: string
         }
         Returns: {
+          fare_cents: number
           outcome: string
+          payment_method: string
+          stage: string
           ticket_id: string
+        }[]
+      }
+      segment_fare_cents: {
+        Args: { p_from: string; p_route: string; p_to: string }
+        Returns: number
+      }
+      send_credit: {
+        Args: { p_amount_cents: number }
+        Returns: {
+          claim_code: string
+          expires_at: string
+          transfer_id: string
         }[]
       }
     }
@@ -726,6 +1051,10 @@ export type Database = {
         | "fare_settlement"
         | "refund"
         | "adjustment"
+        | "change_credit"
+        | "transfer_send"
+        | "transfer_claim"
+        | "transfer_cancel"
       route_direction: "outbound" | "inbound"
       ticket_event_type:
         | "issued"
@@ -733,6 +1062,10 @@ export type Database = {
         | "cancelled"
         | "expired"
         | "refunded"
+        | "loaded"
+        | "collected"
+      ticket_kind: "fare" | "parcel"
+      transfer_event_type: "sent" | "claimed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -875,6 +1208,10 @@ export const Constants = {
         "fare_settlement",
         "refund",
         "adjustment",
+        "change_credit",
+        "transfer_send",
+        "transfer_claim",
+        "transfer_cancel",
       ],
       route_direction: ["outbound", "inbound"],
       ticket_event_type: [
@@ -883,7 +1220,11 @@ export const Constants = {
         "cancelled",
         "expired",
         "refunded",
+        "loaded",
+        "collected",
       ],
+      ticket_kind: ["fare", "parcel"],
+      transfer_event_type: ["sent", "claimed", "cancelled"],
     },
   },
 } as const

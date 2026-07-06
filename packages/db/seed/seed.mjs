@@ -35,7 +35,9 @@ if (!URL || !SERVICE) {
 }
 const admin = createClient(URL, SERVICE, { auth: { persistSession: false } });
 
-const RIDER_TOPUP_CENTS = 1000; // $10 demo credit
+// $25 rehearsal credit: the full e2e suite (P1 flows + P2 offline boarding)
+// buys around $12 of wallet fares per run; the refill must outlast a run
+const RIDER_TOPUP_CENTS = 2500;
 
 const people = [
   {
@@ -135,6 +137,16 @@ async function ensureConductor(uid, ownerId) {
   if (error) throw error;
 }
 
+// rehearsals and e2e runs walk the failure paths on purpose; reset the demo
+// conductor's attempt log so repeated runs never start rate limited
+async function resetAttemptLog(uid) {
+  const { data, error } = await admin.rpc("reset_conductor_attempt_log", {
+    p_profile: uid,
+  });
+  if (error) throw error;
+  if (data > 0) console.log(`reset CONDUCTOR attempt log (${data} rows)`);
+}
+
 async function topUpRider(uid) {
   const { data: wallet } = await admin
     .from("ledger_accounts")
@@ -148,10 +160,10 @@ async function topUpRider(uid) {
     .select("balance_cents")
     .eq("account_id", wallet.id)
     .maybeSingle();
-  // refill to the demo level whenever rehearsal or e2e runs have drained the
-  // wallet below one full fare; the ledger keeps the history either way
+  // refill to the rehearsal level whenever a full e2e run could no longer
+  // pay its way; the ledger keeps the history either way
   const current = bal?.balance_cents ?? 0;
-  if (current >= 500) return;
+  if (current >= 1500) return;
   const { error } = await admin.rpc("record_topup", {
     p_profile: uid,
     p_amount_cents: RIDER_TOPUP_CENTS - current,
@@ -349,6 +361,7 @@ for (const p of people) ids[p.key] = await ensureUser(p);
 
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
 await ensureConductor(ids.CONDUCTOR, ownerId);
+await resetAttemptLog(ids.CONDUCTOR);
 await topUpRider(ids.RIDER);
 await refillTestRiders();
 await seedNetwork();

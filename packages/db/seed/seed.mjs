@@ -1,6 +1,9 @@
-// Idempotent demo seed for rehearsal. Creates three demo people with roles and
-// gives the rider some wallet credit, using the service role key (seed + CI
-// only, never in app code). Safe to run repeatedly.
+// Idempotent demo seed for rehearsal. Creates three demo people with roles,
+// gives the rider some wallet credit, and seeds the verified Harare network
+// (routes, stops, walking transfers, dated fare segments) from network.json,
+// using the service role key (seed + CI only, never in app code). Safe to run
+// repeatedly. Network provenance and the 2026 fare derivation are documented
+// in network.json _meta; nothing here is invented.
 //
 // Demo users are created with email + password so rehearsal and CI can sign in
 // deterministically with no SMS provider wired (the product login is phone OTP;
@@ -154,11 +157,148 @@ async function topUpRider(uid) {
   console.log(`topped up RIDER with ${RIDER_TOPUP_CENTS}c`);
 }
 
+// --- network -------------------------------------------------------------
+const network = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "network.json"), "utf8"),
+);
+
+async function ensureStop(slug, def) {
+  const { data } = await admin
+    .from("stops")
+    .select("id")
+    .eq("name", def.name)
+    .maybeSingle();
+  if (data) return data.id;
+  const { data: ins, error } = await admin
+    .from("stops")
+    .insert({ name: def.name, lat: def.lat, lng: def.lng })
+    .select("id")
+    .single();
+  if (error) throw new Error(`stop ${slug}: ${error.message}`);
+  console.log(`created stop ${def.name}`);
+  return ins.id;
+}
+
+async function ensureRoute(r) {
+  const { data } = await admin
+    .from("routes")
+    .select("id")
+    .eq("code", r.code)
+    .maybeSingle();
+  if (data) return data.id;
+  const { data: ins, error } = await admin
+    .from("routes")
+    .insert({ code: r.code, name: r.name })
+    .select("id")
+    .single();
+  if (error) throw new Error(`route ${r.code}: ${error.message}`);
+  console.log(`created route ${r.code}`);
+  return ins.id;
+}
+
+async function ensureRouteStops(routeId, stopIds) {
+  const { data: existing, error: exErr } = await admin
+    .from("route_stops")
+    .select("direction, seq, stop_id")
+    .eq("route_id", routeId)
+    .order("seq");
+  if (exErr) throw exErr;
+  const want = [];
+  stopIds.forEach((sid, i) => want.push({ route_id: routeId, direction: "outbound", seq: i, stop_id: sid }));
+  [...stopIds].reverse().forEach((sid, i) => want.push({ route_id: routeId, direction: "inbound", seq: i, stop_id: sid }));
+  const same =
+    existing.length === want.length &&
+    want.every((w) =>
+      existing.some((e) => e.direction === w.direction && e.seq === w.seq && e.stop_id === w.stop_id),
+    );
+  if (same) return;
+  if (existing.length) {
+    const { error } = await admin.from("route_stops").delete().eq("route_id", routeId);
+    if (error) throw error;
+  }
+  const { error } = await admin.from("route_stops").insert(want);
+  if (error) throw error;
+  console.log(`wrote stop sequence for route ${routeId}`);
+}
+
+async function ensureRouteFare(routeId, fareCents, effectiveFrom) {
+  const { data } = await admin.rpc("current_fare_cents", { p_route: routeId });
+  if (data === fareCents) return;
+  const { error } = await admin
+    .from("route_fares")
+    .insert({ route_id: routeId, fare_cents: fareCents, effective_from: effectiveFrom });
+  if (error) throw error;
+  console.log(`route ${routeId}: end to end fare set to ${fareCents}c`);
+}
+
+async function ensureFareSegment(routeId, fromId, toId, fareCents, effectiveFrom) {
+  const { data, error: selErr } = await admin
+    .from("fare_segments")
+    .select("id")
+    .eq("route_id", routeId)
+    .eq("from_stop_id", fromId)
+    .eq("to_stop_id", toId)
+    .eq("fare_cents", fareCents)
+    .eq("effective_from", effectiveFrom)
+    .maybeSingle();
+  if (selErr) throw selErr;
+  if (data) return;
+  const { error } = await admin.from("fare_segments").insert({
+    route_id: routeId,
+    from_stop_id: fromId,
+    to_stop_id: toId,
+    fare_cents: fareCents,
+    effective_from: effectiveFrom,
+  });
+  if (error) throw error;
+}
+
+async function ensureTransfer(tp, stopIdBySlug) {
+  const fromId = stopIdBySlug[tp.from];
+  const toId = stopIdBySlug[tp.to];
+  const { data } = await admin
+    .from("transfer_points")
+    .select("id")
+    .eq("from_stop_id", fromId)
+    .eq("to_stop_id", toId)
+    .maybeSingle();
+  if (data) return;
+  const { error } = await admin.from("transfer_points").insert({
+    from_stop_id: fromId,
+    to_stop_id: toId,
+    kind: tp.kind,
+    walk_meters: tp.walk_meters,
+    walk_minutes: tp.walk_minutes,
+    notes: tp.notes,
+  });
+  if (error) throw error;
+  console.log(`created transfer ${tp.from} -> ${tp.to}`);
+}
+
+async function seedNetwork() {
+  const effectiveFrom = network._meta.fares_effective_from;
+  const stopIdBySlug = {};
+  for (const [slug, def] of Object.entries(network.stops)) {
+    stopIdBySlug[slug] = await ensureStop(slug, def);
+  }
+  for (const r of network.routes) {
+    const routeId = await ensureRoute(r);
+    await ensureRouteStops(routeId, r.stops.map((s) => stopIdBySlug[s]));
+    await ensureRouteFare(routeId, r.default_fare_cents, effectiveFrom);
+    for (const seg of r.fare_segments) {
+      await ensureFareSegment(routeId, stopIdBySlug[seg.from], stopIdBySlug[seg.to], seg.fare_cents, effectiveFrom);
+    }
+  }
+  for (const tp of network.transfers) await ensureTransfer(tp, stopIdBySlug);
+  console.log("network seeded: routes, stops, transfers, dated fare segments.");
+}
+
 const ids = {};
 for (const p of people) ids[p.key] = await ensureUser(p);
 
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
 await ensureConductor(ids.CONDUCTOR, ownerId);
 await topUpRider(ids.RIDER);
+await seedNetwork();
 
-console.log("\nseed complete: rider, owner, conductor ready for rehearsal.");
+console.log("\nseed complete: rider, owner, conductor and network ready for rehearsal.");

@@ -31,6 +31,8 @@ UPDATE and DELETE even for the service role.
 | 0003_wallet_ledger.sql | accounts, transactions, postings, invariants, balances view |
 | 0004_tickets_and_board_codes.sql | tickets, ticket_events, board_codes, attempts, RPCs |
 | 0005_function_hardening.sql | advisor fixes: search_path pin, execute revocations |
+| 0006_move_rls_helpers_to_private_schema.sql | RLS helper fns moved to a private schema |
+| 0007_network_planner_data.sql | transfer_points, dated append only fare_segments, segment fare lookup |
 
 ## Security test
 
@@ -46,5 +48,7 @@ history, and that redemption is scoped and single use. Test credentials come
 from `.env.local` (see `.env.example`); the synthetic test users and TEST-01
 route are provisioned server side.
 
-Note: the real Harare network is seeded from corridor fieldwork, never
-invented. TEST-01 is synthetic and labelled as such.
+Note: the real Harare network is seeded from `seed/network.json` (Mhofu
+verified routes, stops and walking transfers; fares at 2026 post fuel hike
+levels per the evidence base, provenance in `_meta`), never invented.
+TEST-01 is synthetic and labelled as such.

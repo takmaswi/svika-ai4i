@@ -1,0 +1,114 @@
+{
+  "_meta": {
+    "version": "2.0.0",
+    "provenance": "Routes, stops, walking transfers and fare tiers carried over from the v1 seed network verified by Mhofu against Google Maps and Waze for Harare (svika-monorepo seed/network.json, meta 1.0.0). Nothing here is invented by an agent; place names and geometry are Mhofu's.",
+    "fares": "2026 levels. The evidence base (COMBINED-EVIDENCE-BASE.md, item 1, HIGH confidence) records that after the March 2026 ZERA fuel hikes Harare kombi fares run $1.00 to $2.00 (ZimEye 7 Mar 2026, Xinhua 13 Mar 2026). The v1 fares ($0.50 to $1.50, verified pre hike) are shifted up by one $0.50 note across the board, which preserves the verified tier structure and lands every fare inside the verified 2026 band. These are placeholders for the corridor fieldwork fares (P3), which replace them as a new dated generation in fare_segments.",
+    "fares_effective_from": "2026-03-07T00:00:00Z",
+    "fare_fallback_rule": "A stop pair with no verified segment tier is charged the route's end to end fare (never undercharge, never invent a tier).",
+    "direction_rule": "outbound = the listed stop order (named start toward named end); inbound = the reverse.",
+    "currency": "USD"
+  },
+  "stops": {
+    "sp_heights_start_north": { "name": "Bannockburn Rd North Terminus", "lat": -17.7498, "lng": 31.0425 },
+    "sp_uz_gate": { "name": "University of Zimbabwe Main Gate (The Chase)", "lat": -17.78465, "lng": 31.05154 },
+    "sp_second_lomagundi": { "name": "Second St at Lomagundi Rd Intersection", "lat": -17.7936, "lng": 31.0528 },
+    "sp_rezende_rank": { "name": "Rezende Rank", "lat": -17.8325, "lng": 31.0494 },
+    "sp_marketsq_rank": { "name": "Market Square Rank", "lat": -17.83575, "lng": 31.03992 },
+    "sp_pe_kensington": { "name": "Prince Edward St (Kensington Shops)", "lat": -17.8165, "lng": 31.0358 },
+    "sp_pe_cork": { "name": "Prince Edward St at Cork Rd Junction", "lat": -17.8075, "lng": 31.0345 },
+    "sp_avondale_shops": { "name": "Avondale Shops (King George Rd)", "lat": -17.80321, "lng": 31.03702 },
+    "sp_fourthst_rank": { "name": "Fourth Street Rank", "lat": -17.8329, "lng": 31.0563 },
+    "sp_samlevys": { "name": "Sam Levy's Village Bus Stop", "lat": -17.7758, "lng": 31.0858 },
+    "sp_lomagundi_kinggeorge_pickup": { "name": "King George Rd just off Lomagundi Rd", "lat": -17.7939, "lng": 31.0484 }
+  },
+  "routes": [
+    {
+      "code": "HEIGHTS-REZENDE",
+      "name": "Mt Pleasant Heights to Rezende Rank",
+      "typical_duration_minutes": 38,
+      "stops": [
+        "sp_heights_start_north",
+        "sp_uz_gate",
+        "sp_second_lomagundi",
+        "sp_rezende_rank"
+      ],
+      "default_fare_cents": 200,
+      "fare_segments": [
+        { "from": "sp_heights_start_north", "to": "sp_uz_gate", "fare_cents": 150 },
+        { "from": "sp_heights_start_north", "to": "sp_second_lomagundi", "fare_cents": 150 },
+        { "from": "sp_heights_start_north", "to": "sp_rezende_rank", "fare_cents": 200 },
+        { "from": "sp_uz_gate", "to": "sp_second_lomagundi", "fare_cents": 100 },
+        { "from": "sp_uz_gate", "to": "sp_rezende_rank", "fare_cents": 150 },
+        { "from": "sp_second_lomagundi", "to": "sp_rezende_rank", "fare_cents": 150 }
+      ]
+    },
+    {
+      "code": "MARKETSQ-AVONDALE",
+      "name": "Market Square Rank to Avondale Shops",
+      "typical_duration_minutes": 22,
+      "stops": [
+        "sp_marketsq_rank",
+        "sp_pe_kensington",
+        "sp_pe_cork",
+        "sp_avondale_shops"
+      ],
+      "default_fare_cents": 150,
+      "fare_segments": [
+        { "from": "sp_marketsq_rank", "to": "sp_pe_kensington", "fare_cents": 100 },
+        { "from": "sp_marketsq_rank", "to": "sp_pe_cork", "fare_cents": 150 },
+        { "from": "sp_marketsq_rank", "to": "sp_avondale_shops", "fare_cents": 150 },
+        { "from": "sp_pe_kensington", "to": "sp_avondale_shops", "fare_cents": 100 }
+      ]
+    },
+    {
+      "code": "FOURTHST-BORROWDALE",
+      "name": "Fourth Street Rank to Sam Levy's Village",
+      "typical_duration_minutes": 25,
+      "stops": ["sp_fourthst_rank", "sp_samlevys"],
+      "default_fare_cents": 200,
+      "fare_segments": [
+        { "from": "sp_fourthst_rank", "to": "sp_samlevys", "fare_cents": 200 }
+      ]
+    },
+    {
+      "code": "WESTGATE-COPA",
+      "name": "Westgate to Copacabana (Avondale Segment)",
+      "typical_duration_minutes": 5,
+      "stops": ["sp_lomagundi_kinggeorge_pickup", "sp_avondale_shops"],
+      "default_fare_cents": 100,
+      "fare_segments": [
+        {
+          "from": "sp_lomagundi_kinggeorge_pickup",
+          "to": "sp_avondale_shops",
+          "fare_cents": 100
+        }
+      ]
+    }
+  ],
+  "transfers": [
+    {
+      "from": "sp_rezende_rank",
+      "to": "sp_fourthst_rank",
+      "kind": "rank_to_rank_walk",
+      "walk_meters": 750,
+      "walk_minutes": 10,
+      "notes": "Walk east across the CBD from Rezende to Fourth Street Rank."
+    },
+    {
+      "from": "sp_rezende_rank",
+      "to": "sp_marketsq_rank",
+      "kind": "rank_to_rank_walk",
+      "walk_meters": 1100,
+      "walk_minutes": 15,
+      "notes": "Heavy foot traffic walk west across the CBD between two major ranks."
+    },
+    {
+      "from": "sp_second_lomagundi",
+      "to": "sp_lomagundi_kinggeorge_pickup",
+      "kind": "walking_junction",
+      "walk_meters": 450,
+      "walk_minutes": 6,
+      "notes": "Tribal knowledge walking transfer along Lomagundi Road; connects the Heights kombi to inbound Avondale bound kombis without riding into the CBD."
+    }
+  ]
+}

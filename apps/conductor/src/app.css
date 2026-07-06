@@ -1,11 +1,16 @@
+/* Hwindi surface: sunlight contrast, huge targets, one action per screen.
+   All colour and type tokens come from @svika/ui; nothing here invents brand. */
 .hwindi-shell {
   min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-  padding: var(--space-8) var(--space-5);
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-5);
   background: var(--color-bg);
   color: var(--color-ink);
+  font-family: var(--font-sans);
 }
 
 .hwindi-header {
@@ -14,9 +19,120 @@
   gap: var(--space-2);
 }
 
+.hwindi-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hwindi-note-left {
+  color: var(--color-ink-mute);
+}
+
+/* --- sign in ------------------------------------------------------------ */
+.hwindi-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.hwindi-form label {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  margin-top: var(--space-2);
+}
+.hwindi-input {
+  width: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: var(--text-body);
+}
+.hwindi-input:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 1px;
+}
+.hwindi-error {
+  color: var(--color-signal);
+}
+
+/* --- route picker -------------------------------------------------------- */
+.hwindi-routes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.hwindi-route {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  text-align: left;
+}
+.hwindi-route:active {
+  transform: scale(0.99);
+}
+.hwindi-route .svika-meta {
+  color: var(--color-action);
+  letter-spacing: 0.5px;
+}
+.hwindi-route-name {
+  font-size: var(--text-title);
+  font-weight: var(--weight-semibold);
+}
+.hwindi-route-tag {
+  color: var(--color-ink-soft);
+}
+
+/* --- keypad --------------------------------------------------------------- */
+.hwindi-code {
+  font-family: var(--font-mono);
+  font-size: 72px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.22em;
+  text-align: center;
+  color: var(--color-ink);
+}
+
+.hwindi-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+.hwindi-key {
+  padding: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: var(--weight-semibold);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.hwindi-key:active {
+  transform: scale(0.99);
+  background: var(--color-action-soft);
+}
+.hwindi-key-quiet {
+  color: var(--color-ink-soft);
+}
+.hwindi-key-spacer {
+  min-height: var(--touch-min);
+}
+
 .hwindi-cta {
   margin-top: auto;
   width: 100%;
+  padding: var(--space-5);
   border: none;
   border-radius: var(--radius);
   background: var(--color-action);
@@ -25,14 +141,101 @@
   font-size: var(--text-title);
   font-weight: var(--weight-semibold);
   box-shadow: var(--shadow-cta);
+  cursor: pointer;
 }
-
+.hwindi-cta:active {
+  transform: scale(0.99);
+}
 .hwindi-cta:disabled {
   background: var(--color-action-disabled);
   box-shadow: none;
+  cursor: default;
 }
 
-.hwindi-note {
-  color: var(--color-ink-mute);
+.hwindi-quiet {
+  border: none;
+  background: transparent;
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  padding: var(--space-2) 0;
+  text-align: left;
+}
+
+/* --- verdict: readable from arm's length in sunlight ---------------------- */
+.hwindi-verdict {
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  gap: var(--space-4);
+}
+.hwindi-verdict-word {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.hwindi-verdict-code {
+  font-size: 32px;
+  letter-spacing: 0.2em;
+  margin: 0;
+}
+.hwindi-verdict-success {
+  background: var(--color-action);
+  color: var(--color-bone);
+}
+.hwindi-verdict-success .hwindi-cta {
+  background: var(--color-bone);
+  color: var(--color-action);
+}
+.hwindi-verdict-already_redeemed,
+.hwindi-verdict-invalid_code {
+  background: var(--color-signal);
+  color: var(--color-bone);
+}
+.hwindi-verdict-already_redeemed .hwindi-cta,
+.hwindi-verdict-invalid_code .hwindi-cta {
+  background: var(--color-bone);
+  color: var(--color-signal);
+}
+.hwindi-verdict-rate_limited {
+  background: var(--color-amber);
+  color: var(--color-char);
+}
+.hwindi-verdict-rate_limited .hwindi-cta {
+  background: var(--color-char);
+  color: var(--color-bone);
+}
+
+/* language pill reused from web */
+.lang-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-full);
+  background: var(--color-action-soft);
+}
+.lang-toggle button {
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.5px;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+}
+.lang-toggle .lang-on {
+  background: var(--color-action);
+  color: var(--color-bone);
+}
+
+.hwindi-verdict-success .lang-toggle button,
+.hwindi-verdict-invalid_code .lang-toggle button {
+  color: var(--color-bone);
 }

@@ -41,5 +41,13 @@ export default defineConfig({
       timeout: 120_000,
       env: { E2E_AUTH: "on" },
     },
+    {
+      // the hwindi surface, driven by the redeem flow specs
+      command: "pnpm --filter conductor dev",
+      cwd: join(__dirname, "..", ".."),
+      url: "http://localhost:5174",
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
   ],
 });

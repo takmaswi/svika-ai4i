@@ -1,0 +1,30 @@
+{
+  "name": "web",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Svika web: rider app, owner dashboard, landing. Next.js App Router.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "auth:verify": "node scripts/auth-verify.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "0.5.2",
+    "@supabase/supabase-js": "2.49.4",
+    "@svika/shared": "workspace:*",
+    "@svika/ui": "workspace:*",
+    "next": "15.1.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "@types/react": "19.0.5",
+    "@types/react-dom": "19.0.3",
+    "typescript": "5.7.3",
+    "vitest": "2.1.8"
+  }
+}

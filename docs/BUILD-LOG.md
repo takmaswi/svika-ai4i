@@ -16,3 +16,15 @@ P0 | apps/web Next.js shell: phone OTP auth, derived roles, session middleware, 
 P0 | idempotent demo seed: rider/owner/conductor with roles + $10 rider credit | 70b06bd | seed run created 3 users
 P0 | auth flow proof: seeded demo user signs in via anon key, session + role resolve under RLS | 96ae32e | pnpm auth:verify 4/4 PASS, role=rider
 P0 | CI workflow: typecheck/lint/test on push + PR | fe4c687 | green locally across 6 workspaces (24 tests)
+P1 | network v2: transfer_points + dated fare_segments, Mhofu verified network seeded at 2026 fares ($1.00-$2.00 band, effective 2026-03-07) | 46e2d6f | seed idempotent, 12 dated segments live
+P1 | graph planner with transfer penalties + free text resolver in @svika/shared | ee698a7 | 16 unit tests incl. every-stop-pair gate (110 pairs)
+P1 | purchase v2: stop scoped fares, cash reservation, fare plausibility guard (migrations 0008/0009 applied) | ddf1811 | RLS suite 29/29 after change
+P1 | rider search -> plan -> pay surface, bilingual, stop picker degrade | 065b43b | book.spec.ts 5/5 e2e green
+P1 | conductor online redeem keypad, full screen verdicts | 9296528 | redeem.spec.ts 2/2 e2e green
+P1 | change to credit RPC + hwindi note picker (migration 0010 written, apply pending vendor outage) | d9f6d39 735bf4d | change.spec.ts committed
+P1 | split a note: covered fares stepper + RPC support | 735bf4d | split.spec.ts committed
+P1 | credit transfers: send/claim/cancel, escrowed, rate limited (migration 0011 written, apply pending) | fb0ffc3 | transfer.spec.ts + RLS transfer checks committed
+P1 | parcels: LOAD/COLLECT codes, stage aware redeem (migration 0012 written, apply pending) | 9bc7e00 | parcel.spec.ts committed
+P1 | owner ledger view from postings (migration 0013 written, apply pending) | d33bced | owner.spec.ts committed
+P1 | ledger invariant proof vs live db + demo wallet refills | 2494d82 | 8/8 PASS (zero sum, balanced, append only, no printing)
+P1 | security review of full P1 diff (skill, subagent) | - | no high confidence findings

@@ -1,0 +1,12 @@
+{
+  "name": "@svika/ui",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Svika Brand v2 design tokens and assets, exported from the design system project.",
+  "exports": {
+    "./styles.css": "./styles.css",
+    "./tokens/*": "./tokens/*",
+    "./assets/*": "./assets/*"
+  },
+  "files": ["styles.css", "tokens", "assets"]
+}

@@ -1,0 +1,8 @@
+/* ============================================================================
+   Svika — Webfonts
+   The live app loads these via next/font (Google Fonts):
+     DM Sans, IBM Plex Sans, IBM Plex Mono.
+   For portable HTML consumers we pull the same families from Google Fonts.
+   These are the canonical Svika families — do not substitute.
+   ========================================================================= */
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");

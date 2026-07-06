@@ -1,0 +1,37 @@
+/* ============================================================================
+   Svika — Colour tokens (v2 "Forest / Bone / Signal" brand pass)
+   Ground truth: takmaswi/Svika app/globals.css @theme block.
+   Warm, earthy, Zimbabwean. Deep forest green does the heavy lifting;
+   bone cream is the canvas; signal coral is the single accent.
+   ========================================================================= */
+:root {
+  /* --- Brand base palette ------------------------------------------------ */
+  --color-forest: #1F4D2E;   /* primary — CTAs, headers, wordmark            */
+  --color-pine:   #0E3A1E;   /* forest pressed / hover-dark                  */
+  --color-char:   #0E1A12;   /* near-black ink, warm green-black             */
+  --color-bone:   #FFFCEF;   /* app background — warm cream, not white       */
+  --color-linen:  #E9E2C8;   /* raised surface / muted panel                 */
+  --color-signal: #E84C30;   /* coral-red accent — live, alerts, one accent  */
+  --color-moss:   #4D5C44;   /* soft ink, secondary text, olive              */
+  --color-amber:  #F59E0B;   /* reserved — cash badge only                   */
+
+  /* --- Semantic aliases (what product code actually references) ---------- */
+  --color-bg:            var(--color-bone);
+  --color-surface:       var(--color-linen);
+  --color-surface-dark:  var(--color-forest);   /* inverse headers          */
+  --color-ink:           var(--color-char);
+  --color-ink-soft:      var(--color-moss);
+  --color-ink-mute:      rgba(14, 26, 18, 0.55);
+  --color-hairline:      rgba(14, 26, 18, 0.10);
+
+  --color-action:          var(--color-forest);
+  --color-action-hover:    var(--color-pine);
+  --color-action-disabled: rgba(31, 77, 46, 0.32);
+  --color-action-soft:     rgba(31, 77, 46, 0.10);
+
+  --color-accent: var(--color-signal);
+  --color-live:   var(--color-signal);
+
+  /* WhatsApp companion bubble — brand-agnostic utility */
+  --color-wa-bubble: #DCF8C6;
+}

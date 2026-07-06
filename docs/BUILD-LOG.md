@@ -29,3 +29,12 @@ P1 | owner ledger view from postings (migration 0013 written, apply pending) | d
 P1 | ledger invariant proof vs live db + demo wallet refills | 2494d82 | 8/8 PASS (zero sum, balanced, append only, no printing)
 P1 | security review of full P1 diff (skill, subagent) | - | no high confidence findings
 P1 | gate close: migrations 0010-0013 applied (enum steps split per Postgres txn rule), types regenerated, full e2e green | b453fce..76b3c55 | e2e 16/16, RLS 37/37, ledger 8/8 (35 txns balance), planner every stop pair, docs/p1-evidence recordings
+P2 | offline spine: hashed cache pull, idempotent sync RPCs, anomaly_flags live, one settlement path shared with online (migration 0014 applied) | 1b949d6 | RLS suite 37/37 after apply
+P2 | offline cycle proof vs live db: settle once, replay no-op, first sync wins + flag, change credited once, ledger zero sum | 00980be | 34/34 twice back to back
+P2 | conductor offline libs: IndexedDB cache, skew corrected local engine, ordered idempotent flush | 3060f62 | 34 unit tests
+P2 | hwindi offline UI: keypad fallback, status pill with queue count, queued change credit, EN/SN | b597c11 | offline e2e green
+P2 | installable PWA: workbox precached shell, routes + shift survive offline cold start | bb673f6 09b51ef | build emits sw.js, 9 entries precached
+P2 | rehearsal reset for attempt log + e2e wallet headroom (migration 0015 applied) | a527ef3 | back to back suites deterministic
+P2 | offline e2e: airplane redeem -> reconnect reconcile, device double entry refused, online-vs-offline conflict flags | fdb1324 | 3/3, full suite 19/19
+P2 | security review fixes: conductor scoped receipts, coarse rejection reasons (migration 0016 applied) | 9830170 | offline proof rerun 34/34
+P2 | CI job for the live db offline proof, secret gated | ae30a19 | activates when repo secrets land

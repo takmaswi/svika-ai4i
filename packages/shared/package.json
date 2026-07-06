@@ -1,0 +1,19 @@
+{
+  "name": "@svika/shared",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Svika shared domain: money/fare logic, roles, cross-surface types.",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3",
+    "vitest": "2.1.8"
+  }
+}

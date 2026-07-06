@@ -1,0 +1,45 @@
+// Playwright e2e for the P1 flows. Runs against the real Supabase project
+// with the seeded demo users (global setup re-seeds so wallets and network
+// are in a known state). Videos are kept as the flow recordings that back
+// the phase gate evidence.
+import { defineConfig, devices } from "@playwright/test";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+
+// pull Supabase + demo credentials from the repo root .env.local
+const repoRoot = join(__dirname, "..", "..");
+for (const f of [".env.local", ".env"]) {
+  const p = join(repoRoot, f);
+  if (!existsSync(p)) continue;
+  for (const line of readFileSync(p, "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (m && process.env[m[1]!] === undefined) process.env[m[1]!] = m[2]!;
+  }
+}
+
+export default defineConfig({
+  testDir: "./e2e",
+  globalSetup: "./e2e/global-setup.ts",
+  fullyParallel: false, // flows share demo users; keep them ordered
+  workers: 1,
+  retries: 0,
+  timeout: 60_000,
+  reporter: [["html", { open: "never" }], ["list"]],
+  use: {
+    baseURL: "http://localhost:3000",
+    viewport: { width: 360, height: 740 }, // reference device: cheap Android
+    video: "on",
+    screenshot: "only-on-failure",
+    locale: "en-ZW",
+  },
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  webServer: [
+    {
+      command: "pnpm dev",
+      url: "http://localhost:3000",
+      reuseExistingServer: true,
+      timeout: 120_000,
+      env: { E2E_AUTH: "on" },
+    },
+  ],
+});

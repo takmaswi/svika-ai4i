@@ -1,13 +1,27 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { resolveRole } from "@/lib/roles";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { formatUsd } from "@svika/shared";
+import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 
-// The authenticated shell. Middleware already blocks anonymous access; this also
-// checks, then resolves the role and shows the signed-in user's own profile.
-export default async function AppHome() {
+interface TicketRow {
+  id: string;
+  fare_cents: number;
+  payment_method: "wallet" | "cash";
+  purchased_at: string;
+  routes: { name: string } | null;
+  from_stop: { name: string } | null;
+  to_stop: { name: string } | null;
+  board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
+}
+
+// Rider home: search a trip, see wallet credit and live tickets. The search
+// form degrades to the plan page's stop picker for free text it cannot place.
+export default async function RiderHome() {
   const lang = await getLang();
   const supabase = await createClient();
 
@@ -16,39 +30,123 @@ export default async function AppHome() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, phone")
-    .eq("id", user.id)
-    .maybeSingle();
-
   const role = await resolveRole(supabase, user.id);
   const roleKey: DictKey = `role.${role}`;
-  const name = profile?.full_name?.trim();
+
+  const [balanceRes, ticketsRes, statusRes] = await Promise.all([
+    supabase
+      .from("account_balances")
+      .select("balance_cents")
+      .eq("kind", "rider_wallet")
+      .maybeSingle(),
+    supabase
+      .from("tickets")
+      .select(
+        "id, fare_cents, payment_method, purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name), board_codes(code, valid_until)",
+      )
+      .eq("kind", "fare")
+      .order("purchased_at", { ascending: false })
+      .limit(8),
+    supabase.from("ticket_status").select("ticket_id, status"),
+  ]);
+
+  const balance = balanceRes.data?.balance_cents ?? 0;
+  const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
+  const statusByTicket = new Map(
+    (statusRes.data ?? []).map((s) => [s.ticket_id as string, s.status as string]),
+  );
 
   return (
     <main className="shell">
       <header className="shell-top">
         <img className="wordmark" src="/wordmark.svg" alt="Svika" height={24} />
-        <LanguageToggle lang={lang} />
+        <div className="shell-top-actions">
+          <LanguageToggle lang={lang} />
+          <SignOutButton label={t(lang, "app.signOut")} />
+        </div>
       </header>
 
-      <section className="shell-card svika-card svika-animate-fade-up">
-        <p className="svika-meta">{t(lang, "app.welcome")}</p>
-        <h1 className="svika-headline">{name || t(lang, roleKey)}</h1>
+      <section className="search-card svika-card svika-animate-fade-up">
+        <h1 className="svika-headline">{t(lang, "rider.searchTitle")}</h1>
+        <form className="search-form" action="/app/plan" method="get">
+          <label className="svika-meta" htmlFor="from">
+            {t(lang, "rider.fromLabel")}
+          </label>
+          <input
+            id="from"
+            name="from"
+            className="auth-input"
+            placeholder={t(lang, "rider.fromPlaceholder")}
+            autoComplete="off"
+            required
+          />
+          <label className="svika-meta" htmlFor="to">
+            {t(lang, "rider.toLabel")}
+          </label>
+          <input
+            id="to"
+            name="to"
+            className="auth-input"
+            placeholder={t(lang, "rider.toPlaceholder")}
+            autoComplete="off"
+            required
+          />
+          <button className="auth-submit touch-target" type="submit">
+            {t(lang, "rider.planCta")}
+          </button>
+        </form>
+      </section>
 
-        <dl className="shell-facts">
-          <div>
-            <dt className="svika-meta">{t(lang, "app.roleLabel")}</dt>
-            <dd className="svika-body">{t(lang, roleKey)}</dd>
-          </div>
-          <div>
-            <dt className="svika-meta">{t(lang, "app.phoneLabel")}</dt>
-            <dd className="svika-mono-code">{profile?.phone ?? "—"}</dd>
-          </div>
-        </dl>
+      <section className="wallet-strip svika-card">
+        <div>
+          <p className="svika-meta">{t(lang, "rider.walletBalance")}</p>
+          <p className="wallet-amount svika-mono-code">{formatUsd(balance)}</p>
+        </div>
+        <p className="svika-meta">{t(lang, roleKey)}</p>
+      </section>
 
-        <SignOutButton label={t(lang, "app.signOut")} />
+      <section className="tickets-block">
+        <h2 className="svika-meta tickets-heading">{t(lang, "rider.tickets")}</h2>
+        {tickets.length === 0 ? (
+          <p className="svika-body empty-note">{t(lang, "rider.noTickets")}</p>
+        ) : (
+          <ul className="ticket-list">
+            {tickets.map((ticket) => {
+              const status = statusByTicket.get(ticket.id) ?? "issued";
+              const statusKey = `ticket.status.${status}` as DictKey;
+              const code = boardCodesOf(ticket.board_codes)[0]?.code ?? "";
+              return (
+                <li key={ticket.id}>
+                  <Link
+                    href={`/app/ticket/${ticket.id}`}
+                    className={`ticket-item svika-card${status === "issued" ? "" : " ticket-item-done"}`}
+                  >
+                    <span className="ticket-item-code svika-mono-code">
+                      {status === "issued" ? code : "····"}
+                    </span>
+                    <span className="ticket-item-body">
+                      <span className="svika-body ticket-item-route">
+                        {ticket.from_stop && ticket.to_stop
+                          ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
+                          : (ticket.routes?.name ?? "")}
+                      </span>
+                      <span className="svika-meta">
+                        {formatUsd(ticket.fare_cents)} ·{" "}
+                        {t(
+                          lang,
+                          ticket.payment_method === "cash"
+                            ? "ticket.payCash"
+                            : "ticket.paidWallet",
+                        )}{" "}
+                        · {t(lang, statusKey)}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </main>
   );

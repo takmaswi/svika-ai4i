@@ -9,6 +9,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "auth:verify": "node scripts/auth-verify.mjs"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "react-dom": "19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.49.1",
     "@types/node": "22.10.5",
     "@types/react": "19.0.5",
     "@types/react-dom": "19.0.3",

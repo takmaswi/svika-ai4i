@@ -7,7 +7,8 @@
   "scripts": {
     "security-test": "node test/rls.security.test.mjs",
     "seed": "node seed/seed.mjs",
-    "ledger-test": "node test/ledger.invariants.test.mjs"
+    "ledger-test": "node test/ledger.invariants.test.mjs",
+    "offline-test": "node test/offline.sync.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.49.4"

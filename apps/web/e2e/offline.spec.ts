@@ -150,7 +150,7 @@ test.describe("offline boarding", () => {
       .eq("ticket_id", ticketId)
       .eq("event_type", "redeemed");
     expect(events).toHaveLength(1);
-    expect((events![0].detail as { offline?: boolean }).offline).toBe(true);
+    expect((events?.[0]?.detail as { offline?: boolean }).offline).toBe(true);
   });
 
   test("the same code entered twice offline is refused on the device", async ({

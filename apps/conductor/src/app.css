@@ -289,6 +289,34 @@
   cursor: default;
 }
 
+/* --- connection + queue pill: legible in sunlight, tap to force a sync ----- */
+.hwindi-topline-right {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.hwindi-pill {
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+.hwindi-pill-online {
+  background: var(--color-action-soft);
+  color: var(--color-action);
+}
+.hwindi-pill-offline {
+  background: var(--color-char);
+  color: var(--color-bone);
+}
+.hwindi-pill:active {
+  transform: scale(0.99);
+}
+
 /* language pill reused from web */
 .lang-toggle {
   display: inline-flex;

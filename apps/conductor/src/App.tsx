@@ -1,13 +1,15 @@
 // The hwindi surface: sign in → pick route and direction → keypad → verdict.
 // Fat finger first: one action per screen, huge targets, high contrast for
-// sunlight, works one handed in a moving kombi. Online redemption only in P1;
-// the offline queue (P2) will wrap the same redeem call.
+// sunlight, works one handed in a moving kombi. With no signal the same
+// keypad clears fares against the local cache and queues the events; the
+// pill in the header shows the connection and what is waiting to sync.
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { formatUsd } from "@svika/shared";
 import { supabase } from "./lib/supabase";
 import { t, type Lang } from "./lib/dict";
 import { appendDigit, eraseDigit, isComplete } from "./lib/keypad";
+import { useOfflineBoarding, isNetworkError } from "./hooks/useOfflineBoarding";
 
 type Direction = "outbound" | "inbound";
 
@@ -32,6 +34,8 @@ interface RedeemedTicket {
   paymentMethod: "wallet" | "cash";
   /** what the code advanced the ticket to: redeemed | loaded | collected */
   stage: string;
+  /** cleared against the local cache; the event is queued for sync */
+  offline?: boolean;
 }
 
 /** Real USD notes a rider hands over on a kombi. */
@@ -61,8 +65,11 @@ export default function App() {
   const [redeemed, setRedeemed] = useState<RedeemedTicket | null>(null);
   const [changeMode, setChangeMode] = useState(false);
   const [changeCents, setChangeCents] = useState<number | null>(null);
+  const [changeQueued, setChangeQueued] = useState(false);
   const [changeError, setChangeError] = useState<string | null>(null);
   const [faresCovered, setFaresCovered] = useState(1);
+
+  const offline = useOfflineBoarding(route?.id ?? null, direction);
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
@@ -121,6 +128,19 @@ export default function App() {
     </div>
   );
 
+  // connection + queue pill; tapping it forces a sync (demo safe)
+  const statusPill = (
+    <button
+      type="button"
+      className={`hwindi-pill ${offline.online ? "hwindi-pill-online" : "hwindi-pill-offline"}`}
+      data-testid="status-pill"
+      onClick={() => void offline.syncNow()}
+    >
+      {t(lang, offline.online ? "status.online" : "status.offline")}
+      {offline.queued > 0 && ` · ${offline.queued} ${t(lang, "status.toSync")}`}
+    </button>
+  );
+
   if (!ready) return <main className="hwindi-shell" />;
 
   if (!session) {
@@ -133,6 +153,7 @@ export default function App() {
     setRedeemed(null);
     setChangeMode(false);
     setChangeCents(null);
+    setChangeQueued(false);
     setChangeError(null);
     setFaresCovered(1);
   };
@@ -151,6 +172,11 @@ export default function App() {
           <p className="hwindi-verdict-code svika-mono-code">
             {formatUsd(changeCents)}
           </p>
+          {changeQueued && (
+            <p className="hwindi-verdict-sub" data-testid="change-queued-note">
+              {t(lang, "change.queued")}
+            </p>
+          )}
           <button
             className="hwindi-cta touch-target"
             type="button"
@@ -166,15 +192,41 @@ export default function App() {
     // across companions is normal practice; the remainder is the change)
     if (changeMode && redeemed) {
       const covered = redeemed.fareCents * faresCovered;
+      // an offline-cleared ticket queues its change too (the server only
+      // learns "cleared by you" when the redeem event syncs first)
+      const queueTheChange = async (noteCents: number) => {
+        const change = await offline.queueChange(
+          redeemed.ticketId,
+          noteCents,
+          faresCovered,
+          redeemed.fareCents,
+        );
+        if (change === null) {
+          setChangeError(t(lang, "change.none"));
+          return;
+        }
+        setChangeQueued(true);
+        setChangeCents(change);
+      };
       const creditChange = async (noteCents: number) => {
         if (busy) return;
         setBusy(true);
         setChangeError(null);
+        if (redeemed.offline || !navigator.onLine) {
+          await queueTheChange(noteCents);
+          setBusy(false);
+          return;
+        }
         const { data, error } = await supabase.rpc("record_change_credit", {
           p_ticket: redeemed.ticketId,
           p_note_cents: noteCents,
           p_covered_fares: faresCovered,
         });
+        if (error && isNetworkError(error)) {
+          await queueTheChange(noteCents);
+          setBusy(false);
+          return;
+        }
         setBusy(false);
         if (error) {
           setChangeError(
@@ -266,6 +318,11 @@ export default function App() {
                   : t(lang, "result.collectCash")
                 : t(lang, "result.walletPaid")}
             </p>
+            {redeemed.offline && (
+              <p className="hwindi-verdict-sub" data-testid="offline-note">
+                {t(lang, "result.offlineSaved")}
+              </p>
+            )}
           </>
         )}
         {outcome === "success" && isCash && redeemed?.stage !== "collected" && (
@@ -295,7 +352,10 @@ export default function App() {
         <header className="hwindi-header">
           <div className="hwindi-topline">
             <span className="svika-meta">{t(lang, "app.brand")}</span>
-            {langToggle}
+            <div className="hwindi-topline-right">
+              {statusPill}
+              {langToggle}
+            </div>
           </div>
           <h1 className="svika-headline">{t(lang, "route.title")}</h1>
         </header>
@@ -331,14 +391,44 @@ export default function App() {
     );
   }
 
+  // no network (or the call dies mid-air): the local cache answers and the
+  // event queues for sync. Same verdict screens either way.
+  const submitOffline = async () => {
+    const local = await offline.localRedeem(code);
+    if (
+      local.outcome === "success" &&
+      local.ticketId &&
+      local.fareCents !== undefined
+    ) {
+      setRedeemed({
+        ticketId: local.ticketId,
+        fareCents: local.fareCents,
+        paymentMethod: local.paymentMethod ?? "cash",
+        stage: local.stage ?? "redeemed",
+        offline: true,
+      });
+    }
+    setOutcome(local.outcome);
+  };
+
   const submit = async () => {
     if (!isComplete(code) || busy) return;
     setBusy(true);
+    if (!navigator.onLine) {
+      await submitOffline();
+      setBusy(false);
+      return;
+    }
     const { data, error } = await supabase.rpc("redeem_board_code", {
       p_route: route.id,
       p_direction: direction,
       p_code: code,
     });
+    if (error && isNetworkError(error)) {
+      await submitOffline();
+      setBusy(false);
+      return;
+    }
     setBusy(false);
     if (error) {
       setOutcome("invalid_code");
@@ -380,7 +470,10 @@ export default function App() {
           >
             ← {t(lang, "keypad.changeRoute")}
           </button>
-          {langToggle}
+          <div className="hwindi-topline-right">
+            {statusPill}
+            {langToggle}
+          </div>
         </div>
         <p className="svika-meta hwindi-route-tag">
           {route.code} · {t(lang, "route.towards")}{" "}

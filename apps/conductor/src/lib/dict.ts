@@ -73,6 +73,24 @@ export const dict = {
     en: "Could not credit the change.",
     sn: "Chenji haina kupinda.",
   },
+  "change.queued": {
+    en: "Change saved. Credits when signal returns.",
+    sn: "Chenji yachengetwa. Ichapinda kana network yadzoka.",
+  },
+
+  "status.online": { en: "Online", sn: "Pane network" },
+  "status.offline": { en: "Offline", sn: "Hapana network" },
+  "status.toSync": { en: "to sync", sn: "kumirira" },
+  "result.offlineSaved": {
+    en: "Saved offline. Syncs when signal returns.",
+    sn: "Yachengetwa. Ichatumirwa kana network yadzoka.",
+  },
+  "sync.done": { en: "synced", sn: "dzatumirwa" },
+  "sync.flagged": { en: "flagged for review", sn: "zvakabatwa kuti zvitariswe" },
+  "sync.blocked": {
+    en: "Sync paused. Will retry.",
+    sn: "Sync yamira. Ichaedzazve.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

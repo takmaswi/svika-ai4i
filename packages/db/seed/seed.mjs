@@ -148,13 +148,17 @@ async function topUpRider(uid) {
     .select("balance_cents")
     .eq("account_id", wallet.id)
     .maybeSingle();
-  if ((bal?.balance_cents ?? 0) > 0) return;
+  // refill to the demo level whenever rehearsal or e2e runs have drained the
+  // wallet below one full fare; the ledger keeps the history either way
+  const current = bal?.balance_cents ?? 0;
+  if (current >= 500) return;
   const { error } = await admin.rpc("record_topup", {
     p_profile: uid,
-    p_amount_cents: RIDER_TOPUP_CENTS,
+    p_amount_cents: RIDER_TOPUP_CENTS - current,
+    p_memo: "demo refill",
   });
   if (error) throw error;
-  console.log(`topped up RIDER with ${RIDER_TOPUP_CENTS}c`);
+  console.log(`topped up RIDER to ${RIDER_TOPUP_CENTS}c`);
 }
 
 // --- network -------------------------------------------------------------
@@ -182,13 +186,26 @@ async function ensureStop(slug, def) {
 async function ensureRoute(r) {
   const { data } = await admin
     .from("routes")
-    .select("id")
+    .select("id, typical_duration_minutes")
     .eq("code", r.code)
     .maybeSingle();
-  if (data) return data.id;
+  if (data) {
+    if (data.typical_duration_minutes !== r.typical_duration_minutes) {
+      const { error } = await admin
+        .from("routes")
+        .update({ typical_duration_minutes: r.typical_duration_minutes })
+        .eq("id", data.id);
+      if (error) throw error;
+    }
+    return data.id;
+  }
   const { data: ins, error } = await admin
     .from("routes")
-    .insert({ code: r.code, name: r.name })
+    .insert({
+      code: r.code,
+      name: r.name,
+      typical_duration_minutes: r.typical_duration_minutes,
+    })
     .select("id")
     .single();
   if (error) throw new Error(`route ${r.code}: ${error.message}`);

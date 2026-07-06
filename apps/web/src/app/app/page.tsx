@@ -33,7 +33,7 @@ export default async function RiderHome() {
   const role = await resolveRole(supabase, user.id);
   const roleKey: DictKey = `role.${role}`;
 
-  const [balanceRes, ticketsRes, statusRes] = await Promise.all([
+  const [balanceRes, ticketsRes] = await Promise.all([
     supabase
       .from("account_balances")
       .select("balance_cents")
@@ -47,11 +47,20 @@ export default async function RiderHome() {
       .eq("kind", "fare")
       .order("purchased_at", { ascending: false })
       .limit(8),
-    supabase.from("ticket_status").select("ticket_id, status"),
   ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
   const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
+
+  // statuses only for the tickets on screen; the rider's full history is
+  // unbounded and grows forever
+  const statusRes = await supabase
+    .from("ticket_status")
+    .select("ticket_id, status")
+    .in(
+      "ticket_id",
+      tickets.map((t) => t.id),
+    );
   const statusByTicket = new Map(
     (statusRes.data ?? []).map((s) => [s.ticket_id as string, s.status as string]),
   );

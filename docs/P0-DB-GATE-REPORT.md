@@ -14,13 +14,13 @@ second free plan slot; it can be restored from the dashboard any time.
 
 ## Migrations applied (mirrored in packages/db/migrations)
 
-| version | name |
-| --- | --- |
-| 20260706070439 | identity_and_fleet |
-| 20260706070504 | transit_network |
-| 20260706070547 | wallet_ledger |
+| version        | name                    |
+| -------------- | ----------------------- |
+| 20260706070439 | identity_and_fleet      |
+| 20260706070504 | transit_network         |
+| 20260706070547 | wallet_ledger           |
 | 20260706070643 | tickets_and_board_codes |
-| 20260706071414 | function_hardening |
+| 20260706071414 | function_hardening      |
 
 Non negotiables honoured: RLS enabled on every table in the migration that
 creates it; money is a double entry append only ledger with no balance

@@ -9,11 +9,7 @@ export const metadata: Metadata = {
   description: "Digital ticketing and trip intelligence for Harare's kombis.",
 };
 
-export default async function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   const lang = await getLang();
   return (
     <html lang={lang}>

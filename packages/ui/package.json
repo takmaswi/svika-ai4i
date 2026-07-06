@@ -8,5 +8,9 @@
     "./tokens/*": "./tokens/*",
     "./assets/*": "./assets/*"
   },
-  "files": ["styles.css", "tokens", "assets"]
+  "files": [
+    "styles.css",
+    "tokens",
+    "assets"
+  ]
 }

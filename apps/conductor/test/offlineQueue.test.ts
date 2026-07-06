@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  enqueue,
-  drainOrder,
-  type QueuedRedemption,
-} from "../src/lib/offlineQueue";
+import { enqueue, drainOrder, type QueuedRedemption } from "../src/lib/offlineQueue";
 
 const item = (code: string, enteredAt: number): QueuedRedemption => ({
   code,

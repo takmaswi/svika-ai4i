@@ -24,8 +24,6 @@ export function enqueue(
 }
 
 /** Oldest first, so the earliest local entry is the one that syncs first. */
-export function drainOrder(
-  queue: readonly QueuedRedemption[],
-): QueuedRedemption[] {
+export function drainOrder(queue: readonly QueuedRedemption[]): QueuedRedemption[] {
   return [...queue].sort((a, b) => a.enteredAt - b.enteredAt);
 }

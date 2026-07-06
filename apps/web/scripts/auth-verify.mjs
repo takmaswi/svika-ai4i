@@ -34,9 +34,10 @@ if (!URL || !ANON || !EMAIL || !PASSWORD) {
 
 const supabase = createClient(URL, ANON, { auth: { persistSession: false } });
 
-const { data: signIn, error: signInErr } = await supabase.auth.signInWithPassword(
-  { email: EMAIL, password: PASSWORD },
-);
+const { data: signIn, error: signInErr } = await supabase.auth.signInWithPassword({
+  email: EMAIL,
+  password: PASSWORD,
+});
 if (signInErr) {
   console.error("FAIL sign in:", signInErr.message);
   process.exit(1);

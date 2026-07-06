@@ -6,9 +6,4 @@ export type AppLanguage = "en" | "sn";
 
 export type RouteDirection = "outbound" | "inbound";
 
-export type TicketStatus =
-  | "issued"
-  | "redeemed"
-  | "cancelled"
-  | "expired"
-  | "refunded";
+export type TicketStatus = "issued" | "redeemed" | "cancelled" | "expired" | "refunded";

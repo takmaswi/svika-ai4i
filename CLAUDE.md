@@ -1,4 +1,5 @@
 # CLAUDE.md — Svika rebuild (AI4I Track 3)
+
 # Drop this at the root of the new repo. It governs every agent session on this codebase.
 
 ## What Svika is

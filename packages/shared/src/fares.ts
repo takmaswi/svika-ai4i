@@ -8,9 +8,7 @@ export const MIN_FARE_CENTS = 50;
 export const MAX_FARE_CENTS = 300;
 
 export function isPlausibleFareCents(cents: number): boolean {
-  return (
-    Number.isInteger(cents) && cents >= MIN_FARE_CENTS && cents <= MAX_FARE_CENTS
-  );
+  return Number.isInteger(cents) && cents >= MIN_FARE_CENTS && cents <= MAX_FARE_CENTS;
 }
 
 /** Throw if a fare is outside the plausible band; returns the fare otherwise. */

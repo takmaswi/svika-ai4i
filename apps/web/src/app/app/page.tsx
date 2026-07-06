@@ -105,6 +105,20 @@ export default async function RiderHome() {
         <p className="svika-meta">{t(lang, roleKey)}</p>
       </section>
 
+      <nav className="home-nav" aria-label="sections">
+        <Link className="home-nav-link touch-target" href="/app/wallet">
+          {t(lang, "wallet.open")}
+        </Link>
+        <Link className="home-nav-link touch-target" href="/app/parcel">
+          {t(lang, "parcel.open")}
+        </Link>
+        {role === "owner" && (
+          <Link className="home-nav-link touch-target" href="/app/owner">
+            {t(lang, "owner.open")}
+          </Link>
+        )}
+      </nav>
+
       <section className="tickets-block">
         <h2 className="svika-meta tickets-heading">{t(lang, "rider.tickets")}</h2>
         {tickets.length === 0 ? (

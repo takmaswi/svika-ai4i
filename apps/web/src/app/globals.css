@@ -392,6 +392,144 @@ body {
   padding: var(--space-5);
 }
 
+/* --- home nav -------------------------------------------------------------- */
+.home-nav {
+  margin-top: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+}
+.home-nav-link {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-action);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+.home-nav-link:hover {
+  border-color: var(--color-action);
+}
+
+/* --- wallet ----------------------------------------------------------------- */
+.wallet-panel {
+  margin-top: var(--space-4);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.wallet-inline-form {
+  display: flex;
+  gap: var(--space-2);
+}
+.wallet-inline-form .auth-input {
+  flex: 1;
+}
+.wallet-inline-cta {
+  margin-top: 0;
+  width: auto;
+  padding-inline: var(--space-5);
+}
+.wallet-claim-input {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-family: var(--font-mono);
+}
+.transfer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.transfer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+}
+.transfer-code {
+  font-size: var(--text-title);
+  letter-spacing: 0.14em;
+  margin: var(--space-1) 0 0;
+}
+.wallet-ok {
+  color: var(--color-action);
+}
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.history-item:last-child {
+  border-bottom: none;
+}
+
+/* --- parcels ------------------------------------------------------------------ */
+.parcel-item {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.parcel-codes {
+  display: flex;
+  gap: var(--space-6);
+}
+.parcel-codes .svika-meta {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.parcel-code {
+  font-size: var(--text-title);
+  letter-spacing: 0.14em;
+  color: var(--color-action);
+  margin: var(--space-1) 0 0;
+}
+
+/* --- owner ledger view ---------------------------------------------------------- */
+.owner-table-wrap {
+  overflow-x: auto;
+}
+.owner-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.owner-table th {
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.owner-table td {
+  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+.owner-table tr:last-child td {
+  border-bottom: none;
+}
+
 /* --- authenticated shell ------------------------------------------------ */
 .shell-card {
   margin-top: var(--space-6);

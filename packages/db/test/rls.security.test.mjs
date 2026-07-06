@@ -39,12 +39,22 @@ const creds = (who) => ({
 const client = () => createClient(URL, ANON, { auth: { persistSession: false } });
 
 // --- tiny harness -------------------------------------------------------
-let passed = 0, failed = 0, skipped = 0;
+let passed = 0,
+  failed = 0,
+  skipped = 0;
 function check(name, ok, detail = "") {
-  if (ok) { passed++; console.log(`PASS  ${name}`); }
-  else { failed++; console.log(`FAIL  ${name}${detail ? " :: " + detail : ""}`); }
+  if (ok) {
+    passed++;
+    console.log(`PASS  ${name}`);
+  } else {
+    failed++;
+    console.log(`FAIL  ${name}${detail ? " :: " + detail : ""}`);
+  }
 }
-function skip(name, why) { skipped++; console.log(`SKIP  ${name} :: ${why}`); }
+function skip(name, why) {
+  skipped++;
+  console.log(`SKIP  ${name} :: ${why}`);
+}
 const deniedOrEmpty = (res) =>
   (res.error && ["42501", "PGRST301"].includes(res.error.code)) ||
   (!res.error && Array.isArray(res.data) && res.data.length === 0);
@@ -62,14 +72,20 @@ const anon = client();
 // anonymous surface
 {
   const routes = await anon.from("routes").select("id, code").eq("code", "TEST-01");
-  check("anon can read the public route network", !routes.error && routes.data.length === 1);
+  check(
+    "anon can read the public route network",
+    !routes.error && routes.data.length === 1,
+  );
   const tickets = await anon.from("tickets").select("id");
   check("anon sees zero tickets", deniedOrEmpty(tickets));
   const accounts = await anon.from("ledger_accounts").select("id");
   check("anon sees zero ledger accounts", deniedOrEmpty(accounts));
 }
 
-const { data: routeRows } = await anon.from("routes").select("id").eq("code", "TEST-01");
+const { data: routeRows } = await anon
+  .from("routes")
+  .select("id")
+  .eq("code", "TEST-01");
 const routeId = routeRows[0].id;
 
 const A = await signIn("RIDER_A");
@@ -78,68 +94,132 @@ const C = await signIn("CONDUCTOR");
 
 // balances before purchase
 const balOf = async (s) => {
-  const { data } = await s.c.from("account_balances").select("balance_cents").eq("kind", "rider_wallet").single();
+  const { data } = await s.c
+    .from("account_balances")
+    .select("balance_cents")
+    .eq("kind", "rider_wallet")
+    .single();
   return data?.balance_cents ?? null;
 };
 const aBefore = await balOf(A);
 
 // each rider buys a ticket through the only write path there is: the RPC
 const buy = async (s, who) => {
-  const { data, error } = await s.c.rpc("purchase_ticket", { p_route: routeId, p_direction: "outbound" });
+  const { data, error } = await s.c.rpc("purchase_ticket", {
+    p_route: routeId,
+    p_direction: "outbound",
+  });
   if (error) throw new Error(`purchase failed for ${who}: ${error.message}`);
   return data[0];
 };
 const tktA = await buy(A, "rider A");
 const tktB = await buy(B, "rider B");
-check("rider A can purchase a ticket via RPC", !!tktA.ticket_id && /^[0-9]{4}$/.test(tktA.board_code));
+check(
+  "rider A can purchase a ticket via RPC",
+  !!tktA.ticket_id && /^[0-9]{4}$/.test(tktA.board_code),
+);
 check("rider B can purchase a ticket via RPC", !!tktB.ticket_id);
 
 const aAfter = await balOf(A);
-check("purchase debits exactly the fare from A's wallet (ledger derived)", aBefore - aAfter === tktA.fare_cents,
-  `before=${aBefore} after=${aAfter} fare=${tktA.fare_cents}`);
+check(
+  "purchase debits exactly the fare from A's wallet (ledger derived)",
+  aBefore - aAfter === tktA.fare_cents,
+  `before=${aBefore} after=${aAfter} fare=${tktA.fare_cents}`,
+);
 
 // ---- rider isolation: the core of this test ----
 {
   const mine = await A.c.from("tickets").select("id, rider_id");
-  check("rider A sees only own tickets", !mine.error && mine.data.length > 0 && mine.data.every(t => t.rider_id === A.uid));
+  check(
+    "rider A sees only own tickets",
+    !mine.error && mine.data.length > 0 && mine.data.every((t) => t.rider_id === A.uid),
+  );
   const cross = await A.c.from("tickets").select("id").eq("id", tktB.ticket_id);
   check("rider A cannot read rider B's ticket by id", deniedOrEmpty(cross));
 
-  const evCross = await A.c.from("ticket_events").select("id").eq("ticket_id", tktB.ticket_id);
+  const evCross = await A.c
+    .from("ticket_events")
+    .select("id")
+    .eq("ticket_id", tktB.ticket_id);
   check("rider A cannot read rider B's ticket events", deniedOrEmpty(evCross));
 
   const bcMine = await A.c.from("board_codes").select("ticket_id");
-  check("rider A sees only own board codes", !bcMine.error && bcMine.data.every(r => r.ticket_id !== tktB.ticket_id));
-  const bcCross = await A.c.from("board_codes").select("code").eq("ticket_id", tktB.ticket_id);
+  check(
+    "rider A sees only own board codes",
+    !bcMine.error && bcMine.data.every((r) => r.ticket_id !== tktB.ticket_id),
+  );
+  const bcCross = await A.c
+    .from("board_codes")
+    .select("code")
+    .eq("ticket_id", tktB.ticket_id);
   check("rider A cannot read rider B's board code", deniedOrEmpty(bcCross));
 
   // wallet isolation: get B's account id from B's own session, probe as A
-  const { data: bAcct } = await B.c.from("ledger_accounts").select("id").eq("kind", "rider_wallet").single();
+  const { data: bAcct } = await B.c
+    .from("ledger_accounts")
+    .select("id")
+    .eq("kind", "rider_wallet")
+    .single();
   const acctCross = await A.c.from("ledger_accounts").select("id").eq("id", bAcct.id);
   check("rider A cannot read rider B's wallet account", deniedOrEmpty(acctCross));
-  const postCross = await A.c.from("ledger_postings").select("id").eq("account_id", bAcct.id);
+  const postCross = await A.c
+    .from("ledger_postings")
+    .select("id")
+    .eq("account_id", bAcct.id);
   check("rider A cannot read rider B's wallet postings", deniedOrEmpty(postCross));
-  const balCross = await A.c.from("account_balances").select("balance_cents").eq("account_id", bAcct.id);
+  const balCross = await A.c
+    .from("account_balances")
+    .select("balance_cents")
+    .eq("account_id", bAcct.id);
   check("rider A cannot read rider B's balance", deniedOrEmpty(balCross));
   const acctMine = await A.c.from("ledger_accounts").select("profile_id");
-  check("rider A's account list is only their own", !acctMine.error && acctMine.data.every(r => r.profile_id === A.uid));
+  check(
+    "rider A's account list is only their own",
+    !acctMine.error && acctMine.data.every((r) => r.profile_id === A.uid),
+  );
   const txMine = await A.c.from("ledger_transactions").select("id, created_by");
-  check("rider A sees only transactions they are party to", !txMine.error && txMine.data.length > 0);
+  check(
+    "rider A sees only transactions they are party to",
+    !txMine.error && txMine.data.length > 0,
+  );
 }
 
 // ---- no direct write paths ----
 {
-  const up = await A.c.from("tickets").update({ fare_cents: 1 }).eq("id", tktA.ticket_id).select();
+  const up = await A.c
+    .from("tickets")
+    .update({ fare_cents: 1 })
+    .eq("id", tktA.ticket_id)
+    .select();
   check("rider cannot UPDATE a ticket", deniedOrEmpty(up));
-  const del = await A.c.from("ticket_events").delete().eq("ticket_id", tktA.ticket_id).select();
+  const del = await A.c
+    .from("ticket_events")
+    .delete()
+    .eq("ticket_id", tktA.ticket_id)
+    .select();
   check("rider cannot DELETE ticket history", deniedOrEmpty(del));
-  const forge = await A.c.from("ledger_postings").insert({ transaction_id: crypto.randomUUID(), account_id: crypto.randomUUID(), amount_cents: 100000 });
+  const forge = await A.c
+    .from("ledger_postings")
+    .insert({
+      transaction_id: crypto.randomUUID(),
+      account_id: crypto.randomUUID(),
+      amount_cents: 100000,
+    });
   check("rider cannot INSERT ledger postings (no money printing)", !!forge.error);
-  const forgeEv = await A.c.from("ticket_events").insert({ ticket_id: tktA.ticket_id, event_type: "redeemed" });
+  const forgeEv = await A.c
+    .from("ticket_events")
+    .insert({ ticket_id: tktA.ticket_id, event_type: "redeemed" });
   check("rider cannot forge ticket events", !!forgeEv.error);
-  const topup = await A.c.rpc("record_topup", { p_profile: A.uid, p_amount_cents: 100000 });
+  const topup = await A.c.rpc("record_topup", {
+    p_profile: A.uid,
+    p_amount_cents: 100000,
+  });
   check("rider cannot call the service only topup function", !!topup.error);
-  const renameB = await A.c.from("profiles").update({ full_name: "hacked" }).eq("id", B.uid).select();
+  const renameB = await A.c
+    .from("profiles")
+    .update({ full_name: "hacked" })
+    .eq("id", B.uid)
+    .select();
   check("rider A cannot edit rider B's profile", deniedOrEmpty(renameB));
 }
 
@@ -151,23 +231,118 @@ check("purchase debits exactly the fare from A's wallet (ledger derived)", aBefo
   check("conductor cannot harvest board codes", deniedOrEmpty(bc));
 
   // redemption happens only through the rate limited RPC
-  const r1 = await C.c.rpc("redeem_board_code", { p_route: routeId, p_direction: "outbound", p_code: tktA.board_code });
+  const r1 = await C.c.rpc("redeem_board_code", {
+    p_route: routeId,
+    p_direction: "outbound",
+    p_code: tktA.board_code,
+  });
   if (r1.error) {
     check("conductor can redeem a valid board code", false, r1.error.message);
   } else if (r1.data[0].outcome === "rate_limited") {
-    skip("conductor redemption checks", "conductor is rate limited from a previous run; re-run in 10 minutes");
+    skip(
+      "conductor redemption checks",
+      "conductor is rate limited from a previous run; re-run in 10 minutes",
+    );
   } else {
-    check("conductor can redeem a valid board code", r1.data[0].outcome === "success", r1.data[0].outcome);
-    const r2 = await C.c.rpc("redeem_board_code", { p_route: routeId, p_direction: "outbound", p_code: tktA.board_code });
-    check("same code cannot be redeemed twice", !r2.error && ["already_redeemed", "invalid_code"].includes(r2.data[0].outcome), r2.data?.[0]?.outcome);
-    const wrong = await C.c.rpc("redeem_board_code", { p_route: routeId, p_direction: "inbound", p_code: tktB.board_code });
-    check("code is scoped: wrong direction does not redeem", !wrong.error && wrong.data[0].outcome === "invalid_code", wrong.data?.[0]?.outcome);
-    const evA = await A.c.from("ticket_status").select("status").eq("ticket_id", tktA.ticket_id).single();
-    check("rider A sees own ticket as redeemed (event sourced status)", evA.data?.status === "redeemed", evA.data?.status);
+    check(
+      "conductor can redeem a valid board code",
+      r1.data[0].outcome === "success",
+      r1.data[0].outcome,
+    );
+    const r2 = await C.c.rpc("redeem_board_code", {
+      p_route: routeId,
+      p_direction: "outbound",
+      p_code: tktA.board_code,
+    });
+    check(
+      "same code cannot be redeemed twice",
+      !r2.error && ["already_redeemed", "invalid_code"].includes(r2.data[0].outcome),
+      r2.data?.[0]?.outcome,
+    );
+    const wrong = await C.c.rpc("redeem_board_code", {
+      p_route: routeId,
+      p_direction: "inbound",
+      p_code: tktB.board_code,
+    });
+    check(
+      "code is scoped: wrong direction does not redeem",
+      !wrong.error && wrong.data[0].outcome === "invalid_code",
+      wrong.data?.[0]?.outcome,
+    );
+    const evA = await A.c
+      .from("ticket_status")
+      .select("status")
+      .eq("ticket_id", tktA.ticket_id)
+      .single();
+    check(
+      "rider A sees own ticket as redeemed (event sourced status)",
+      evA.data?.status === "redeemed",
+      evA.data?.status,
+    );
   }
 
   const attempts = await A.c.from("code_redemption_attempts").select("id");
   check("rider cannot read the redemption attempt log", deniedOrEmpty(attempts));
+}
+
+// ---- credit transfers (P1) ----
+{
+  const send = await A.c.rpc("send_credit", { p_amount_cents: 25 });
+  if (send.error) {
+    check("rider A can send credit via RPC", false, send.error.message);
+  } else {
+    const sent = send.data[0];
+    check(
+      "rider A can send credit via RPC",
+      /^[2-9A-HJ-NP-Z]{6}$/.test(sent.claim_code),
+    );
+
+    const crossTransfers = await B.c
+      .from("credit_transfers")
+      .select("claim_code")
+      .eq("id", sent.transfer_id);
+    check(
+      "rider B cannot read rider A's transfer or claim code",
+      deniedOrEmpty(crossTransfers),
+    );
+    const crossEvents = await B.c
+      .from("transfer_events")
+      .select("id")
+      .eq("transfer_id", sent.transfer_id);
+    check("rider B cannot read rider A's transfer events", deniedOrEmpty(crossEvents));
+
+    const forgeTransfer = await B.c.from("credit_transfers").insert({
+      sender_id: B.uid,
+      amount_cents: 1,
+      claim_code: "AAAAAA",
+      expires_at: new Date(Date.now() + 60000).toISOString(),
+    });
+    check("rider cannot INSERT transfers directly", !!forgeTransfer.error);
+
+    const claim = await B.c.rpc("claim_credit", { p_code: sent.claim_code });
+    check(
+      "rider B can claim rider A's code via RPC",
+      !claim.error && claim.data[0].outcome === "success",
+      claim.error?.message ?? claim.data?.[0]?.outcome,
+    );
+    const reclaim = await B.c.rpc("claim_credit", { p_code: sent.claim_code });
+    check(
+      "the same claim code cannot pay twice",
+      !reclaim.error && reclaim.data[0].outcome === "already_claimed",
+      reclaim.data?.[0]?.outcome,
+    );
+
+    const cancelForeign = await B.c.rpc("cancel_transfer", {
+      p_transfer: sent.transfer_id,
+    });
+    check("rider B cannot cancel rider A's transfer", !!cancelForeign.error);
+
+    const attemptsCross = await A.c
+      .from("transfer_claim_attempts")
+      .select("id")
+      .eq("claimer_id", B.uid);
+    check("rider A cannot read rider B's claim attempts", deniedOrEmpty(attemptsCross));
+  }
 }
 
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);

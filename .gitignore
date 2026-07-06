@@ -11,3 +11,6 @@ playwright-report/
 test-results/
 supabase/.temp/
 .DS_Store
+
+# pnpm temp probe files (OneDrive locks can strand them)
+_tmp_*

@@ -47,6 +47,32 @@ export const dict = {
   },
   "result.next": { en: "Next passenger", sn: "Mufambi anotevera" },
   "result.retry": { en: "Try again", sn: "Edzazve" },
+  "result.collectCash": { en: "Collect cash", sn: "Tora cash" },
+  "result.walletPaid": { en: "Paid from wallet", sn: "Yabhadharwa nechikwama" },
+  "result.loaded": { en: "Parcel loaded", sn: "Katundu wakwira" },
+  "result.collected": { en: "Parcel collected", sn: "Katundu watorwa" },
+  "result.not_ready": {
+    en: "Parcel not loaded yet",
+    sn: "Katundu hausati wakwira",
+  },
+
+  "change.offer": { en: "Change to credit", sn: "Chenji kuita kiredhiti" },
+  "change.title": {
+    en: "Which note did they pay with?",
+    sn: "Vabhadhara nebepa ripi?",
+  },
+  "change.faresCovered": { en: "Fares covered", sn: "Vanhu vabhadharirwa" },
+  "change.credit": { en: "Credit the change", sn: "Isa chenji muchikwama" },
+  "change.done": { en: "Change credited", sn: "Chenji yapinda" },
+  "change.busy": { en: "Crediting…", sn: "Kuisa…" },
+  "change.none": {
+    en: "That note leaves no change.",
+    sn: "Bepa iri harina chenji.",
+  },
+  "change.error": {
+    en: "Could not credit the change.",
+    sn: "Chenji haina kupinda.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

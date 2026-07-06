@@ -4,6 +4,7 @@
 // the offline queue (P2) will wrap the same redeem call.
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { formatUsd } from "@svika/shared";
 import { supabase } from "./lib/supabase";
 import { t, type Lang } from "./lib/dict";
 import { appendDigit, eraseDigit, isComplete } from "./lib/keypad";
@@ -18,7 +19,23 @@ interface RouteInfo {
   lastStop: string;
 }
 
-type Outcome = "success" | "already_redeemed" | "invalid_code" | "rate_limited";
+type Outcome =
+  | "success"
+  | "already_redeemed"
+  | "invalid_code"
+  | "rate_limited"
+  | "not_ready";
+
+interface RedeemedTicket {
+  ticketId: string;
+  fareCents: number;
+  paymentMethod: "wallet" | "cash";
+  /** what the code advanced the ticket to: redeemed | loaded | collected */
+  stage: string;
+}
+
+/** Real USD notes a rider hands over on a kombi. */
+const NOTE_OPTIONS_CENTS = [100, 200, 500, 1000, 2000];
 
 interface RouteStopRow {
   route_id: string;
@@ -41,6 +58,11 @@ export default function App() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [outcome, setOutcome] = useState<Outcome | null>(null);
+  const [redeemed, setRedeemed] = useState<RedeemedTicket | null>(null);
+  const [changeMode, setChangeMode] = useState(false);
+  const [changeCents, setChangeCents] = useState<number | null>(null);
+  const [changeError, setChangeError] = useState<string | null>(null);
+  const [faresCovered, setFaresCovered] = useState(1);
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
@@ -102,32 +124,166 @@ export default function App() {
   if (!ready) return <main className="hwindi-shell" />;
 
   if (!session) {
-    return (
-      <SignIn lang={lang} langToggle={langToggle} onLang={setLang} />
-    );
+    return <SignIn lang={lang} langToggle={langToggle} />;
   }
 
+  const resetForNext = () => {
+    setCode("");
+    setOutcome(null);
+    setRedeemed(null);
+    setChangeMode(false);
+    setChangeCents(null);
+    setChangeError(null);
+    setFaresCovered(1);
+  };
+
   if (outcome) {
+    const isCash = redeemed?.paymentMethod === "cash";
+
+    // change credited: confirmation the rider can see over the hwindi's shoulder
+    if (changeCents !== null) {
+      return (
+        <main
+          className="hwindi-shell hwindi-verdict hwindi-verdict-success"
+          data-testid="change-done"
+        >
+          <p className="hwindi-verdict-word">{t(lang, "change.done")}</p>
+          <p className="hwindi-verdict-code svika-mono-code">
+            {formatUsd(changeCents)}
+          </p>
+          <button
+            className="hwindi-cta touch-target"
+            type="button"
+            onClick={resetForNext}
+          >
+            {t(lang, "result.next")}
+          </button>
+        </main>
+      );
+    }
+
+    // note picker: which note, covering how many fares (splitting one note
+    // across companions is normal practice; the remainder is the change)
+    if (changeMode && redeemed) {
+      const covered = redeemed.fareCents * faresCovered;
+      const creditChange = async (noteCents: number) => {
+        if (busy) return;
+        setBusy(true);
+        setChangeError(null);
+        const { data, error } = await supabase.rpc("record_change_credit", {
+          p_ticket: redeemed.ticketId,
+          p_note_cents: noteCents,
+          p_covered_fares: faresCovered,
+        });
+        setBusy(false);
+        if (error) {
+          setChangeError(
+            error.message.includes("no change")
+              ? t(lang, "change.none")
+              : t(lang, "change.error"),
+          );
+          return;
+        }
+        const row = (data as { change_cents: number }[] | null)?.[0];
+        setChangeCents(row?.change_cents ?? 0);
+      };
+      return (
+        <main className="hwindi-shell" data-testid="change-picker">
+          <header className="hwindi-header">
+            <button className="hwindi-quiet" type="button" onClick={resetForNext}>
+              ← {t(lang, "result.next")}
+            </button>
+            <h1 className="svika-headline">{t(lang, "change.title")}</h1>
+          </header>
+
+          <div className="hwindi-covered">
+            <span className="svika-meta">{t(lang, "change.faresCovered")}</span>
+            <div className="hwindi-covered-row">
+              <button
+                type="button"
+                className="hwindi-key touch-target"
+                aria-label="-"
+                disabled={faresCovered <= 1}
+                onClick={() => setFaresCovered((n) => Math.max(1, n - 1))}
+              >
+                −
+              </button>
+              <output className="hwindi-covered-count" data-testid="fares-covered">
+                {faresCovered}
+              </output>
+              <button
+                type="button"
+                className="hwindi-key touch-target"
+                aria-label="+"
+                disabled={faresCovered >= 8}
+                onClick={() => setFaresCovered((n) => Math.min(8, n + 1))}
+              >
+                +
+              </button>
+            </div>
+            <p className="svika-meta hwindi-route-tag">
+              {faresCovered} × {formatUsd(redeemed.fareCents)} = {formatUsd(covered)}
+            </p>
+          </div>
+
+          <div className="hwindi-notes">
+            {NOTE_OPTIONS_CENTS.map((note) => (
+              <button
+                key={note}
+                type="button"
+                className="hwindi-note-btn touch-target"
+                disabled={busy || note <= covered}
+                onClick={() => void creditChange(note)}
+              >
+                {formatUsd(note)}
+              </button>
+            ))}
+          </div>
+          {changeError && <p className="hwindi-error svika-body">{changeError}</p>}
+        </main>
+      );
+    }
+
     return (
       <main
         className={`hwindi-shell hwindi-verdict hwindi-verdict-${outcome}`}
         data-testid="verdict"
       >
-        <p className="hwindi-verdict-word">{t(lang, `result.${outcome}`)}</p>
-        {outcome === "success" && (
-          <p className="hwindi-verdict-code svika-mono-code">{code}</p>
+        <p className="hwindi-verdict-word">
+          {outcome === "success" && redeemed && redeemed.stage !== "redeemed"
+            ? t(lang, `result.${redeemed.stage}` as "result.loaded")
+            : t(lang, `result.${outcome}`)}
+        </p>
+        {outcome === "success" && redeemed && (
+          <>
+            <p className="hwindi-verdict-code svika-mono-code">
+              {formatUsd(redeemed.fareCents)}
+            </p>
+            <p className="hwindi-verdict-sub">
+              {isCash
+                ? redeemed.stage === "collected"
+                  ? ""
+                  : t(lang, "result.collectCash")
+                : t(lang, "result.walletPaid")}
+            </p>
+          </>
+        )}
+        {outcome === "success" && isCash && redeemed?.stage !== "collected" && (
+          <button
+            className="hwindi-secondary touch-target"
+            type="button"
+            data-testid="change-offer"
+            onClick={() => setChangeMode(true)}
+          >
+            {t(lang, "change.offer")}
+          </button>
         )}
         <button
           className="hwindi-cta touch-target"
           type="button"
-          onClick={() => {
-            setCode("");
-            setOutcome(null);
-          }}
+          onClick={resetForNext}
         >
-          {outcome === "success"
-            ? t(lang, "result.next")
-            : t(lang, "result.retry")}
+          {outcome === "success" ? t(lang, "result.next") : t(lang, "result.retry")}
         </button>
       </main>
     );
@@ -188,7 +344,25 @@ export default function App() {
       setOutcome("invalid_code");
       return;
     }
-    const row = (data as { outcome: Outcome }[] | null)?.[0];
+    const row = (
+      data as
+        | {
+            outcome: Outcome;
+            ticket_id: string | null;
+            fare_cents: number | null;
+            payment_method: "wallet" | "cash" | null;
+            stage?: string | null;
+          }[]
+        | null
+    )?.[0];
+    if (row?.outcome === "success" && row.ticket_id && row.fare_cents !== null) {
+      setRedeemed({
+        ticketId: row.ticket_id,
+        fareCents: row.fare_cents,
+        paymentMethod: row.payment_method ?? "wallet",
+        stage: row.stage ?? "redeemed",
+      });
+    }
     setOutcome(row?.outcome ?? "invalid_code");
   };
 
@@ -266,7 +440,6 @@ function SignIn({
 }: {
   lang: Lang;
   langToggle: React.ReactNode;
-  onLang: (l: Lang) => void;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -324,9 +497,7 @@ function SignIn({
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
         />
-        {error && (
-          <p className="hwindi-error svika-body">{t(lang, "signin.error")}</p>
-        )}
+        {error && <p className="hwindi-error svika-body">{t(lang, "signin.error")}</p>}
         <button
           className="hwindi-cta touch-target"
           type="submit"

@@ -37,3 +37,44 @@ jobs:
 
       - name: Unit tests
         run: pnpm test
+
+  # P2 gate proof: offline redeem → sync → conflict → ledger reconciliation,
+  # run against the live database. Needs the Supabase secrets below in the
+  # repo settings; until they exist the job reports itself skipped instead of
+  # failing (the device-side simulation of the same cycle already runs in the
+  # unit tests above).
+  offline-proof:
+    name: offline sync proof (live db)
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_RIDER_A_EMAIL: ${{ secrets.TEST_RIDER_A_EMAIL }}
+      TEST_RIDER_A_PASSWORD: ${{ secrets.TEST_RIDER_A_PASSWORD }}
+      TEST_CONDUCTOR_EMAIL: ${{ secrets.TEST_CONDUCTOR_EMAIL }}
+      TEST_CONDUCTOR_PASSWORD: ${{ secrets.TEST_CONDUCTOR_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Offline cycle proof
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
+            echo "::notice::offline proof skipped - Supabase secrets not configured on this repo"
+            exit 0
+          fi
+          pnpm --filter @svika/db offline-test

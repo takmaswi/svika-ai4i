@@ -14,7 +14,8 @@
     "db:security-test": "pnpm --filter @svika/db security-test",
     "db:seed": "pnpm --filter @svika/db seed",
     "auth:verify": "pnpm --filter web auth:verify",
-    "db:ledger-test": "pnpm --filter @svika/db ledger-test"
+    "db:ledger-test": "pnpm --filter @svika/db ledger-test",
+    "db:offline-test": "pnpm --filter @svika/db offline-test"
   },
   "engines": {
     "node": ">=20"

@@ -221,12 +221,21 @@ async function ensureRouteStops(routeId, stopIds) {
     .order("seq");
   if (exErr) throw exErr;
   const want = [];
-  stopIds.forEach((sid, i) => want.push({ route_id: routeId, direction: "outbound", seq: i, stop_id: sid }));
-  [...stopIds].reverse().forEach((sid, i) => want.push({ route_id: routeId, direction: "inbound", seq: i, stop_id: sid }));
+  stopIds.forEach((sid, i) =>
+    want.push({ route_id: routeId, direction: "outbound", seq: i, stop_id: sid }),
+  );
+  [...stopIds]
+    .reverse()
+    .forEach((sid, i) =>
+      want.push({ route_id: routeId, direction: "inbound", seq: i, stop_id: sid }),
+    );
   const same =
     existing.length === want.length &&
     want.every((w) =>
-      existing.some((e) => e.direction === w.direction && e.seq === w.seq && e.stop_id === w.stop_id),
+      existing.some(
+        (e) =>
+          e.direction === w.direction && e.seq === w.seq && e.stop_id === w.stop_id,
+      ),
     );
   if (same) return;
   if (existing.length) {
@@ -243,7 +252,11 @@ async function ensureRouteFare(routeId, fareCents, effectiveFrom) {
   if (data === fareCents) return;
   const { error } = await admin
     .from("route_fares")
-    .insert({ route_id: routeId, fare_cents: fareCents, effective_from: effectiveFrom });
+    .insert({
+      route_id: routeId,
+      fare_cents: fareCents,
+      effective_from: effectiveFrom,
+    });
   if (error) throw error;
   console.log(`route ${routeId}: end to end fare set to ${fareCents}c`);
 }
@@ -300,14 +313,35 @@ async function seedNetwork() {
   }
   for (const r of network.routes) {
     const routeId = await ensureRoute(r);
-    await ensureRouteStops(routeId, r.stops.map((s) => stopIdBySlug[s]));
+    await ensureRouteStops(
+      routeId,
+      r.stops.map((s) => stopIdBySlug[s]),
+    );
     await ensureRouteFare(routeId, r.default_fare_cents, effectiveFrom);
     for (const seg of r.fare_segments) {
-      await ensureFareSegment(routeId, stopIdBySlug[seg.from], stopIdBySlug[seg.to], seg.fare_cents, effectiveFrom);
+      await ensureFareSegment(
+        routeId,
+        stopIdBySlug[seg.from],
+        stopIdBySlug[seg.to],
+        seg.fare_cents,
+        effectiveFrom,
+      );
     }
   }
   for (const tp of network.transfers) await ensureTransfer(tp, stopIdBySlug);
   console.log("network seeded: routes, stops, transfers, dated fare segments.");
+}
+
+// the RLS test riders drain their wallets a little on every run; keep them
+// funded so the security suite never fails on balance instead of security
+async function refillTestRiders() {
+  for (const key of ["TEST_RIDER_A_EMAIL", "TEST_RIDER_B_EMAIL"]) {
+    const email = process.env[key];
+    if (!email) continue;
+    const user = await findUserByEmail(email);
+    if (!user) continue;
+    await topUpRider(user.id);
+  }
 }
 
 const ids = {};
@@ -316,6 +350,9 @@ for (const p of people) ids[p.key] = await ensureUser(p);
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
 await ensureConductor(ids.CONDUCTOR, ownerId);
 await topUpRider(ids.RIDER);
+await refillTestRiders();
 await seedNetwork();
 
-console.log("\nseed complete: rider, owner, conductor and network ready for rehearsal.");
+console.log(
+  "\nseed complete: rider, owner, conductor and network ready for rehearsal.",
+);

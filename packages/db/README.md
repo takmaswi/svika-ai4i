@@ -24,21 +24,38 @@ Applied in order through the Supabase migration history, mirrored here in
 creates it. Append only tables carry a `forbid_mutation` trigger that stops
 UPDATE and DELETE even for the service role.
 
-| file | contents |
-| --- | --- |
-| 0001_identity_and_fleet.sql | profiles, owners, conductors, vehicles, signup trigger |
-| 0002_transit_network.sql | routes, stops, route_stops, append only route_fares |
-| 0003_wallet_ledger.sql | accounts, transactions, postings, invariants, balances view |
-| 0004_tickets_and_board_codes.sql | tickets, ticket_events, board_codes, attempts, RPCs |
-| 0005_function_hardening.sql | advisor fixes: search_path pin, execute revocations |
-| 0006_move_rls_helpers_to_private_schema.sql | RLS helper fns moved to a private schema |
-| 0007_network_planner_data.sql | transfer_points, dated append only fare_segments, segment fare lookup |
+| file                                        | contents                                                              |
+| ------------------------------------------- | --------------------------------------------------------------------- |
+| 0001_identity_and_fleet.sql                 | profiles, owners, conductors, vehicles, signup trigger                |
+| 0002_transit_network.sql                    | routes, stops, route_stops, append only route_fares                   |
+| 0003_wallet_ledger.sql                      | accounts, transactions, postings, invariants, balances view           |
+| 0004_tickets_and_board_codes.sql            | tickets, ticket_events, board_codes, attempts, RPCs                   |
+| 0005_function_hardening.sql                 | advisor fixes: search_path pin, execute revocations                   |
+| 0006_move_rls_helpers_to_private_schema.sql | RLS helper fns moved to a private schema                              |
+| 0007_network_planner_data.sql               | transfer_points, dated append only fare_segments, segment fare lookup |
+| 0008_purchase_v2_stop_scoped.sql            | stop scoped purchases, segment fares, cash reservation                |
+| 0009_route_typical_duration.sql             | verified end to end minutes per route for the planner                 |
+| 0010_change_to_credit.sql                   | change to credit RPC; redeem returns fare + payment method            |
+| 0011_credit_transfers.sql                   | event sourced credit transfers: send, claim (rate limited), cancel    |
+| 0012_parcels_load_collect.sql               | parcel ticket kind, LOAD/COLLECT codes, stage aware redeem            |
+| 0013_owner_revenue_summary.sql              | owner revenue aggregation straight from the ledger                    |
 
 ## Security test
 
 ```
 pnpm db:security-test
 ```
+
+## Ledger invariant proof
+
+```
+pnpm db:ledger-test
+```
+
+Runs `test/ledger.invariants.test.mjs` against the live ledger: the whole
+system sums to zero, every transaction balances, no personal wallet is
+negative, history cannot be rewritten even by the service role, and a one
+sided posting (money printing) is refused at commit.
 
 Runs `test/rls.security.test.mjs` against the live project using only the
 anon key (what an attacker has). It proves rider isolation (tickets, events,

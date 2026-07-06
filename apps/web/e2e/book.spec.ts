@@ -33,6 +33,7 @@ test.describe("search, plan, pay", () => {
   });
 
   test("reserves a cash seat without moving wallet money", async ({ page }) => {
+    test.slow(); // three full page loads on the dev server
     const before = await walletBalanceCents(page);
 
     await page.goto("/app");
@@ -75,7 +76,11 @@ test.describe("search, plan, pay", () => {
   });
 
   test("the ticket page shows the big board code", async ({ page }) => {
-    await page.goto("/app");
+    // book fresh so the top of the list is an ISSUED ticket (other suites
+    // leave redeemed tickets behind, and those carry no live code)
+    await page.goto("/app/plan?from=heights&to=uz");
+    await page.click("button[value=cash]");
+    await page.waitForURL("**/app?booked=1");
     await page.locator(".ticket-item").first().click();
     await expect(page.getByTestId("board-code")).toBeVisible();
   });

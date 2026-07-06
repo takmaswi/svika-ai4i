@@ -28,3 +28,4 @@ P1 | parcels: LOAD/COLLECT codes, stage aware redeem (migration 0012 written, ap
 P1 | owner ledger view from postings (migration 0013 written, apply pending) | d33bced | owner.spec.ts committed
 P1 | ledger invariant proof vs live db + demo wallet refills | 2494d82 | 8/8 PASS (zero sum, balanced, append only, no printing)
 P1 | security review of full P1 diff (skill, subagent) | - | no high confidence findings
+P1 | gate close: migrations 0010-0013 applied (enum steps split per Postgres txn rule), types regenerated, full e2e green | pending | e2e 16/16, RLS 37/37, ledger 8/8 (35 txns balance), planner every stop pair, docs/p1-evidence recordings

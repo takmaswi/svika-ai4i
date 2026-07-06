@@ -105,6 +105,16 @@ const { data: conductorRow } = await admin
   .eq("profile_id", conductorProfileId)
   .single();
 
+// deterministic reruns: this suite deliberately walks the failure paths, so
+// start each run with a clean attempt log (rehearsal reset, service role
+// only, migration 0015)
+{
+  const { error } = await admin.rpc("reset_conductor_attempt_log", {
+    p_profile: conductorProfileId,
+  });
+  if (error) throw new Error(`attempt log reset failed: ${error.message}`);
+}
+
 // keep the rider funded for two wallet fares
 {
   const { data: bal } = await admin

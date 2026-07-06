@@ -40,11 +40,7 @@ export default async function TicketPage({
       )
       .eq("id", id)
       .maybeSingle(),
-    supabase
-      .from("ticket_status")
-      .select("status")
-      .eq("ticket_id", id)
-      .maybeSingle(),
+    supabase.from("ticket_status").select("status").eq("ticket_id", id).maybeSingle(),
   ]);
 
   const ticket = ticketRes.data as unknown as TicketDetail | null;
@@ -54,10 +50,10 @@ export default async function TicketPage({
   const statusKey = `ticket.status.${status}` as DictKey;
   const boardCode = boardCodesOf(ticket.board_codes)[0];
   const validUntil = boardCode
-    ? new Date(boardCode.valid_until).toLocaleTimeString(
-        lang === "sn" ? "en-ZW" : "en-ZW",
-        { hour: "2-digit", minute: "2-digit" },
-      )
+    ? new Date(boardCode.valid_until).toLocaleTimeString("en-ZW", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
     : "";
 
   return (
@@ -75,7 +71,9 @@ export default async function TicketPage({
         <p className="ticket-code" data-testid="board-code">
           {boardCode?.code ?? "····"}
         </p>
-        <p className={`ticket-status svika-meta${status === "redeemed" ? " ticket-status-live" : ""}`}>
+        <p
+          className={`ticket-status svika-meta${status === "redeemed" ? " ticket-status-live" : ""}`}
+        >
           {t(lang, statusKey)}
         </p>
         {status === "issued" && (

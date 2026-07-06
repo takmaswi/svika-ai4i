@@ -10,10 +10,6 @@ createRoot(document.getElementById("root")!).render(
   </StrictMode>,
 );
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {
-      // A missing service worker must never block the app; offline is P2.
-    });
-  });
-}
+// Service worker registration is injected at build time by vite-plugin-pwa
+// (registerType autoUpdate); the precached shell opens the keypad with no
+// signal at all.

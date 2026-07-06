@@ -9,17 +9,57 @@
     "currency": "USD"
   },
   "stops": {
-    "sp_heights_start_north": { "name": "Bannockburn Rd North Terminus", "lat": -17.7498, "lng": 31.0425 },
-    "sp_uz_gate": { "name": "University of Zimbabwe Main Gate (The Chase)", "lat": -17.78465, "lng": 31.05154 },
-    "sp_second_lomagundi": { "name": "Second St at Lomagundi Rd Intersection", "lat": -17.7936, "lng": 31.0528 },
+    "sp_heights_start_north": {
+      "name": "Bannockburn Rd North Terminus",
+      "lat": -17.7498,
+      "lng": 31.0425
+    },
+    "sp_uz_gate": {
+      "name": "University of Zimbabwe Main Gate (The Chase)",
+      "lat": -17.78465,
+      "lng": 31.05154
+    },
+    "sp_second_lomagundi": {
+      "name": "Second St at Lomagundi Rd Intersection",
+      "lat": -17.7936,
+      "lng": 31.0528
+    },
     "sp_rezende_rank": { "name": "Rezende Rank", "lat": -17.8325, "lng": 31.0494 },
-    "sp_marketsq_rank": { "name": "Market Square Rank", "lat": -17.83575, "lng": 31.03992 },
-    "sp_pe_kensington": { "name": "Prince Edward St (Kensington Shops)", "lat": -17.8165, "lng": 31.0358 },
-    "sp_pe_cork": { "name": "Prince Edward St at Cork Rd Junction", "lat": -17.8075, "lng": 31.0345 },
-    "sp_avondale_shops": { "name": "Avondale Shops (King George Rd)", "lat": -17.80321, "lng": 31.03702 },
-    "sp_fourthst_rank": { "name": "Fourth Street Rank", "lat": -17.8329, "lng": 31.0563 },
-    "sp_samlevys": { "name": "Sam Levy's Village Bus Stop", "lat": -17.7758, "lng": 31.0858 },
-    "sp_lomagundi_kinggeorge_pickup": { "name": "King George Rd just off Lomagundi Rd", "lat": -17.7939, "lng": 31.0484 }
+    "sp_marketsq_rank": {
+      "name": "Market Square Rank",
+      "lat": -17.83575,
+      "lng": 31.03992
+    },
+    "sp_pe_kensington": {
+      "name": "Prince Edward St (Kensington Shops)",
+      "lat": -17.8165,
+      "lng": 31.0358
+    },
+    "sp_pe_cork": {
+      "name": "Prince Edward St at Cork Rd Junction",
+      "lat": -17.8075,
+      "lng": 31.0345
+    },
+    "sp_avondale_shops": {
+      "name": "Avondale Shops (King George Rd)",
+      "lat": -17.80321,
+      "lng": 31.03702
+    },
+    "sp_fourthst_rank": {
+      "name": "Fourth Street Rank",
+      "lat": -17.8329,
+      "lng": 31.0563
+    },
+    "sp_samlevys": {
+      "name": "Sam Levy's Village Bus Stop",
+      "lat": -17.7758,
+      "lng": 31.0858
+    },
+    "sp_lomagundi_kinggeorge_pickup": {
+      "name": "King George Rd just off Lomagundi Rd",
+      "lat": -17.7939,
+      "lng": 31.0484
+    }
   },
   "routes": [
     {
@@ -35,8 +75,16 @@
       "default_fare_cents": 200,
       "fare_segments": [
         { "from": "sp_heights_start_north", "to": "sp_uz_gate", "fare_cents": 150 },
-        { "from": "sp_heights_start_north", "to": "sp_second_lomagundi", "fare_cents": 150 },
-        { "from": "sp_heights_start_north", "to": "sp_rezende_rank", "fare_cents": 200 },
+        {
+          "from": "sp_heights_start_north",
+          "to": "sp_second_lomagundi",
+          "fare_cents": 150
+        },
+        {
+          "from": "sp_heights_start_north",
+          "to": "sp_rezende_rank",
+          "fare_cents": 200
+        },
         { "from": "sp_uz_gate", "to": "sp_second_lomagundi", "fare_cents": 100 },
         { "from": "sp_uz_gate", "to": "sp_rezende_rank", "fare_cents": 150 },
         { "from": "sp_second_lomagundi", "to": "sp_rezende_rank", "fare_cents": 150 }

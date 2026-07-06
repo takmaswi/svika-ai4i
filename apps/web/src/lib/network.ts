@@ -65,7 +65,14 @@ export async function fetchNetwork(supabase: SupabaseClient): Promise<Network> {
         .select("from_stop_id, to_stop_id, walk_minutes, walk_meters"),
     ]);
 
-  for (const res of [stopsRes, routesRes, routeStopsRes, faresRes, routeFaresRes, transfersRes]) {
+  for (const res of [
+    stopsRes,
+    routesRes,
+    routeStopsRes,
+    faresRes,
+    routeFaresRes,
+    transfersRes,
+  ]) {
     if (res.error) throw new Error(`network load failed: ${res.error.message}`);
   }
 
@@ -79,7 +86,10 @@ export async function fetchNetwork(supabase: SupabaseClient): Promise<Network> {
   }
 
   // newest effective fare per (route, unordered pair)
-  const segFares = new Map<string, { from: string; to: string; route: string; fare: number }>();
+  const segFares = new Map<
+    string,
+    { from: string; to: string; route: string; fare: number }
+  >();
   for (const f of (faresRes.data ?? []) as FareSegmentRow[]) {
     const key =
       f.from_stop_id < f.to_stop_id
@@ -122,12 +132,14 @@ export async function fetchNetwork(supabase: SupabaseClient): Promise<Network> {
     });
   }
 
-  const transfers = ((transfersRes.data ?? []) as {
-    from_stop_id: string;
-    to_stop_id: string;
-    walk_minutes: number;
-    walk_meters: number;
-  }[]).map((t) => {
+  const transfers = (
+    (transfersRes.data ?? []) as {
+      from_stop_id: string;
+      to_stop_id: string;
+      walk_minutes: number;
+      walk_meters: number;
+    }[]
+  ).map((t) => {
     usedStopIds.add(t.from_stop_id);
     usedStopIds.add(t.to_stop_id);
     return {

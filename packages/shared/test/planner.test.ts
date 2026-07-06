@@ -120,7 +120,10 @@ describe("planTrip on the seeded Harare network", () => {
     const kinds = plan!.legs.map((l) => l.type);
     expect(kinds).toEqual(["ride", "walk", "ride"]);
     const walk = plan!.legs[1];
-    expect(walk).toMatchObject({ type: "walk", toStopId: "sp_lomagundi_kinggeorge_pickup" });
+    expect(walk).toMatchObject({
+      type: "walk",
+      toStopId: "sp_lomagundi_kinggeorge_pickup",
+    });
     expect(plan!.totalFareCents).toBe(250); // 150 to Lomagundi + 100 Avondale leg
   });
 

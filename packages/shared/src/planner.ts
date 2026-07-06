@@ -294,10 +294,7 @@ function normalize(text: string): string {
     .trim();
 }
 
-export function resolveStopQuery(
-  network: Network,
-  query: string,
-): StopQueryResult {
+export function resolveStopQuery(network: Network, query: string): StopQueryResult {
   const q = normalize(query);
   if (q.length === 0) return { match: null, suggestions: network.stops };
 
@@ -312,7 +309,8 @@ export function resolveStopQuery(
     else {
       const words = q.split(" ");
       const hit = words.filter(
-        (w) => w.length >= 3 && (name.includes(w) || aliases.some((a) => a.includes(w))),
+        (w) =>
+          w.length >= 3 && (name.includes(w) || aliases.some((a) => a.includes(w))),
       );
       if (hit.length > 0) score = 20 + hit.length * 10;
     }

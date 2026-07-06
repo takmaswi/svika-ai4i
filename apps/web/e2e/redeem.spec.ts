@@ -67,9 +67,7 @@ async function typeCode(page: Page, code: string): Promise<void> {
 }
 
 test.describe("conductor online redeem", () => {
-  test("clears a valid code once and refuses it the second time", async ({
-    page,
-  }) => {
+  test("clears a valid code once and refuses it the second time", async ({ page }) => {
     const rider = await riderClient();
     const { code, ticketId } = await buyTicket(rider);
 

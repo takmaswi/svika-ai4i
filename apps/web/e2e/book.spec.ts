@@ -25,10 +25,7 @@ test.describe("search, plan, pay", () => {
 
     // back home with the ticket on top, carrying a 4 digit code
     await page.waitForURL("**/app?booked=1");
-    const codeText = await page
-      .locator(".ticket-item-code")
-      .first()
-      .innerText();
+    const codeText = await page.locator(".ticket-item-code").first().innerText();
     expect(codeText).toMatch(/^\d{4}$/);
 
     const after = await walletBalanceCents(page);
@@ -73,9 +70,7 @@ test.describe("search, plan, pay", () => {
     await page.goto("/app/plan?from=gweru city hall&to=avondale");
     await expect(page.locator(".picker-card h1")).toBeVisible();
     // pick a real stop from the picker and land on a plan
-    await page
-      .locator(".picker-item", { hasText: "Market Square Rank" })
-      .click();
+    await page.locator(".picker-item", { hasText: "Market Square Rank" }).click();
     await expect(page.locator(".plan-total")).toBeVisible();
   });
 

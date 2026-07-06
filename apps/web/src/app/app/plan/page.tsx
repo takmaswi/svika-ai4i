@@ -12,8 +12,7 @@ import {
   type NetworkStop,
 } from "@svika/shared";
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function resolveParam(
   network: Network,
@@ -56,8 +55,7 @@ export default async function PlanPage({
   const plan =
     from.stop && to.stop ? planTrip(network, from.stop.id, to.stop.id) : null;
 
-  const stopName = (id: string) =>
-    network.stops.find((s) => s.id === id)?.name ?? id;
+  const stopName = (id: string) => network.stops.find((s) => s.id === id)?.name ?? id;
 
   return (
     <main className="shell">
@@ -127,12 +125,9 @@ export default async function PlanPage({
                     {t(lang, "plan.walk")}
                   </span>
                   <span className="plan-leg-body">
-                    <span className="svika-body">
-                      {stopName(leg.toStopId)}
-                    </span>
+                    <span className="svika-body">{stopName(leg.toStopId)}</span>
                     <span className="svika-meta">
-                      {leg.walkMinutes} {t(lang, "common.minutes")} ·{" "}
-                      {leg.walkMeters} m
+                      {leg.walkMinutes} {t(lang, "common.minutes")} · {leg.walkMeters} m
                     </span>
                   </span>
                 </li>
@@ -146,16 +141,13 @@ export default async function PlanPage({
               {formatUsd(plan.totalFareCents)}
             </p>
             <p className="svika-meta">
-              {t(lang, "plan.about")} {plan.totalMinutes}{" "}
-              {t(lang, "common.minutes")} · {plan.boardings}{" "}
-              {t(lang, "plan.boardings")}
+              {t(lang, "plan.about")} {plan.totalMinutes} {t(lang, "common.minutes")} ·{" "}
+              {plan.boardings} {t(lang, "plan.boardings")}
             </p>
           </div>
 
           {err === "balance" && (
-            <p className="auth-error svika-body">
-              {t(lang, "plan.insufficient")}
-            </p>
+            <p className="auth-error svika-body">{t(lang, "plan.insufficient")}</p>
           )}
           {err === "noroute" && (
             <p className="auth-error svika-body">{t(lang, "plan.noRoute")}</p>

@@ -1,0 +1,13 @@
+{
+  "name": "Svika Hwindi",
+  "short_name": "Hwindi",
+  "description": "Clear kombi fares offline.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFCEF",
+  "theme_color": "#1F4D2E",
+  "icons": [
+    { "src": "/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

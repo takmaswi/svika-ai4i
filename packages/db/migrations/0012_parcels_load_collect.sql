@@ -8,9 +8,10 @@
 -- board_codes gains a purpose ('board' | 'load' | 'collect'); uniqueness
 -- becomes one code per ticket per purpose. redeem_board_code becomes stage
 -- aware and reports the stage it advanced the ticket to.
-
-alter type public.ticket_event_type add value if not exists 'loaded';
-alter type public.ticket_event_type add value if not exists 'collected';
+--
+-- The 'loaded' and 'collected' ticket_event_type enum values are added first
+-- in their own migration (0012_parcels_enums.sql): Postgres refuses to use a
+-- new enum value in the same transaction that adds it.
 
 alter table public.board_codes
   drop constraint board_codes_ticket_id_key,

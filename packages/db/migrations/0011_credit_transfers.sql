@@ -6,10 +6,10 @@
 -- (transfer_events is append only; current status is the latest event).
 -- Claiming is by a 6 character code from an unambiguous alphabet, rate
 -- limited with every attempt logged (same posture as board codes).
-
-alter type public.ledger_txn_kind add value if not exists 'transfer_send';
-alter type public.ledger_txn_kind add value if not exists 'transfer_claim';
-alter type public.ledger_txn_kind add value if not exists 'transfer_cancel';
+--
+-- The transfer_* ledger_txn_kind enum values are added first in their own
+-- migration (0011_credit_transfers_enums.sql): Postgres refuses to use a new
+-- enum value in the same transaction that adds it.
 
 create type public.transfer_event_type as enum ('sent', 'claimed', 'cancelled');
 

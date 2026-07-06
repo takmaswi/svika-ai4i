@@ -13,8 +13,10 @@
 --
 -- redeem_board_code now also returns fare_cents and payment_method so the
 -- hwindi surface knows what to collect and whether change applies.
-
-alter type public.ledger_txn_kind add value if not exists 'change_credit';
+--
+-- The 'change_credit' enum value is added first in its own migration
+-- (0010_change_to_credit_enum.sql): Postgres refuses to use a new enum value
+-- in the same transaction that adds it.
 
 drop function public.redeem_board_code(uuid, public.route_direction, text, uuid);
 

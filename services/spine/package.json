@@ -1,0 +1,21 @@
+{
+  "name": "@svika/spine",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Svika AI service: ETA, commute alerts, revenue anomaly. Adapter + mock twin.",
+  "main": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "node --experimental-strip-types src/main.ts"
+  },
+  "dependencies": {
+    "@svika/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.5",
+    "typescript": "5.7.3",
+    "vitest": "2.1.8"
+  }
+}

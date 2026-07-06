@@ -16,6 +16,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      anomaly_flags: {
+        Row: {
+          created_at: string
+          detail: Json
+          id: string
+          kind: string
+          owner_id: string | null
+          route_id: string | null
+          severity: string
+          ticket_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          detail?: Json
+          id?: string
+          kind: string
+          owner_id?: string | null
+          route_id?: string | null
+          severity?: string
+          ticket_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          detail?: Json
+          id?: string
+          kind?: string
+          owner_id?: string | null
+          route_id?: string | null
+          severity?: string
+          ticket_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anomaly_flags_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anomaly_flags_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anomaly_flags_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "ticket_status"
+            referencedColumns: ["ticket_id"]
+          },
+          {
+            foreignKeyName: "anomaly_flags_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       board_codes: {
         Row: {
           code: string
@@ -74,9 +136,52 @@ export type Database = {
           },
         ]
       }
+      cache_pulls: {
+        Row: {
+          conductor_id: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          id: number
+          pulled_at: string
+          route_id: string
+          row_count: number
+        }
+        Insert: {
+          conductor_id: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          id?: never
+          pulled_at?: string
+          route_id: string
+          row_count: number
+        }
+        Update: {
+          conductor_id?: string
+          direction?: Database["public"]["Enums"]["route_direction"]
+          id?: never
+          pulled_at?: string
+          route_id?: string
+          row_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cache_pulls_conductor_id_fkey"
+            columns: ["conductor_id"]
+            isOneToOne: false
+            referencedRelation: "conductors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cache_pulls_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       code_redemption_attempts: {
         Row: {
           attempted_at: string
+          client_attempt_id: string | null
           code_entered: string
           conductor_id: string
           direction: Database["public"]["Enums"]["route_direction"] | null
@@ -87,6 +192,7 @@ export type Database = {
         }
         Insert: {
           attempted_at?: string
+          client_attempt_id?: string | null
           code_entered: string
           conductor_id: string
           direction?: Database["public"]["Enums"]["route_direction"] | null
@@ -97,6 +203,7 @@ export type Database = {
         }
         Update: {
           attempted_at?: string
+          client_attempt_id?: string | null
           code_entered?: string
           conductor_id?: string
           direction?: Database["public"]["Enums"]["route_direction"] | null
@@ -401,6 +508,58 @@ export type Database = {
             columns: ["transfer_id"]
             isOneToOne: false
             referencedRelation: "credit_transfers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offline_sync_receipts: {
+        Row: {
+          client_event_id: string
+          conductor_id: string
+          created_at: string
+          detail: Json
+          event_kind: string
+          outcome: string
+          ticket_id: string | null
+        }
+        Insert: {
+          client_event_id: string
+          conductor_id: string
+          created_at?: string
+          detail?: Json
+          event_kind: string
+          outcome: string
+          ticket_id?: string | null
+        }
+        Update: {
+          client_event_id?: string
+          conductor_id?: string
+          created_at?: string
+          detail?: Json
+          event_kind?: string
+          outcome?: string
+          ticket_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offline_sync_receipts_conductor_id_fkey"
+            columns: ["conductor_id"]
+            isOneToOne: false
+            referencedRelation: "conductors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offline_sync_receipts_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "ticket_status"
+            referencedColumns: ["ticket_id"]
+          },
+          {
+            foreignKeyName: "offline_sync_receipts_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
             referencedColumns: ["id"]
           },
         ]
@@ -949,6 +1108,7 @@ export type Database = {
         }[]
       }
       current_fare_cents: { Args: { p_route: string }; Returns: number }
+      log_offline_attempts: { Args: { p_attempts: Json }; Returns: number }
       owner_revenue_summary: {
         Args: never
         Returns: {
@@ -959,6 +1119,24 @@ export type Database = {
           route_code: string
           route_name: string
           tickets: number
+        }[]
+      }
+      pull_offline_cache: {
+        Args: {
+          p_direction: Database["public"]["Enums"]["route_direction"]
+          p_route: string
+        }
+        Returns: {
+          code_hash: string
+          code_salt: string
+          fare_cents: number
+          kind: string
+          payment_method: string
+          purpose: string
+          server_time: string
+          ticket_id: string
+          valid_from: string
+          valid_until: string
         }[]
       }
       purchase_parcel: {
@@ -1033,6 +1211,37 @@ export type Database = {
           claim_code: string
           expires_at: string
           transfer_id: string
+        }[]
+      }
+      sync_offline_change_credit: {
+        Args: {
+          p_client_event_id: string
+          p_covered_fares: number
+          p_note_cents: number
+          p_recorded_at: string
+          p_ticket: string
+        }
+        Returns: {
+          change_cents: number
+          outcome: string
+        }[]
+      }
+      sync_offline_redemption: {
+        Args: {
+          p_client_event_id: string
+          p_code: string
+          p_direction: Database["public"]["Enums"]["route_direction"]
+          p_redeemed_at: string
+          p_route: string
+          p_vehicle?: string
+        }
+        Returns: {
+          fare_cents: number
+          flagged: boolean
+          outcome: string
+          payment_method: string
+          stage: string
+          ticket_id: string
         }[]
       }
     }

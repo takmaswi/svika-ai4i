@@ -266,14 +266,17 @@ export function planTrip(
 // guess presented as certainty.
 
 const STOP_ALIASES: Record<string, string[]> = {
-  "University of Zimbabwe Main Gate (The Chase)": ["uz", "university", "chase"],
+  // real Heights to Rezende corridor (marked in the field on 2026-07-07)
+  "2nd boom gate": ["heights", "mt pleasant", "boom gate"],
+  "Pa Police / Pamapurisa": ["police", "marlborough", "malborough", "pamapurisa"],
+  "Pa Lomagundi": ["lomagundi"],
+  "Ashbrittle shops": ["ashbrittle"],
   "Rezende Rank": ["rezende", "town", "cbd"],
+  // CBD carryover network
   "Market Square Rank": ["market square", "musika", "town", "cbd"],
   "Fourth Street Rank": ["fourth street", "4th street", "town", "cbd"],
   "Avondale Shops (King George Rd)": ["avondale"],
   "Sam Levy's Village Bus Stop": ["sam levy", "sam levys", "borrowdale", "village"],
-  "Bannockburn Rd North Terminus": ["heights", "mt pleasant", "bannockburn"],
-  "Second St at Lomagundi Rd Intersection": ["lomagundi", "second street"],
   "Prince Edward St (Kensington Shops)": ["kensington"],
   "Prince Edward St at Cork Rd Junction": ["cork road", "cork"],
   "King George Rd just off Lomagundi Rd": ["king george"],

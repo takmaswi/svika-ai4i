@@ -106,7 +106,7 @@ test.describe("conductor online redeem", () => {
     // pick the INBOUND direction of the same route
     await page
       .locator(".hwindi-route", { hasText: "HEIGHTS-REZENDE" })
-      .filter({ hasText: "Bannockburn" })
+      .filter({ hasText: "2nd boom gate" })
       .first()
       .click();
     await typeCode(page, code);

@@ -102,33 +102,33 @@ describe("planTrip on the seeded Harare network", () => {
     expect(failures).toEqual([]);
   });
 
-  test("direct mid route drop: Heights to UZ gate is one leg at the verified tier", () => {
-    const plan = planTrip(network, "sp_heights_start_north", "sp_uz_gate");
+  test("direct mid route drop on the real corridor is one leg at the flat fare", () => {
+    const plan = planTrip(network, "sp_first_boom_gate", "sp_harare_drive");
     expect(plan).not.toBeNull();
     expect(plan!.legs).toHaveLength(1);
     expect(plan!.legs[0]).toMatchObject({
       type: "ride",
       routeCode: "HEIGHTS-REZENDE",
       direction: "outbound",
-      fareCents: 150,
+      fareCents: 150, // flat $1.50 corridor fare
     });
   });
 
-  test("prefers the Lomagundi walking transfer over the CBD rank transfer to Avondale", () => {
-    const plan = planTrip(network, "sp_heights_start_north", "sp_avondale_shops");
+  test("corridor to Avondale rides out to Rezende and transfers through Market Square", () => {
+    const plan = planTrip(network, "sp_2nd_boom_gate", "sp_avondale_shops");
     expect(plan).not.toBeNull();
     const kinds = plan!.legs.map((l) => l.type);
     expect(kinds).toEqual(["ride", "walk", "ride"]);
     const walk = plan!.legs[1];
     expect(walk).toMatchObject({
       type: "walk",
-      toStopId: "sp_lomagundi_kinggeorge_pickup",
+      toStopId: "sp_marketsq_rank",
     });
-    expect(plan!.totalFareCents).toBe(250); // 150 to Lomagundi + 100 Avondale leg
+    expect(plan!.totalFareCents).toBe(300); // 150 corridor + 150 Market Square to Avondale
   });
 
   test("suburb to suburb rides through the CBD rank transfer", () => {
-    const plan = planTrip(network, "sp_heights_start_north", "sp_samlevys");
+    const plan = planTrip(network, "sp_2nd_boom_gate", "sp_samlevys");
     expect(plan).not.toBeNull();
     const rides = plan!.legs.filter((l) => l.type === "ride");
     expect(rides.map((r) => (r as { routeCode: string }).routeCode)).toEqual([
@@ -139,15 +139,15 @@ describe("planTrip on the seeded Harare network", () => {
   });
 
   test("rides work in the inbound direction too", () => {
-    const plan = planTrip(network, "sp_rezende_rank", "sp_heights_start_north");
+    const plan = planTrip(network, "sp_rezende_rank", "sp_2nd_boom_gate");
     expect(plan).not.toBeNull();
     expect(plan!.legs[0]).toMatchObject({ type: "ride", direction: "inbound" });
-    expect(plan!.totalFareCents).toBe(200); // symmetric end to end fare
+    expect(plan!.totalFareCents).toBe(150); // symmetric flat corridor fare
   });
 
   test("returns null for a same stop query and for unknown stops", () => {
-    expect(planTrip(network, "sp_uz_gate", "sp_uz_gate")).toBeNull();
-    expect(planTrip(network, "sp_uz_gate", "sp_nowhere")).toBeNull();
+    expect(planTrip(network, "sp_harare_drive", "sp_harare_drive")).toBeNull();
+    expect(planTrip(network, "sp_harare_drive", "sp_nowhere")).toBeNull();
   });
 
   test("every fare it quotes sits inside the 2026 band", () => {
@@ -240,8 +240,8 @@ describe("boarding penalty", () => {
 
 describe("resolveStopQuery: free text degrades to a picker, never a guess", () => {
   test("resolves a confident alias", () => {
-    const r = resolveStopQuery(network, "UZ");
-    expect(r.match?.id).toBe("sp_uz_gate");
+    const r = resolveStopQuery(network, "ashbrittle");
+    expect(r.match?.id).toBe("sp_ashbrittle");
   });
 
   test("resolves a suburb name", () => {

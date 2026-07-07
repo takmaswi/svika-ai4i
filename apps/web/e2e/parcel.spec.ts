@@ -55,7 +55,7 @@ test("book a parcel, load it, refuse early collect, then collect", async ({
   // book through the rider UI: Heights terminus → Rezende Rank (direct route)
   await loginViaApp(page);
   await page.goto("http://localhost:3000/app/parcel");
-  await page.selectOption("#parcel-from", { label: "Bannockburn Rd North Terminus" });
+  await page.selectOption("#parcel-from", { label: "2nd boom gate" });
   await page.selectOption("#parcel-to", { label: "Rezende Rank" });
   await page.click("button[value=wallet]");
   await page.waitForURL("**/app/parcel?booked=1");
@@ -117,7 +117,7 @@ test("a stop pair needing a transfer cannot book a parcel", async ({ page }) => 
   await loginViaApp(page);
   await page.goto("http://localhost:3000/app/parcel");
   // Heights terminus → Sam Levy's needs a rank transfer: no direct kombi
-  await page.selectOption("#parcel-from", { label: "Bannockburn Rd North Terminus" });
+  await page.selectOption("#parcel-from", { label: "2nd boom gate" });
   await page.selectOption("#parcel-to", { label: "Sam Levy's Village Bus Stop" });
   await page.click("button[value=wallet]");
   await page.waitForURL("**/app/parcel?err=direct");

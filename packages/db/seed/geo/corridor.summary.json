@@ -1,0 +1,213 @@
+{
+  "corridor": "Mount Pleasant Heights <-> Rezende",
+  "ride_date": "2026-07-07",
+  "provenance": "Derived from a single real kombi ride per direction, recorded 2026-07-07 with the Svika field GPS logger. Real data, not synthetic. More runs will refine the geometry and stop set.",
+  "base_line": {
+    "source": "clean return run (Rezende -> Heights, no touting detours)",
+    "raw_riding_pings": 491,
+    "smoothed_vertices": 23,
+    "length_m": 13466,
+    "clean_riding_minutes": 27
+  },
+  "variance_line": {
+    "source": "inbound run (Heights -> Rezende, customer-seeking detours)",
+    "raw_riding_pings": 2322,
+    "smoothed_vertices": 64,
+    "length_m": 15495,
+    "riding_minutes": 43
+  },
+  "blank_named_markers_dropped": 3,
+  "stop_count": 15,
+  "stops": [
+    {
+      "order": 0,
+      "name": "2nd boom gate",
+      "aliases": [],
+      "lat": -17.7170049,
+      "lng": 31.0468302,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "return_run"
+      ]
+    },
+    {
+      "order": 1,
+      "name": "First boom gate",
+      "aliases": [],
+      "lat": -17.7192229,
+      "lng": 31.0455698,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 2,
+      "name": "Pama Broom",
+      "aliases": [],
+      "lat": -17.7274892,
+      "lng": 31.039221,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "return_run"
+      ]
+    },
+    {
+      "order": 3,
+      "name": "Pama Church / Pama Container",
+      "aliases": [
+        "Pama church"
+      ],
+      "lat": -17.7286202,
+      "lng": 31.0397771,
+      "marker_type": "dropoff",
+      "observations": 2,
+      "sources": [
+        "inbound_run",
+        "return_run"
+      ]
+    },
+    {
+      "order": 4,
+      "name": "Skug Barn",
+      "aliases": [],
+      "lat": -17.745128,
+      "lng": 31.0308737,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 5,
+      "name": "Pa Police / Pamapurisa",
+      "aliases": [
+        "Malborough Police"
+      ],
+      "lat": -17.7492876,
+      "lng": 31.0287556,
+      "marker_type": "dropoff",
+      "observations": 2,
+      "sources": [
+        "inbound_run",
+        "return_run"
+      ]
+    },
+    {
+      "order": 6,
+      "name": "Harare Drive",
+      "aliases": [],
+      "lat": -17.7522773,
+      "lng": 31.0286171,
+      "marker_type": "dropoff",
+      "observations": 2,
+      "sources": [
+        "inbound_run",
+        "return_run"
+      ]
+    },
+    {
+      "order": 7,
+      "name": "Banc Abc",
+      "aliases": [],
+      "lat": -17.7602632,
+      "lng": 31.0314335,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 8,
+      "name": "Ashbrittle shops",
+      "aliases": [
+        "Ashbrittle"
+      ],
+      "lat": -17.7712134,
+      "lng": 31.0351165,
+      "marker_type": "dropoff",
+      "observations": 2,
+      "sources": [
+        "inbound_run",
+        "return_run"
+      ]
+    },
+    {
+      "order": 9,
+      "name": "Pa Lomagundi",
+      "aliases": [],
+      "lat": -17.7834655,
+      "lng": 31.0387975,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 10,
+      "name": "Pa Muhammed Mussa",
+      "aliases": [],
+      "lat": -17.7846083,
+      "lng": 31.0405517,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 11,
+      "name": "Pa Belgravia",
+      "aliases": [],
+      "lat": -17.7938339,
+      "lng": 31.045011,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 12,
+      "name": "Pa embassy",
+      "aliases": [],
+      "lat": -17.8068428,
+      "lng": 31.0455193,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 13,
+      "name": "Nssa",
+      "aliases": [],
+      "lat": -17.8237261,
+      "lng": 31.0503793,
+      "marker_type": "dropoff",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    },
+    {
+      "order": 14,
+      "name": "Rezende",
+      "aliases": [],
+      "lat": -17.8311088,
+      "lng": 31.0461464,
+      "marker_type": "rank",
+      "observations": 1,
+      "sources": [
+        "inbound_run"
+      ]
+    }
+  ]
+}

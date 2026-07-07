@@ -1,0 +1,330 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "2nd boom gate",
+        "aliases": [],
+        "order": 0,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "return_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0468302,
+          -17.7170049
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "First boom gate",
+        "aliases": [],
+        "order": 1,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0455698,
+          -17.7192229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pama Broom",
+        "aliases": [],
+        "order": 2,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "return_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.039221,
+          -17.7274892
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pama Church / Pama Container",
+        "aliases": [
+          "Pama church"
+        ],
+        "order": 3,
+        "marker_type": "dropoff",
+        "observations": 2,
+        "sources": [
+          "inbound_run",
+          "return_run"
+        ],
+        "accuracy_m": 9.9350004196167
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0397771,
+          -17.7286202
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Skug Barn",
+        "aliases": [],
+        "order": 4,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.9350004196167
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0308737,
+          -17.745128
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pa Police / Pamapurisa",
+        "aliases": [
+          "Malborough Police"
+        ],
+        "order": 5,
+        "marker_type": "dropoff",
+        "observations": 2,
+        "sources": [
+          "inbound_run",
+          "return_run"
+        ],
+        "accuracy_m": 5.835999965667725
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0287556,
+          -17.7492876
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Harare Drive",
+        "aliases": [],
+        "order": 6,
+        "marker_type": "dropoff",
+        "observations": 2,
+        "sources": [
+          "inbound_run",
+          "return_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0286171,
+          -17.7522773
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Banc Abc",
+        "aliases": [],
+        "order": 7,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0314335,
+          -17.7602632
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ashbrittle shops",
+        "aliases": [
+          "Ashbrittle"
+        ],
+        "order": 8,
+        "marker_type": "dropoff",
+        "observations": 2,
+        "sources": [
+          "inbound_run",
+          "return_run"
+        ],
+        "accuracy_m": 3.7899999618530273
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0351165,
+          -17.7712134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pa Lomagundi",
+        "aliases": [],
+        "order": 9,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.937999725341797
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0387975,
+          -17.7834655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pa Muhammed Mussa",
+        "aliases": [],
+        "order": 10,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.937999725341797
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0405517,
+          -17.7846083
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pa Belgravia",
+        "aliases": [],
+        "order": 11,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.9350004196167
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.045011,
+          -17.7938339
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pa embassy",
+        "aliases": [],
+        "order": 12,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.96399974822998
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0455193,
+          -17.8068428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nssa",
+        "aliases": [],
+        "order": 13,
+        "marker_type": "dropoff",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 9.98900032043457
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0503793,
+          -17.8237261
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rezende",
+        "aliases": [],
+        "order": 14,
+        "marker_type": "rank",
+        "observations": 1,
+        "sources": [
+          "inbound_run"
+        ],
+        "accuracy_m": 10.045000076293945
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          31.0461464,
+          -17.8311088
+        ]
+      }
+    }
+  ]
+}

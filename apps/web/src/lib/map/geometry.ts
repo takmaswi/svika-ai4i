@@ -74,6 +74,18 @@ export function pointAtDistance(metrics: PolylineMetrics, meters: number): LngLa
   return [ax + (bx - ax) * f, ay + (by - ay) * f];
 }
 
+/** Linear interpolation between two positions (fine at street scale). */
+export function lerpLngLat(a: LngLat, b: LngLat, t: number): LngLat {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+}
+
+/** Interpolates headings the short way around the compass. */
+export function lerpHeading(fromDeg: number, toDeg: number, t: number): number {
+  let delta = ((toDeg - fromDeg + 540) % 360) - 180;
+  if (delta === -180) delta = 180;
+  return (fromDeg + delta * t + 360) % 360;
+}
+
 /** Initial bearing of the segment under the distance, degrees clockwise from north. */
 export function headingAtDistance(metrics: PolylineMetrics, meters: number): number {
   const i = segmentAt(metrics, meters);

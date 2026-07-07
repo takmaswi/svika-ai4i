@@ -92,3 +92,25 @@ describe("headingAtDistance", () => {
     expect(headingAtDistance(m, m.totalMeters + 100)).toBeCloseTo(270, 0);
   });
 });
+
+describe("lerpLngLat", () => {
+  test("interpolates between two points", async () => {
+    const { lerpLngLat } = await import("../src/lib/map/geometry");
+    const mid = lerpLngLat([31, -17.7], [31.002, -17.7], 0.5);
+    expect(mid[0]).toBeCloseTo(31.001, 9);
+    expect(mid[1]).toBeCloseTo(-17.7, 9);
+    expect(lerpLngLat([31, -17.7], [31.002, -17.7], 0)).toEqual([31, -17.7]);
+    expect(lerpLngLat([31, -17.7], [31.002, -17.7], 1)).toEqual([31.002, -17.7]);
+  });
+});
+
+describe("lerpHeading", () => {
+  test("takes the short way around the compass", async () => {
+    const { lerpHeading } = await import("../src/lib/map/geometry");
+    expect(lerpHeading(350, 10, 0.5)).toBeCloseTo(0, 5);
+    expect(lerpHeading(10, 350, 0.5)).toBeCloseTo(0, 5);
+    expect(lerpHeading(0, 180, 0.5)).toBeCloseTo(90, 5);
+    expect(lerpHeading(90, 90, 0.7)).toBeCloseTo(90, 5);
+    expect(lerpHeading(350, 10, 1)).toBeCloseTo(10, 5);
+  });
+});

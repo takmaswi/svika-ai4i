@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bodyG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"></stop>
+      <stop offset="0.55" stop-color="#F3F0E5"></stop>
+      <stop offset="1" stop-color="#D8D3C2"></stop>
+    </linearGradient>
+    <linearGradient id="islandG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"></stop>
+      <stop offset="0.6" stop-color="#F7F4EA"></stop>
+      <stop offset="1" stop-color="#E3DECD"></stop>
+    </linearGradient>
+    <linearGradient id="sideShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0E1A12" stop-opacity="0.18"></stop>
+      <stop offset="0.06" stop-color="#FFFFFF" stop-opacity="0.4"></stop>
+      <stop offset="0.16" stop-color="#FFFFFF" stop-opacity="0"></stop>
+      <stop offset="0.84" stop-color="#0E1A12" stop-opacity="0"></stop>
+      <stop offset="1" stop-color="#0E1A12" stop-opacity="0.3"></stop>
+    </linearGradient>
+    <linearGradient id="tailShade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.74" stop-color="#0E1A12" stop-opacity="0"></stop>
+      <stop offset="1" stop-color="#0E1A12" stop-opacity="0.12"></stop>
+    </linearGradient>
+    <linearGradient id="glassG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4C5D52"></stop>
+      <stop offset="0.25" stop-color="#26362D"></stop>
+      <stop offset="1" stop-color="#1B2721"></stop>
+    </linearGradient>
+    <linearGradient id="forestG" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2A6038"></stop>
+      <stop offset="1" stop-color="#1F4D2E"></stop>
+    </linearGradient>
+    <radialGradient id="contactShadow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#0E1A12" stop-opacity="0.32"></stop>
+      <stop offset="0.62" stop-color="#0E1A12" stop-opacity="0.14"></stop>
+      <stop offset="1" stop-color="#0E1A12" stop-opacity="0"></stop>
+    </radialGradient>
+    <clipPath id="bodyClip">
+      <path d="M 168 88 C 168 62 178 52 204 52 L 308 52 C 334 52 344 62 344 88 L 344 420 C 344 446 334 458 306 458 L 206 458 C 178 458 168 446 168 420 Z"></path>
+    </clipPath>
+  </defs>
+  <g transform="translate(256 256) scale(1.09) translate(-256 -256)">
+
+  <ellipse cx="256" cy="256" rx="118" ry="212" fill="url(#contactShadow)"></ellipse>
+
+  <g>
+    <path d="M 176 126 L 152 112" stroke="#16211C" stroke-width="6" stroke-linecap="round"></path>
+    <rect x="139" y="98" width="17" height="30" rx="8" fill="#1C2A22" stroke="#0E1A12" stroke-opacity="0.6" stroke-width="2"></rect>
+    <path d="M 336 126 L 360 112" stroke="#16211C" stroke-width="6" stroke-linecap="round"></path>
+    <rect x="356" y="98" width="17" height="30" rx="8" fill="#1C2A22" stroke="#0E1A12" stroke-opacity="0.6" stroke-width="2"></rect>
+  </g>
+
+  <path d="M 168 88 C 168 62 178 52 204 52 L 308 52 C 334 52 344 62 344 88 L 344 420 C 344 446 334 458 306 458 L 206 458 C 178 458 168 446 168 420 Z" fill="url(#bodyG)"></path>
+
+  <g clip-path="url(#bodyClip)">
+    
+    <rect x="156" y="48" width="200" height="22" fill="#39443B"></rect>
+    <path d="M 200 54 Q 256 50 312 54" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="2.5" stroke-linecap="round"></path>
+    <rect x="176" y="56" width="32" height="13" rx="6.5" fill="#F7EFD3" stroke="#0E1A12" stroke-opacity="0.4" stroke-width="2"></rect>
+    <rect x="304" y="56" width="32" height="13" rx="6.5" fill="#F7EFD3" stroke="#0E1A12" stroke-opacity="0.4" stroke-width="2"></rect>
+    <rect x="218" y="57" width="76" height="4.5" rx="2.25" fill="#AEB6AC"></rect>
+    <rect x="218" y="64" width="76" height="4.5" rx="2.25" fill="#AEB6AC"></rect>
+
+    
+    <path d="M 166 71 L 346 71" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2"></path>
+    <rect x="196" y="76" width="120" height="13" rx="6.5" fill="#FFFFFF" opacity="0.28"></rect>
+    <path d="M 204 73 L 197 95" stroke="#0E1A12" stroke-opacity="0.1" stroke-width="3" stroke-linecap="round"></path>
+    <path d="M 308 73 L 315 95" stroke="#0E1A12" stroke-opacity="0.1" stroke-width="3" stroke-linecap="round"></path>
+
+    
+    <rect x="184" y="98" width="144" height="344" rx="20" fill="url(#glassG)"></rect>
+    
+    <path d="M 200 100 L 250 100 L 220 154 L 192 146 Z" fill="#FFFFFF" opacity="0.14"></path>
+    <path d="M 264 100 L 288 100 L 264 150 L 246 148 Z" fill="#FFFFFF" opacity="0.07"></path>
+    
+    <g fill="#E8E4D6">
+      <rect x="181" y="206" width="16" height="9" rx="3.5"></rect>
+      <rect x="181" y="282" width="16" height="9" rx="3.5"></rect>
+      <rect x="181" y="356" width="16" height="9" rx="3.5"></rect>
+      <rect x="315" y="206" width="16" height="9" rx="3.5"></rect>
+      <rect x="315" y="282" width="16" height="9" rx="3.5"></rect>
+      <rect x="315" y="356" width="16" height="9" rx="3.5"></rect>
+    </g>
+
+    
+    <rect x="194" y="156" width="124" height="270" rx="16" fill="url(#islandG)" stroke="#0E1A12" stroke-opacity="0.3" stroke-width="2"></rect>
+    <rect x="197" y="159" width="118" height="264" rx="14" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="2"></rect>
+    
+    <path d="M 194 184 L 194 172 C 194 163 201 156 212 156 L 300 156 C 311 156 318 163 318 172 L 318 184 Z" fill="url(#forestG)"></path>
+    <rect x="194" y="184" width="124" height="2.5" fill="#FFFCEF" opacity="0.55"></rect>
+    
+    <path d="M 228 202 L 228 406" stroke="#0E1A12" stroke-opacity="0.06" stroke-width="5" stroke-linecap="round"></path>
+    <path d="M 256 202 L 256 406" stroke="#0E1A12" stroke-opacity="0.06" stroke-width="5" stroke-linecap="round"></path>
+    <path d="M 284 202 L 284 406" stroke="#0E1A12" stroke-opacity="0.06" stroke-width="5" stroke-linecap="round"></path>
+    
+    <path d="M 196 194 L 226 160 L 210 300 L 196 318 Z" fill="#FFFFFF" opacity="0.25"></path>
+
+    
+    <path d="M 174 148 L 174 420" stroke="#1F4D2E" stroke-width="6" stroke-opacity="0.95" stroke-linecap="round"></path>
+    <path d="M 338 148 L 338 420" stroke="#1F4D2E" stroke-width="6" stroke-opacity="0.95" stroke-linecap="round"></path>
+
+    
+    <rect x="178" y="446" width="28" height="9" rx="4.5" fill="#D94F35" stroke="#0E1A12" stroke-opacity="0.3" stroke-width="1.5"></rect>
+    <rect x="306" y="446" width="28" height="9" rx="4.5" fill="#D94F35" stroke="#0E1A12" stroke-opacity="0.3" stroke-width="1.5"></rect>
+    <path d="M 206 452 L 306 452" stroke="#0E1A12" stroke-opacity="0.15" stroke-width="2"></path>
+    <rect x="212" y="431" width="88" height="5" rx="2.5" fill="#FFFFFF" opacity="0.09"></rect>
+  </g>
+
+  <path d="M 168 88 C 168 62 178 52 204 52 L 308 52 C 334 52 344 62 344 88 L 344 420 C 344 446 334 458 306 458 L 206 458 C 178 458 168 446 168 420 Z" fill="url(#sideShade)"></path>
+  <path d="M 168 88 C 168 62 178 52 204 52 L 308 52 C 334 52 344 62 344 88 L 344 420 C 344 446 334 458 306 458 L 206 458 C 178 458 168 446 168 420 Z" fill="url(#tailShade)"></path>
+  <path d="M 168 88 C 168 62 178 52 204 52 L 308 52 C 334 52 344 62 344 88 L 344 420 C 344 446 334 458 306 458 L 206 458 C 178 458 168 446 168 420 Z" fill="none" stroke="#0E1A12" stroke-opacity="0.85" stroke-width="5" stroke-linejoin="round"></path>
+  </g>
+</svg>

@@ -136,7 +136,7 @@ describe("warmSvikaStyle", () => {
   test("gives labels warm ink and a bone halo", () => {
     const out = warmSvikaStyle(base) as typeof base;
     const label = out.layers.find((l) => l.id === "place_label")!;
-    const paint = label.paint as Record<string, string>;
+    const paint = label.paint as unknown as Record<string, string>;
     const ink = hslOf(paint["text-color"]!);
     expect(ink.l).toBeLessThan(0.4);
     const halo = hslOf(paint["text-halo-color"]!);

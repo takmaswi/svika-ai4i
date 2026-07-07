@@ -218,6 +218,16 @@ export const dict = {
     en: "Every figure comes straight from the ledger. Cash fares stay with the crew and are not counted here.",
     sn: "Nhamba dzese dzinobva mubhuku remari. Cash inosara nevashandi haiverengwi pano.",
   },
+
+  "map.ariaLabel": {
+    en: "Map of the Heights to Rezende corridor with kombis moving along the road. Vehicle movement is a demo, not live tracking.",
+    sn: "Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live.",
+  },
+  "map.demoChip": { en: "Demo movement", sn: "Kuratidzira" },
+  "map.unavailable": {
+    en: "The map could not load. Your trips and wallet still work.",
+    sn: "Mepu haina kukwanisa kuvhurika. Nzendo dzako nechikwama zvichiri kushanda.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

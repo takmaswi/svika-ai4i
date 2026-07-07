@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { resolveRole } from "@/lib/roles";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 
@@ -74,6 +75,16 @@ export default async function RiderHome() {
           <SignOutButton label={t(lang, "app.signOut")} />
         </div>
       </header>
+
+      <section className="map-block svika-animate-fade-up" aria-label="live map">
+        <LiveMapLazy
+          labels={{
+            ariaLabel: t(lang, "map.ariaLabel"),
+            demoChip: t(lang, "map.demoChip"),
+            unavailable: t(lang, "map.unavailable"),
+          }}
+        />
+      </section>
 
       <section className="search-card svika-card svika-animate-fade-up">
         <h1 className="svika-headline">{t(lang, "rider.searchTitle")}</h1>

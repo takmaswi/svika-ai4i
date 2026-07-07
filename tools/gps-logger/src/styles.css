@@ -1,0 +1,475 @@
+/* Field-first UI: huge targets, high contrast, sunlight-legible, one-handed.
+   Reference device is a cheap Android at 360px in a bumpy kombi. */
+
+:root {
+  --bone: #fffcef;
+  --linen: #e9e2c8;
+  --ink: #0e1a12;
+  --ink-soft: #3b463d;
+  --line: rgba(14, 26, 18, 0.14);
+
+  --walking: #1f4d2e;
+  --waiting: #b4530a;
+  --riding: #1d4ed8;
+  --danger: #b3260f;
+  --accent: #e84c30;
+
+  --radius: 16px;
+  --tap: 76px;
+  --shadow: 0 6px 20px rgba(14, 26, 18, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family:
+    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bone);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.4;
+  overscroll-behavior: none;
+}
+
+#app {
+  min-height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Screen scaffold --- */
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.topbar {
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 18px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar h1 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.content {
+  flex: 1;
+  padding: 8px 16px 16px;
+}
+
+.actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: linear-gradient(to top, var(--bone) 78%, transparent);
+}
+
+/* --- Buttons --- */
+.btn {
+  min-height: var(--tap);
+  border: none;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--bone);
+  background: var(--ink);
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  transition: transform 120ms ease;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: scale(0.985);
+}
+
+.btn-xl {
+  min-height: 108px;
+  font-size: 26px;
+  border-radius: 22px;
+}
+
+.btn-lg {
+  min-height: 84px;
+  font-size: 23px;
+}
+
+.btn-walking {
+  background: var(--walking);
+}
+.btn-waiting {
+  background: var(--waiting);
+}
+.btn-riding {
+  background: var(--riding);
+}
+.btn-danger {
+  background: var(--danger);
+}
+.btn-accent {
+  background: var(--accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+  border: 2px solid var(--line);
+}
+
+.btn-outline {
+  background: var(--bone);
+  color: var(--ink);
+  border: 2px solid currentColor;
+  box-shadow: none;
+}
+
+.btn-sub {
+  font-size: 15px;
+  font-weight: 600;
+  opacity: 0.92;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* --- Live stats --- */
+.mode-banner {
+  border-radius: 22px;
+  padding: 22px 20px;
+  color: var(--bone);
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+.mode-banner.walking {
+  background: var(--walking);
+}
+.mode-banner.waiting {
+  background: var(--waiting);
+}
+.mode-banner.riding {
+  background: var(--riding);
+}
+
+.mode-banner .mode-label {
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.85;
+}
+.mode-banner .mode-value {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.05;
+  margin-top: 2px;
+}
+.mode-banner .mode-route {
+  font-size: 18px;
+  margin-top: 6px;
+  opacity: 0.95;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.stat {
+  background: var(--bone);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.stat .label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+.stat .value {
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+.stat .value.small {
+  font-size: 22px;
+}
+
+.gps-warn {
+  background: #fde8b0;
+  border: 2px solid var(--waiting);
+  color: #5a2e00;
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* --- Journey list --- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.card {
+  background: var(--bone);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.card:active {
+  transform: scale(0.99);
+}
+.card .card-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+.card .card-meta {
+  color: var(--ink-soft);
+  font-size: 15px;
+  margin-top: 4px;
+}
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--linen);
+  color: var(--ink);
+}
+.badge.active {
+  background: var(--accent);
+  color: var(--bone);
+}
+
+.resume-banner {
+  background: var(--walking);
+  color: var(--bone);
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.resume-banner .rb-title {
+  font-size: 18px;
+  font-weight: 800;
+}
+.resume-banner .rb-meta {
+  opacity: 0.9;
+  font-size: 15px;
+  margin: 4px 0 12px;
+}
+
+.empty {
+  text-align: center;
+  color: var(--ink-soft);
+  padding: 48px 20px;
+}
+
+.section-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin: 20px 0 8px;
+  font-weight: 700;
+}
+
+/* --- Leg / point rows in detail --- */
+.leg-row,
+.point-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bone);
+  margin-bottom: 8px;
+}
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex: none;
+}
+.dot.walking {
+  background: var(--walking);
+}
+.dot.waiting {
+  background: var(--waiting);
+}
+.dot.riding {
+  background: var(--riding);
+}
+.leg-row .grow,
+.point-row .grow {
+  flex: 1;
+  min-width: 0;
+}
+.leg-row .leg-title {
+  font-weight: 700;
+}
+.leg-row .leg-sub {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+.point-row .pt-type {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+.icon-btn {
+  border: 2px solid var(--line);
+  background: var(--bone);
+  border-radius: 12px;
+  min-width: 52px;
+  min-height: 52px;
+  font-size: 20px;
+  cursor: pointer;
+  flex: none;
+}
+
+/* --- Modal --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 26, 18, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 50;
+}
+.modal-sheet {
+  background: var(--bone);
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 24px 24px 0 0;
+  padding: 22px 18px calc(env(safe-area-inset-bottom, 0px) + 22px);
+  animation: sheet-up 260ms cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 92dvh;
+  overflow-y: auto;
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.modal-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 16px;
+}
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.field-label {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 14px 0 6px;
+}
+.field-input {
+  width: 100%;
+  min-height: 64px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 20px;
+  background: var(--bone);
+  color: var(--ink);
+}
+.choice.selected {
+  outline: 4px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translate(-50%, 20px);
+  background: var(--ink);
+  color: var(--bone);
+  padding: 14px 20px;
+  border-radius: 14px;
+  font-weight: 700;
+  max-width: 90vw;
+  text-align: center;
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+  z-index: 60;
+  box-shadow: var(--shadow);
+}
+.toast.toast-in {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition: none !important;
+  }
+}

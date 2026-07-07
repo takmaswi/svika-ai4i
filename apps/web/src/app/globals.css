@@ -883,3 +883,18 @@ body {
 .home-chip-brand {
   background: var(--color-bone);
 }
+
+/* the exported wordmark is forest ink and needs a bone plate at night; the
+   home header already sits it on a bone chip, so that one is excluded */
+:root[data-theme="dark"] .wordmark:not(.home-chip-brand .wordmark) {
+  background: var(--color-bone);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .wordmark:not(.home-chip-brand .wordmark) {
+    background: var(--color-bone);
+    border-radius: var(--radius-full);
+    padding: 6px 12px;
+  }
+}

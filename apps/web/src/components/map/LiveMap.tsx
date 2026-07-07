@@ -39,8 +39,6 @@ export interface LiveMapLabels {
 
 interface LiveMapProps {
   labels: LiveMapLabels;
-  /** Test hook: freeze vehicles so e2e screenshots are deterministic. */
-  frozen?: boolean;
 }
 
 function corridorBounds(): [LngLat, LngLat] {
@@ -142,7 +140,7 @@ function addCorridorLayers(map: maplibregl.Map) {
   });
 }
 
-export function LiveMap({ labels, frozen = false }: LiveMapProps) {
+export function LiveMap({ labels }: LiveMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
@@ -200,7 +198,7 @@ export function LiveMap({ labels, frozen = false }: LiveMapProps) {
             { id: "sim-1", startMeters: corridorMetrics.totalMeters * 0.12, headingOut: true },
             { id: "sim-2", startMeters: corridorMetrics.totalMeters * 0.55, headingOut: false },
           ],
-          { tickMs: frozen ? 2_147_000_000 : TICK_MS },
+          { tickMs: TICK_MS },
         );
 
         unsubscribe = feed.subscribe((positions) => {
@@ -219,6 +217,10 @@ export function LiveMap({ labels, frozen = false }: LiveMapProps) {
                 .addTo(map);
               markers.set(pos.id, marker);
               anim.set(pos.id, { from: pos, to: pos, startedAt: now });
+              const created = marker.getElement();
+              created.dataset.lng = String(pos.lngLat[0]);
+              created.dataset.lat = String(pos.lngLat[1]);
+              created.dataset.heading = String(Math.round(pos.headingDeg));
               continue;
             }
             const current = anim.get(pos.id);
@@ -233,6 +235,11 @@ export function LiveMap({ labels, frozen = false }: LiveMapProps) {
             if (reducedMotion) {
               marker.setLngLat(pos.lngLat).setRotation(pos.headingDeg);
             }
+            // e2e reads these to prove movement in coordinates, not pixels
+            const el = marker.getElement();
+            el.dataset.lng = String(pos.lngLat[0]);
+            el.dataset.lat = String(pos.lngLat[1]);
+            el.dataset.heading = String(Math.round(pos.headingDeg));
           }
         });
 
@@ -269,7 +276,7 @@ export function LiveMap({ labels, frozen = false }: LiveMapProps) {
       unsubscribe?.();
       map?.remove();
     };
-  }, [frozen]);
+  }, []);
 
   if (failed) {
     return (

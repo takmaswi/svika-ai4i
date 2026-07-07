@@ -6,6 +6,7 @@ import { resolveRole } from "@/lib/roles";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
+import { HomeSheet } from "@/components/home/HomeSheet";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 
@@ -20,10 +21,18 @@ interface TicketRow {
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
 }
 
-// Rider home: search a trip, see wallet credit and live tickets. The search
-// form degrades to the plan page's stop picker for free text it cannot place.
-export default async function RiderHome() {
+// Rider home: the live map is the whole screen; everything else floats over
+// it. A peeking bottom sheet keeps the trip search one thumb away and opens
+// into wallet credit and live tickets. The search degrades exactly as
+// before: free text the planner cannot place lands on the stop picker.
+export default async function RiderHome({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const lang = await getLang();
+  const params = await searchParams;
+  const justBooked = params.booked === "1";
   const supabase = await createClient();
 
   const {
@@ -32,7 +41,6 @@ export default async function RiderHome() {
   if (!user) redirect("/login");
 
   const role = await resolveRole(supabase, user.id);
-  const roleKey: DictKey = `role.${role}`;
 
   const [balanceRes, ticketsRes] = await Promise.all([
     supabase
@@ -67,16 +75,8 @@ export default async function RiderHome() {
   );
 
   return (
-    <main className="shell">
-      <header className="shell-top">
-        <img className="wordmark" src="/wordmark.svg" alt="Svika" height={24} />
-        <div className="shell-top-actions">
-          <LanguageToggle lang={lang} />
-          <SignOutButton label={t(lang, "app.signOut")} />
-        </div>
-      </header>
-
-      <section className="map-block svika-animate-fade-up" aria-label="live map">
+    <main className="home-screen">
+      <div className="home-map">
         <LiveMapLazy
           labels={{
             ariaLabel: t(lang, "map.ariaLabel"),
@@ -84,104 +84,130 @@ export default async function RiderHome() {
             unavailable: t(lang, "map.unavailable"),
           }}
         />
-      </section>
+      </div>
 
-      <section className="search-card svika-card svika-animate-fade-up">
-        <h1 className="svika-headline">{t(lang, "rider.searchTitle")}</h1>
-        <form className="search-form" action="/app/plan" method="get">
-          <label className="svika-meta" htmlFor="from">
-            {t(lang, "rider.fromLabel")}
-          </label>
-          <input
-            id="from"
-            name="from"
-            className="auth-input"
-            placeholder={t(lang, "rider.fromPlaceholder")}
-            autoComplete="off"
-            required
-          />
-          <label className="svika-meta" htmlFor="to">
-            {t(lang, "rider.toLabel")}
-          </label>
-          <input
-            id="to"
-            name="to"
-            className="auth-input"
-            placeholder={t(lang, "rider.toPlaceholder")}
-            autoComplete="off"
-            required
-          />
-          <button className="auth-submit touch-target" type="submit">
-            {t(lang, "rider.planCta")}
-          </button>
-        </form>
-      </section>
+      <header className="home-chips">
+        <span className="home-chip svika-glass">
+          <img className="wordmark" src="/wordmark.svg" alt="Svika" height={22} />
+        </span>
+        <span className="home-chip svika-glass">
+          <LanguageToggle lang={lang} />
+        </span>
+      </header>
 
-      <section className="wallet-strip svika-card">
-        <div>
-          <p className="svika-meta">{t(lang, "rider.walletBalance")}</p>
-          <p className="wallet-amount svika-mono-code">{formatUsd(balance)}</p>
-        </div>
-        <p className="svika-meta">{t(lang, roleKey)}</p>
-      </section>
-
-      <nav className="home-nav" aria-label="sections">
-        <Link className="home-nav-link touch-target" href="/app/wallet">
-          {t(lang, "wallet.open")}
-        </Link>
-        <Link className="home-nav-link touch-target" href="/app/parcel">
-          {t(lang, "parcel.open")}
-        </Link>
-        {role === "owner" && (
-          <Link className="home-nav-link touch-target" href="/app/owner">
-            {t(lang, "owner.open")}
+      <HomeSheet
+        openLabel={t(lang, "home.sheetOpen")}
+        closeLabel={t(lang, "home.sheetClose")}
+        defaultOpen={justBooked}
+        peek={
+          <>
+            <h1 className="svika-headline home-sheet-title">
+              {t(lang, "rider.searchTitle")}
+            </h1>
+            <p className="svika-meta home-sheet-hint">{t(lang, "home.sheetHint")}</p>
+            <form className="home-search" action="/app/plan" method="get">
+              <input
+                id="from"
+                name="from"
+                className="home-search-pill"
+                placeholder={t(lang, "rider.fromPlaceholder")}
+                aria-label={t(lang, "rider.fromLabel")}
+                autoComplete="off"
+                required
+              />
+              <div className="home-search-row">
+                <input
+                  id="to"
+                  name="to"
+                  className="home-search-pill"
+                  placeholder={t(lang, "rider.toPlaceholder")}
+                  aria-label={t(lang, "rider.toLabel")}
+                  autoComplete="off"
+                  required
+                />
+                <button
+                  className="home-search-go touch-target"
+                  type="submit"
+                  aria-label={t(lang, "rider.planCta")}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M4 10.1c0-.72.58-1.3 1.3-1.3H12V6.1c0-1.28 1.5-1.94 2.42-1.05l6.28 6.05c.6.58.6 1.54 0 2.12l-6.28 6.05C13.5 20.16 12 19.5 12 18.22V15.5H5.3A1.3 1.3 0 0 1 4 14.2z" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </>
+        }
+      >
+        <section className="wallet-strip svika-card">
+          <div>
+            <p className="svika-meta">{t(lang, "rider.walletBalance")}</p>
+            <p className="wallet-amount svika-mono-code">{formatUsd(balance)}</p>
+          </div>
+          <Link className="home-nav-link touch-target" href="/app/wallet">
+            {t(lang, "wallet.open")}
           </Link>
-        )}
-      </nav>
+        </section>
 
-      <section className="tickets-block">
-        <h2 className="svika-meta tickets-heading">{t(lang, "rider.tickets")}</h2>
-        {tickets.length === 0 ? (
-          <p className="svika-body empty-note">{t(lang, "rider.noTickets")}</p>
-        ) : (
-          <ul className="ticket-list">
-            {tickets.map((ticket) => {
-              const status = statusByTicket.get(ticket.id) ?? "issued";
-              const statusKey = `ticket.status.${status}` as DictKey;
-              const code = boardCodesOf(ticket.board_codes)[0]?.code ?? "";
-              return (
-                <li key={ticket.id}>
-                  <Link
-                    href={`/app/ticket/${ticket.id}`}
-                    className={`ticket-item svika-card${status === "issued" ? "" : " ticket-item-done"}`}
-                  >
-                    <span className="ticket-item-code svika-mono-code">
-                      {status === "issued" ? code : "····"}
-                    </span>
-                    <span className="ticket-item-body">
-                      <span className="svika-body ticket-item-route">
-                        {ticket.from_stop && ticket.to_stop
-                          ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
-                          : (ticket.routes?.name ?? "")}
+        <nav className="home-nav" aria-label="sections">
+          <Link className="home-nav-link touch-target" href="/app/parcel">
+            {t(lang, "parcel.open")}
+          </Link>
+          {role === "owner" && (
+            <Link className="home-nav-link touch-target" href="/app/owner">
+              {t(lang, "owner.open")}
+            </Link>
+          )}
+        </nav>
+
+        <section className="tickets-block">
+          <h2 className="svika-meta tickets-heading">{t(lang, "rider.tickets")}</h2>
+          {tickets.length === 0 ? (
+            <p className="svika-body empty-note">{t(lang, "rider.noTickets")}</p>
+          ) : (
+            <ul className="ticket-list">
+              {tickets.map((ticket) => {
+                const status = statusByTicket.get(ticket.id) ?? "issued";
+                const statusKey = `ticket.status.${status}` as DictKey;
+                const code = boardCodesOf(ticket.board_codes)[0]?.code ?? "";
+                return (
+                  <li key={ticket.id}>
+                    <Link
+                      href={`/app/ticket/${ticket.id}`}
+                      className={`ticket-item svika-card${status === "issued" ? "" : " ticket-item-done"}`}
+                    >
+                      <span className="ticket-item-code svika-mono-code">
+                        {status === "issued" ? code : "····"}
                       </span>
-                      <span className="svika-meta">
-                        {formatUsd(ticket.fare_cents)} ·{" "}
-                        {t(
-                          lang,
-                          ticket.payment_method === "cash"
-                            ? "ticket.payCash"
-                            : "ticket.paidWallet",
-                        )}{" "}
-                        · {t(lang, statusKey)}
+                      <span className="ticket-item-body">
+                        <span className="svika-body ticket-item-route">
+                          {ticket.from_stop && ticket.to_stop
+                            ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
+                            : (ticket.routes?.name ?? "")}
+                        </span>
+                        <span className="svika-meta">
+                          {formatUsd(ticket.fare_cents)} ·{" "}
+                          {t(
+                            lang,
+                            ticket.payment_method === "cash"
+                              ? "ticket.payCash"
+                              : "ticket.paidWallet",
+                          )}{" "}
+                          · {t(lang, statusKey)}
+                        </span>
                       </span>
-                    </span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+
+        <footer className="home-sheet-footer">
+          <SignOutButton label={t(lang, "app.signOut")} />
+        </footer>
+      </HomeSheet>
     </main>
   );
 }

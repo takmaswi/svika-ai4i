@@ -219,6 +219,19 @@ export const dict = {
     sn: "Nhamba dzese dzinobva mubhuku remari. Cash inosara nevashandi haiverengwi pano.",
   },
 
+  "home.sheetHint": {
+    en: "Type in Shona or English.",
+    sn: "Nyora muchiShona kana chiRungu.",
+  },
+  "home.sheetOpen": {
+    en: "Show wallet and tickets",
+    sn: "Ona chikwama nematikiti",
+  },
+  "home.sheetClose": {
+    en: "Show more of the map",
+    sn: "Ona mepu yakakura",
+  },
+
   "map.ariaLabel": {
     en: "Map of the Heights to Rezende corridor with kombis moving along the road. Vehicle movement is a demo, not live tracking.",
     sn: "Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live.",

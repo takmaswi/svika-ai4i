@@ -39,3 +39,5 @@ P2 | offline e2e: airplane redeem -> reconnect reconcile, device double entry re
 P2 | security review fixes: conductor scoped receipts, coarse rejection reasons (migration 0016 applied) | 9830170 | offline proof rerun 34/34
 P2 | CI job for the live db offline proof, secret gated | ae30a19 | activates when repo secrets land
 tool | gps-logger field PWA: journey as walk/wait/ride legs, mode+leg tagged pings, marked stops, IndexedDB crash safe, GeoJSON+CSV+bundle export shaped for gps_pings/stops | <pending> | typecheck clean, 28 unit tests, PWA build 10KB gz
+P3 | real Heights<->Rezende corridor from two field GPS rides: clean return base line (23 vertices, ~13.5km, ~27min), touty inbound kept as variance, 15 real named stops merged, GeoJSON exports for the map | 1296c78 | derive.mjs reproducible, geo/ exports + summary
+P3 | seed real corridor as HEIGHTS-REZENDE (flat $1.50, both directions), CBD routes kept for planner connectivity, stale walking_junction dropped | 4eba79d 9648709 | seed idempotent (run 2 no network change), live planner 462/462 pairs reachable, fare 150c

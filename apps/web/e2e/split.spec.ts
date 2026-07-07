@@ -39,11 +39,11 @@ async function conductorSignIn(page: Page): Promise<void> {
   });
 }
 
-test("a $5 note covering two $2.00 fares credits exactly $1.00", async ({ page }) => {
+test("a $5 note covering two $1.50 fares credits exactly $2.00", async ({ page }) => {
   const rider = await riderClient();
   const before = await riderBalance(rider);
 
-  // cash reservation on the full Heights run: verified $2.00 fare
+  // cash reservation on the full Heights run: verified $1.50 flat fare
   const { data: route } = await rider
     .from("routes")
     .select("id")
@@ -76,15 +76,15 @@ test("a $5 note covering two $2.00 fares credits exactly $1.00", async ({ page }
   await page.locator(".hwindi-covered-row button", { hasText: "+" }).click();
   await expect(page.getByTestId("fares-covered")).toHaveText("2");
 
-  // $2 and under notes cannot cover 2 × $2.00; $5 can
+  // $2 and under notes cannot cover 2 × $1.50; $5 can
   await expect(page.locator(".hwindi-note-btn", { hasText: "$2.00" })).toBeDisabled();
   await page.locator(".hwindi-note-btn", { hasText: "$5.00" }).click();
 
   await expect(page.getByTestId("change-done")).toBeVisible({ timeout: 15_000 });
   await expect(
     page.getByTestId("change-done").locator(".hwindi-verdict-code"),
-  ).toHaveText("$1.00"); // 500 - 2×200
+  ).toHaveText("$2.00"); // 500 - 2×150
 
   const after = await riderBalance(rider);
-  expect(after - before).toBe(100);
+  expect(after - before).toBe(200);
 });

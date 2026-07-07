@@ -89,7 +89,7 @@ test.describe("change to credit", () => {
     const rider = await riderClient();
     const before = await riderBalance(rider);
     const { code, ticketId, fareCents } = await reserveCashTicket(rider);
-    expect(fareCents).toBe(200); // verified end to end fare
+    expect(fareCents).toBe(150); // verified end to end fare (flat corridor fare)
 
     await conductorSignIn(page);
     await clearCode(page, code);
@@ -103,11 +103,11 @@ test.describe("change to credit", () => {
     });
     await expect(
       page.getByTestId("change-done").locator(".hwindi-verdict-code"),
-    ).toHaveText("$3.00");
+    ).toHaveText("$3.50");
 
     // the rider's ledger derived balance rose by exactly the change
     const after = await riderBalance(rider);
-    expect(after - before).toBe(300);
+    expect(after - before).toBe(350);
 
     // a second credit for the same ticket is refused by the database
     const conductor = createClient(

@@ -256,6 +256,15 @@ export const dict = {
     sn: "Zita iri harina kuchengetedzwa. Edza rakapfupika.",
   },
 
+  "theme.toDark": {
+    en: "Switch to night mode",
+    sn: "Shandura kuita chiedza cheusiku",
+  },
+  "theme.toLight": {
+    en: "Switch to day mode",
+    sn: "Shandura kuita chiedza chemasikati",
+  },
+
   "map.ariaLabel": {
     en: "Map of the Heights to Rezende corridor with kombis moving along the road. Vehicle movement is a demo, not live tracking.",
     sn: "Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live.",

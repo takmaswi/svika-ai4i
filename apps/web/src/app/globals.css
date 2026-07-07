@@ -852,3 +852,34 @@ body {
   margin: var(--space-4) 0 0;
   color: var(--color-ink-soft);
 }
+
+/* --- theme toggle + brand chip ------------------------------------------- */
+.home-chips-right {
+  display: inline-flex;
+  gap: var(--space-2);
+  pointer-events: auto;
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-height: 0;
+  min-width: 0;
+  margin: -4px -6px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.theme-toggle:active {
+  transform: scale(0.99);
+}
+/* the wordmark is forest on bone; its chip stays bone in both themes */
+.home-chip-brand {
+  background: var(--color-bone);
+}

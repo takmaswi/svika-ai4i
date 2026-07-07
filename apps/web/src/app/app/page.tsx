@@ -3,8 +3,11 @@ import { redirect } from "next/navigation";
 import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { resolveRole } from "@/lib/roles";
+import { cookies } from "next/headers";
 import { SignOutButton } from "@/components/SignOutButton";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
 import { formatUsd } from "@svika/shared";
@@ -41,6 +44,7 @@ export default async function RiderHome({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const lang = await getLang();
+  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   const params = await searchParams;
   const justBooked = params.booked === "1";
   const supabase = await createClient();
@@ -112,11 +116,20 @@ export default async function RiderHome({
       </div>
 
       <header className="home-chips">
-        <span className="home-chip svika-glass">
+        <span className="home-chip home-chip-brand svika-glass">
           <img className="wordmark" src="/wordmark.svg" alt="Svika" height={22} />
         </span>
-        <span className="home-chip svika-glass">
-          <LanguageToggle lang={lang} />
+        <span className="home-chips-right">
+          <span className="home-chip svika-glass">
+            <ThemeToggle
+              initialTheme={theme}
+              toDarkLabel={t(lang, "theme.toDark")}
+              toLightLabel={t(lang, "theme.toLight")}
+            />
+          </span>
+          <span className="home-chip svika-glass">
+            <LanguageToggle lang={lang} />
+          </span>
         </span>
       </header>
 

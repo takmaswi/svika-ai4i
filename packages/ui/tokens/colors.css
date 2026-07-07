@@ -35,3 +35,49 @@
   /* WhatsApp companion bubble — brand-agnostic utility */
   --color-wa-bubble: #DCF8C6;
 }
+
+/* ============================================================================
+   Night theme — warm dark: char canvas, forest surfaces, bone ink.
+   Never cold grey. Applies when the app stamps data-theme="dark" on <html>,
+   or when the device prefers dark and the app has not forced light.
+   The block is duplicated for the media query on purpose: CSS has no way to
+   reuse a declaration block, and these two selectors must stay identical.
+   ========================================================================= */
+:root[data-theme="dark"] {
+  --color-bg:            #0E1A12;
+  --color-surface:       #16281C;
+  --color-surface-dark:  #16281C;
+  --color-ink:           #FFFCEF;
+  --color-ink-soft:      #A9B8A0;
+  --color-ink-mute:      rgba(255, 252, 239, 0.55);
+  --color-hairline:      rgba(255, 252, 239, 0.12);
+
+  --color-action:          #2E6B42;   /* forest, lifted to read on char     */
+  --color-action-hover:    #1F4D2E;
+  --color-action-disabled: rgba(46, 107, 66, 0.4);
+  --color-action-soft:     rgba(255, 252, 239, 0.08);
+
+  --glass-bg:        rgba(14, 26, 18, 0.78);
+  --glass-bg-strong: rgba(14, 26, 18, 0.92);
+  --glass-bg-tab:    rgba(14, 26, 18, 0.94);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:            #0E1A12;
+    --color-surface:       #16281C;
+    --color-surface-dark:  #16281C;
+    --color-ink:           #FFFCEF;
+    --color-ink-soft:      #A9B8A0;
+    --color-ink-mute:      rgba(255, 252, 239, 0.55);
+    --color-hairline:      rgba(255, 252, 239, 0.12);
+
+    --color-action:          #2E6B42;
+    --color-action-hover:    #1F4D2E;
+    --color-action-disabled: rgba(46, 107, 66, 0.4);
+    --color-action-soft:     rgba(255, 252, 239, 0.08);
+
+    --glass-bg:        rgba(14, 26, 18, 0.78);
+    --glass-bg-strong: rgba(14, 26, 18, 0.92);
+    --glass-bg-tab:    rgba(14, 26, 18, 0.94);
+  }
+}

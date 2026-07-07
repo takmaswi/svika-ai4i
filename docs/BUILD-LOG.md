@@ -38,3 +38,4 @@ P2 | rehearsal reset for attempt log + e2e wallet headroom (migration 0015 appli
 P2 | offline e2e: airplane redeem -> reconnect reconcile, device double entry refused, online-vs-offline conflict flags | fdb1324 | 3/3, full suite 19/19
 P2 | security review fixes: conductor scoped receipts, coarse rejection reasons (migration 0016 applied) | 9830170 | offline proof rerun 34/34
 P2 | CI job for the live db offline proof, secret gated | ae30a19 | activates when repo secrets land
+tool | gps-logger field PWA: journey as walk/wait/ride legs, mode+leg tagged pings, marked stops, IndexedDB crash safe, GeoJSON+CSV+bundle export shaped for gps_pings/stops | <pending> | typecheck clean, 28 unit tests, PWA build 10KB gz

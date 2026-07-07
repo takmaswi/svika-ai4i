@@ -181,10 +181,23 @@ const network = JSON.parse(
 async function ensureStop(slug, def) {
   const { data } = await admin
     .from("stops")
-    .select("id")
+    .select("id, lat, lng")
     .eq("name", def.name)
     .maybeSingle();
-  if (data) return data.id;
+  if (data) {
+    // reconcile coordinates so real ride data wins on re-seed (e.g. the Rezende
+    // rank moving from the v2 map estimate to the GPS marked point). Idempotent:
+    // once the row matches the seed, no further update runs.
+    if (data.lat !== def.lat || data.lng !== def.lng) {
+      const { error } = await admin
+        .from("stops")
+        .update({ lat: def.lat, lng: def.lng })
+        .eq("id", data.id);
+      if (error) throw new Error(`stop ${slug}: ${error.message}`);
+      console.log(`moved stop ${def.name} to (${def.lat}, ${def.lng})`);
+    }
+    return data.id;
+  }
   const { data: ins, error } = await admin
     .from("stops")
     .insert({ name: def.name, lat: def.lat, lng: def.lng })
@@ -324,19 +337,22 @@ async function seedNetwork() {
     stopIdBySlug[slug] = await ensureStop(slug, def);
   }
   for (const r of network.routes) {
+    // a route may date its own fares (the real corridor fare is dated to the
+    // ride day so it supersedes the older carryover fare); default to the meta
+    const routeEffective = r.fares_effective_from ?? effectiveFrom;
     const routeId = await ensureRoute(r);
     await ensureRouteStops(
       routeId,
       r.stops.map((s) => stopIdBySlug[s]),
     );
-    await ensureRouteFare(routeId, r.default_fare_cents, effectiveFrom);
+    await ensureRouteFare(routeId, r.default_fare_cents, routeEffective);
     for (const seg of r.fare_segments) {
       await ensureFareSegment(
         routeId,
         stopIdBySlug[seg.from],
         stopIdBySlug[seg.to],
         seg.fare_cents,
-        effectiveFrom,
+        routeEffective,
       );
     }
   }

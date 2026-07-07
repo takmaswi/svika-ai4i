@@ -1,94 +1,70 @@
 {
   "_meta": {
-    "version": "2.0.0",
-    "provenance": "Routes, stops, walking transfers and fare tiers carried over from the v1 seed network verified by Mhofu against Google Maps and Waze for Harare (svika-monorepo seed/network.json, meta 1.0.0). Nothing here is invented by an agent; place names and geometry are Mhofu's.",
-    "fares": "2026 levels. The evidence base (COMBINED-EVIDENCE-BASE.md, item 1, HIGH confidence) records that after the March 2026 ZERA fuel hikes Harare kombi fares run $1.00 to $2.00 (ZimEye 7 Mar 2026, Xinhua 13 Mar 2026). The v1 fares ($0.50 to $1.50, verified pre hike) are shifted up by one $0.50 note across the board, which preserves the verified tier structure and lands every fare inside the verified 2026 band. These are placeholders for the corridor fieldwork fares (P3), which replace them as a new dated generation in fare_segments.",
+    "version": "3.0.0",
+    "provenance": "The Mount Pleasant Heights to Rezende corridor (route HEIGHTS-REZENDE, its 15 stops and its geometry) is derived from Mhofu's own kombi rides recorded on 2026-07-07 with the Svika field GPS logger: one clean run per direction. Stop names are exactly as the rider marked them in the field; nothing on this corridor is invented. The three CBD routes (MARKETSQ-AVONDALE, FOURTHST-BORROWDALE, WESTGATE-COPA), their stops and the two rank to rank walking transfers are carried over from the v2 seed (Mhofu's Google Maps and Waze verification) so the planner stays a connected network for multi leg trips. The corridor connects to the CBD only at the real Rezende rank.",
+    "corridor": {
+      "name": "Mount Pleasant Heights to Rezende",
+      "ride_date": "2026-07-07",
+      "geometry": "packages/db/seed/geo/corridor.route.geojson (base line), corridor.stops.geojson, corridor.variance.geojson; derived by packages/db/seed/geo/derive.mjs",
+      "base_line": "Clean return run (Rezende to Heights), 23 smoothed vertices, about 13.5 km, about 27 minutes riding.",
+      "variance_note": "The inbound run (Heights to Rezende) took customer seeking detours, about 15.5 km and 43 minutes. It is kept only as variance data for later ETA work and does not shape the base route.",
+      "caveat": "This is a single real ride per direction. It is real, not synthetic. More runs will refine the geometry, the stop set and the timings."
+    },
+    "fares": "Corridor fare is a flat $1.50 (USD) for the whole HEIGHTS-REZENDE route, dated to the 2026-07-07 ride, and sits inside the verified 2026 band ($1.00 to $2.00 after the March 2026 fuel hikes; COMBINED-EVIDENCE-BASE.md item 1). The corridor fare is flat so it carries no per pair tiers: every stop pair on the route is charged the one end to end fare. The three CBD routes keep their v2 placeholder tiers (dated 2026-03-07) pending corridor fieldwork.",
     "fares_effective_from": "2026-03-07T00:00:00Z",
     "fare_fallback_rule": "A stop pair with no verified segment tier is charged the route's end to end fare (never undercharge, never invent a tier).",
-    "direction_rule": "outbound = the listed stop order (named start toward named end); inbound = the reverse.",
+    "direction_rule": "outbound = the listed stop order (named start toward named end); inbound = the reverse. For HEIGHTS-REZENDE, outbound is Heights (2nd boom gate) toward Rezende rank.",
     "currency": "USD"
   },
   "stops": {
-    "sp_heights_start_north": {
-      "name": "Bannockburn Rd North Terminus",
-      "lat": -17.7498,
-      "lng": 31.0425
-    },
-    "sp_uz_gate": {
-      "name": "University of Zimbabwe Main Gate (The Chase)",
-      "lat": -17.78465,
-      "lng": 31.05154
-    },
-    "sp_second_lomagundi": {
-      "name": "Second St at Lomagundi Rd Intersection",
-      "lat": -17.7936,
-      "lng": 31.0528
-    },
-    "sp_rezende_rank": { "name": "Rezende Rank", "lat": -17.8325, "lng": 31.0494 },
-    "sp_marketsq_rank": {
-      "name": "Market Square Rank",
-      "lat": -17.83575,
-      "lng": 31.03992
-    },
-    "sp_pe_kensington": {
-      "name": "Prince Edward St (Kensington Shops)",
-      "lat": -17.8165,
-      "lng": 31.0358
-    },
-    "sp_pe_cork": {
-      "name": "Prince Edward St at Cork Rd Junction",
-      "lat": -17.8075,
-      "lng": 31.0345
-    },
-    "sp_avondale_shops": {
-      "name": "Avondale Shops (King George Rd)",
-      "lat": -17.80321,
-      "lng": 31.03702
-    },
-    "sp_fourthst_rank": {
-      "name": "Fourth Street Rank",
-      "lat": -17.8329,
-      "lng": 31.0563
-    },
-    "sp_samlevys": {
-      "name": "Sam Levy's Village Bus Stop",
-      "lat": -17.7758,
-      "lng": 31.0858
-    },
-    "sp_lomagundi_kinggeorge_pickup": {
-      "name": "King George Rd just off Lomagundi Rd",
-      "lat": -17.7939,
-      "lng": 31.0484
-    }
+    "sp_2nd_boom_gate": { "name": "2nd boom gate", "lat": -17.7170049, "lng": 31.0468302 },
+    "sp_first_boom_gate": { "name": "First boom gate", "lat": -17.7192229, "lng": 31.0455698 },
+    "sp_pama_broom": { "name": "Pama Broom", "lat": -17.7274892, "lng": 31.039221 },
+    "sp_pama_church": { "name": "Pama Church / Pama Container", "lat": -17.7286202, "lng": 31.0397771 },
+    "sp_skug_barn": { "name": "Skug Barn", "lat": -17.745128, "lng": 31.0308737 },
+    "sp_pa_police": { "name": "Pa Police / Pamapurisa", "lat": -17.7492876, "lng": 31.0287556 },
+    "sp_harare_drive": { "name": "Harare Drive", "lat": -17.7522773, "lng": 31.0286171 },
+    "sp_banc_abc": { "name": "Banc Abc", "lat": -17.7602632, "lng": 31.0314335 },
+    "sp_ashbrittle": { "name": "Ashbrittle shops", "lat": -17.7712134, "lng": 31.0351165 },
+    "sp_pa_lomagundi": { "name": "Pa Lomagundi", "lat": -17.7834655, "lng": 31.0387975 },
+    "sp_pa_muhammed_mussa": { "name": "Pa Muhammed Mussa", "lat": -17.7846083, "lng": 31.0405517 },
+    "sp_pa_belgravia": { "name": "Pa Belgravia", "lat": -17.7938339, "lng": 31.045011 },
+    "sp_pa_embassy": { "name": "Pa embassy", "lat": -17.8068428, "lng": 31.0455193 },
+    "sp_nssa": { "name": "Nssa", "lat": -17.8237261, "lng": 31.0503793 },
+    "sp_rezende_rank": { "name": "Rezende Rank", "lat": -17.8311088, "lng": 31.0461464 },
+    "sp_marketsq_rank": { "name": "Market Square Rank", "lat": -17.83575, "lng": 31.03992 },
+    "sp_pe_kensington": { "name": "Prince Edward St (Kensington Shops)", "lat": -17.8165, "lng": 31.0358 },
+    "sp_pe_cork": { "name": "Prince Edward St at Cork Rd Junction", "lat": -17.8075, "lng": 31.0345 },
+    "sp_avondale_shops": { "name": "Avondale Shops (King George Rd)", "lat": -17.80321, "lng": 31.03702 },
+    "sp_fourthst_rank": { "name": "Fourth Street Rank", "lat": -17.8329, "lng": 31.0563 },
+    "sp_samlevys": { "name": "Sam Levy's Village Bus Stop", "lat": -17.7758, "lng": 31.0858 },
+    "sp_lomagundi_kinggeorge_pickup": { "name": "King George Rd just off Lomagundi Rd", "lat": -17.7939, "lng": 31.0484 }
   },
   "routes": [
     {
       "code": "HEIGHTS-REZENDE",
       "name": "Mt Pleasant Heights to Rezende Rank",
-      "typical_duration_minutes": 38,
+      "typical_duration_minutes": 27,
+      "fares_effective_from": "2026-07-07T00:00:00Z",
       "stops": [
-        "sp_heights_start_north",
-        "sp_uz_gate",
-        "sp_second_lomagundi",
+        "sp_2nd_boom_gate",
+        "sp_first_boom_gate",
+        "sp_pama_broom",
+        "sp_pama_church",
+        "sp_skug_barn",
+        "sp_pa_police",
+        "sp_harare_drive",
+        "sp_banc_abc",
+        "sp_ashbrittle",
+        "sp_pa_lomagundi",
+        "sp_pa_muhammed_mussa",
+        "sp_pa_belgravia",
+        "sp_pa_embassy",
+        "sp_nssa",
         "sp_rezende_rank"
       ],
-      "default_fare_cents": 200,
-      "fare_segments": [
-        { "from": "sp_heights_start_north", "to": "sp_uz_gate", "fare_cents": 150 },
-        {
-          "from": "sp_heights_start_north",
-          "to": "sp_second_lomagundi",
-          "fare_cents": 150
-        },
-        {
-          "from": "sp_heights_start_north",
-          "to": "sp_rezende_rank",
-          "fare_cents": 200
-        },
-        { "from": "sp_uz_gate", "to": "sp_second_lomagundi", "fare_cents": 100 },
-        { "from": "sp_uz_gate", "to": "sp_rezende_rank", "fare_cents": 150 },
-        { "from": "sp_second_lomagundi", "to": "sp_rezende_rank", "fare_cents": 150 }
-      ]
+      "default_fare_cents": 150,
+      "fare_segments": []
     },
     {
       "code": "MARKETSQ-AVONDALE",
@@ -149,14 +125,6 @@
       "walk_meters": 1100,
       "walk_minutes": 15,
       "notes": "Heavy foot traffic walk west across the CBD between two major ranks."
-    },
-    {
-      "from": "sp_second_lomagundi",
-      "to": "sp_lomagundi_kinggeorge_pickup",
-      "kind": "walking_junction",
-      "walk_meters": 450,
-      "walk_minutes": 6,
-      "notes": "Tribal knowledge walking transfer along Lomagundi Road; connects the Heights kombi to inbound Avondale bound kombis without riding into the CBD."
     }
   ]
 }

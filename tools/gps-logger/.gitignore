@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dev-dist/
+*.tsbuildinfo
+
+# Keep the output folder in git but ignore the captured journey exports:
+# they are field data, not source. Remove these lines if you want to commit a
+# specific corridor capture into the repo for the seed.
+output/*
+!output/.gitkeep

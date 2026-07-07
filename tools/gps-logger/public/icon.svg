@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Svika GPS Logger">
+  <rect width="512" height="512" fill="#1F4D2E" />
+  <g fill="none" stroke="#FFFCEF" stroke-width="34" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M160 150 C 320 150, 320 256, 160 256 C 0 256, 0 362, 160 362" transform="translate(96 0)" />
+  </g>
+  <circle cx="352" cy="150" r="30" fill="#E84C30" />
+  <circle cx="160" cy="362" r="30" fill="#E84C30" />
+</svg>

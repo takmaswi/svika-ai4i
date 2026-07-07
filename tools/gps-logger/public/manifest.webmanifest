@@ -1,0 +1,13 @@
+{
+  "name": "Svika GPS Logger",
+  "short_name": "GPS Logger",
+  "description": "Field GPS logger for Harare kombi corridor data days.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E1A12",
+  "theme_color": "#0E1A12",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

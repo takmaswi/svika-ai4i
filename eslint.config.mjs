@@ -16,6 +16,8 @@ export default tseslint.config(
       "**/coverage/**",
       "**/*.d.ts",
       "Svika Design System/**",
+      // Isolated field tool: outside the pnpm workspace, own tsconfig/vitest.
+      "tools/**",
     ],
   },
   js.configs.recommended,

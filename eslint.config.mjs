@@ -16,6 +16,9 @@ export default tseslint.config(
       "**/coverage/**",
       "**/*.d.ts",
       "Svika Design System/**",
+      // Raw field data and vendor exports (ride logs, marker icon, design
+      // system): inputs and third party code, never linted as source.
+      "assets/**",
       // Isolated field tool: outside the pnpm workspace, own tsconfig/vitest.
       "tools/**",
     ],

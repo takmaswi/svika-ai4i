@@ -560,9 +560,13 @@ body {
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
 }
-.live-map-canvas {
+/* maplibre's stylesheet re-declares position and overflow on this element,
+   so it sizes by explicit width/height rather than inset */
+.live-map .live-map-canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .live-map-unavailable {
   display: flex;

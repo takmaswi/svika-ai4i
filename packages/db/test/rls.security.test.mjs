@@ -345,5 +345,59 @@ check(
   }
 }
 
+// ---- saved trips: rider-owned quick picks ----
+{
+  const { data: stopRows } = await A.c.from("stops").select("id").limit(2);
+  const [s1, s2] = stopRows ?? [];
+  if (!s1 || !s2) {
+    skip("saved trips isolation", "fewer than two stops in the network");
+  } else {
+    // clean slate so reruns are deterministic
+    await A.c.from("saved_trips").delete().neq("nickname", "");
+    const save = await A.c.from("saved_trips").insert({
+      rider_id: A.uid,
+      from_stop_id: s1.id,
+      to_stop_id: s2.id,
+      nickname: "Town trip",
+    });
+    check("rider A can save a nicknamed trip", !save.error, save.error?.message);
+
+    const savedA = await A.c.from("saved_trips").select("id, nickname");
+    check(
+      "rider A reads back their saved trip",
+      !savedA.error &&
+        savedA.data.length === 1 &&
+        savedA.data[0].nickname === "Town trip",
+    );
+
+    const crossRead = await B.c.from("saved_trips").select("id");
+    check("rider B cannot read rider A's saved trips", deniedOrEmpty(crossRead));
+
+    const forge = await B.c.from("saved_trips").insert({
+      rider_id: A.uid,
+      from_stop_id: s1.id,
+      to_stop_id: s2.id,
+      nickname: "planted",
+    });
+    check("rider B cannot save a trip onto rider A's account", !!forge.error);
+
+    const crossRename = await B.c
+      .from("saved_trips")
+      .update({ nickname: "hacked" })
+      .eq("rider_id", A.uid)
+      .select();
+    check("rider B cannot rename rider A's saved trip", deniedOrEmpty(crossRename));
+
+    const crossDelete = await B.c
+      .from("saved_trips")
+      .delete()
+      .eq("rider_id", A.uid)
+      .select();
+    check("rider B cannot delete rider A's saved trip", deniedOrEmpty(crossDelete));
+
+    await A.c.from("saved_trips").delete().neq("nickname", "");
+  }
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

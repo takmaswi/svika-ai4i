@@ -718,6 +718,55 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_trips: {
+        Row: {
+          created_at: string
+          from_stop_id: string
+          id: string
+          nickname: string
+          rider_id: string
+          to_stop_id: string
+        }
+        Insert: {
+          created_at?: string
+          from_stop_id: string
+          id?: string
+          nickname: string
+          rider_id: string
+          to_stop_id: string
+        }
+        Update: {
+          created_at?: string
+          from_stop_id?: string
+          id?: string
+          nickname?: string
+          rider_id?: string
+          to_stop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_trips_from_stop_id_fkey"
+            columns: ["from_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_trips_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_trips_to_stop_id_fkey"
+            columns: ["to_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stops: {
         Row: {
           created_at: string

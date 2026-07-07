@@ -16,7 +16,7 @@ test.describe("search, plan, pay", () => {
 
     await page.goto("/app");
     await page.fill("#from", "Heights");
-    await page.fill("#to", "UZ");
+    await page.fill("#to", "Rezende");
     await page.click("button[type=submit]");
 
     // the plan resolves the free text and quotes the verified fare
@@ -41,7 +41,7 @@ test.describe("search, plan, pay", () => {
     await page.fill("#to", "heights");
     await page.click("button[type=submit]");
 
-    await expect(page.locator(".plan-total")).toHaveText("$2.00");
+    await expect(page.locator(".plan-total")).toHaveText("$1.50");
     await page.click("button[value=cash]");
     await page.waitForURL("**/app?booked=1");
 
@@ -62,7 +62,7 @@ test.describe("search, plan, pay", () => {
     await expect(kinds.nth(0)).toHaveText(/ride/i);
     await expect(kinds.nth(1)).toHaveText(/walk/i);
     await expect(kinds.nth(2)).toHaveText(/ride/i);
-    await expect(page.locator(".plan-total")).toHaveText("$2.50");
+    await expect(page.locator(".plan-total")).toHaveText("$3.00");
   });
 
   test("unknown free text degrades to the stop picker and still books", async ({
@@ -78,7 +78,7 @@ test.describe("search, plan, pay", () => {
   test("the ticket page shows the big board code", async ({ page }) => {
     // book fresh so the top of the list is an ISSUED ticket (other suites
     // leave redeemed tickets behind, and those carry no live code)
-    await page.goto("/app/plan?from=heights&to=uz");
+    await page.goto("/app/plan?from=heights&to=rezende");
     await page.click("button[value=cash]");
     await page.waitForURL("**/app?booked=1");
     await page.locator(".ticket-item").first().click();

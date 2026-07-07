@@ -9,6 +9,16 @@ import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
+import { etaProvider } from "@/lib/map/eta";
+
+interface SavedTripRow {
+  id: string;
+  nickname: string;
+  from_stop_id: string;
+  to_stop_id: string;
+  from_stop: { name: string } | null;
+  to_stop: { name: string } | null;
+}
 
 interface TicketRow {
   id: string;
@@ -42,12 +52,19 @@ export default async function RiderHome({
 
   const role = await resolveRole(supabase, user.id);
 
-  const [balanceRes, ticketsRes] = await Promise.all([
+  const [balanceRes, savedRes, ticketsRes] = await Promise.all([
     supabase
       .from("account_balances")
       .select("balance_cents")
       .eq("kind", "rider_wallet")
       .maybeSingle(),
+    supabase
+      .from("saved_trips")
+      .select(
+        "id, nickname, from_stop_id, to_stop_id, from_stop:stops!saved_trips_from_stop_id_fkey(name), to_stop:stops!saved_trips_to_stop_id_fkey(name)",
+      )
+      .order("created_at", { ascending: false })
+      .limit(4),
     supabase
       .from("tickets")
       .select(
@@ -59,7 +76,15 @@ export default async function RiderHome({
   ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
+  const savedTrips = (savedRes.data ?? []) as unknown as SavedTripRow[];
   const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
+
+  // the "your kombi is N minutes away" slot: mock ETA adapter until Spine 2
+  // lands, and every rendering carries the demo label
+  const etaByTrip = new Map<string, number>();
+  for (const trip of savedTrips) {
+    etaByTrip.set(trip.id, await etaProvider.etaMinutes(trip.from_stop_id));
+  }
 
   // statuses only for the tickets on screen; the rider's full history is
   // unbounded and grows forever
@@ -139,6 +164,37 @@ export default async function RiderHome({
           </>
         }
       >
+        {savedTrips.length > 0 && (
+          <section className="home-picks" aria-label={t(lang, "home.yourTrips")}>
+            <h2 className="svika-meta tickets-heading">{t(lang, "home.yourTrips")}</h2>
+            <ul className="home-pick-list">
+              {savedTrips.map((trip) => (
+                <li key={trip.id}>
+                  <Link
+                    className="home-pick svika-card touch-target"
+                    href={`/app/plan?from=${trip.from_stop_id}&to=${trip.to_stop_id}`}
+                  >
+                    <span className="home-pick-body">
+                      <span className="svika-body home-pick-name">{trip.nickname}</span>
+                      <span className="svika-meta">
+                        {trip.from_stop?.name} → {trip.to_stop?.name}
+                      </span>
+                    </span>
+                    <span className="home-pick-eta">
+                      <span className="svika-mono-code">
+                        ~{etaByTrip.get(trip.id)} {t(lang, "common.minutes")}
+                      </span>
+                      <span className="svika-meta home-pick-demo">
+                        {t(lang, "home.etaDemo")}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <section className="wallet-strip svika-card">
           <div>
             <p className="svika-meta">{t(lang, "rider.walletBalance")}</p>

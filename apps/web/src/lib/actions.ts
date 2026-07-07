@@ -55,6 +55,37 @@ export async function bookTrip(formData: FormData): Promise<void> {
   redirect("/app?booked=1");
 }
 
+/**
+ * Saves a nicknamed trip ("Town trip") as a home quick pick. Plain rider
+ * owned data under RLS; saving the same stop pair again just renames it.
+ */
+export async function saveTrip(formData: FormData): Promise<void> {
+  const fromStop = String(formData.get("from") ?? "");
+  const toStop = String(formData.get("to") ?? "");
+  const nickname = String(formData.get("nickname") ?? "").trim();
+  const back = `/app/plan?from=${encodeURIComponent(fromStop)}&to=${encodeURIComponent(toStop)}`;
+  if (!fromStop || !toStop || fromStop === toStop) redirect("/app");
+  if (nickname.length < 1 || nickname.length > 40) redirect(`${back}&err=nickname`);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { error } = await supabase.from("saved_trips").upsert(
+    {
+      rider_id: user.id,
+      from_stop_id: fromStop,
+      to_stop_id: toStop,
+      nickname,
+    },
+    { onConflict: "rider_id,from_stop_id,to_stop_id" },
+  );
+  if (error) redirect(`${back}&err=save`);
+  redirect(`${back}&saved=1`);
+}
+
 /** Parks wallet credit in escrow under a claim code (shown on the wallet page). */
 export async function sendCredit(formData: FormData): Promise<void> {
   const raw = String(formData.get("amount") ?? "").replace(",", ".");

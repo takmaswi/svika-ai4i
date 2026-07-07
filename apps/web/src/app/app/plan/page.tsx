@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getLang, t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { fetchNetwork } from "@/lib/network";
-import { bookTrip } from "@/lib/actions";
+import { bookTrip, saveTrip } from "@/lib/actions";
 import {
   formatUsd,
   planTrip,
@@ -39,6 +39,7 @@ export default async function PlanPage({
   const fromRaw = typeof params.from === "string" ? params.from : "";
   const toRaw = typeof params.to === "string" ? params.to : "";
   const err = typeof params.err === "string" ? params.err : "";
+  const justSaved = params.saved === "1";
   if (!fromRaw || !toRaw) redirect("/app");
 
   const supabase = await createClient();
@@ -173,6 +174,40 @@ export default async function PlanPage({
               {t(lang, "plan.reserveCash")}
             </button>
           </form>
+
+          {justSaved ? (
+            <p className="svika-body plan-saved" data-testid="trip-saved">
+              {t(lang, "plan.savedNote")}
+            </p>
+          ) : (
+            <form action={saveTrip} className="plan-save">
+              <input type="hidden" name="from" value={from.stop.id} />
+              <input type="hidden" name="to" value={to.stop.id} />
+              <label className="svika-meta" htmlFor="nickname">
+                {t(lang, "plan.saveTitle")}
+              </label>
+              <div className="plan-save-row">
+                <input
+                  id="nickname"
+                  name="nickname"
+                  className="auth-input"
+                  placeholder={t(lang, "plan.savePlaceholder")}
+                  maxLength={40}
+                  autoComplete="off"
+                  required
+                />
+                <button className="plan-save-cta touch-target" type="submit">
+                  {t(lang, "plan.saveCta")}
+                </button>
+              </div>
+              {err === "nickname" && (
+                <p className="auth-error svika-body">{t(lang, "plan.saveErr")}</p>
+              )}
+              {err === "save" && (
+                <p className="auth-error svika-body">{t(lang, "plan.saveErr")}</p>
+              )}
+            </form>
+          )}
         </section>
       )}
     </main>

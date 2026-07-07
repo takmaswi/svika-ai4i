@@ -232,6 +232,30 @@ export const dict = {
     sn: "Ona mepu yakakura",
   },
 
+  "home.yourTrips": { en: "Your trips", sn: "Nzendo dzako" },
+  "home.etaDemo": {
+    en: "demo estimate",
+    sn: "fungidziro yekuratidzira",
+  },
+
+  "plan.saveTitle": {
+    en: "Save this trip for your home map",
+    sn: "Chengetedza rwendo urwu pamepu yako",
+  },
+  "plan.savePlaceholder": {
+    en: "e.g. Work trip",
+    sn: "semuenzaniso: Rwendo rwebasa",
+  },
+  "plan.saveCta": { en: "Save", sn: "Chengetedza" },
+  "plan.savedNote": {
+    en: "Saved. It now lives on your home map.",
+    sn: "Zvachengetedzwa. Rwava pamepu yako yekutanga.",
+  },
+  "plan.saveErr": {
+    en: "That name did not save. Try a shorter one.",
+    sn: "Zita iri harina kuchengetedzwa. Edza rakapfupika.",
+  },
+
   "map.ariaLabel": {
     en: "Map of the Heights to Rezende corridor with kombis moving along the road. Vehicle movement is a demo, not live tracking.",
     sn: "Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live.",

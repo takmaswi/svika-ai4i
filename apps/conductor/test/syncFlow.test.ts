@@ -8,7 +8,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CachedCode } from "../src/lib/offlineRedeem";
 import type { QueuedRedeem, QueuedChangeCredit } from "../src/lib/offlineQueue";
 import * as store from "../src/lib/offlineStore";
-import { flushQueue } from "../src/lib/sync";
+import { flushQueue, pullCache } from "../src/lib/sync";
 
 const row = (code: string, overrides: Partial<CachedCode> = {}): CachedCode => ({
   ticketId: `ticket-${code}`,
@@ -206,5 +206,61 @@ describe("flushQueue", () => {
     await flushQueue(client);
 
     expect(await store.listAttempts()).toHaveLength(1);
+  });
+});
+
+describe("pullCache", () => {
+  const pullRow = (ticket: string) => ({
+    outcome: "ok",
+    ticket_id: ticket,
+    purpose: "board",
+    code_salt: "salt",
+    code_hash: "hash",
+    fare_cents: 100,
+    payment_method: "cash",
+    kind: "fare",
+    valid_from: new Date(0).toISOString(),
+    valid_until: new Date(10_000_000).toISOString(),
+    server_time: new Date().toISOString(),
+  });
+
+  it("stores ok rows as the local cache", async () => {
+    const { client } = fakeSupabase([
+      { data: [pullRow("ticket-a"), pullRow("ticket-b")], error: null },
+    ]);
+
+    const result = await pullCache(client, "route-1", "outbound");
+
+    expect(result?.rows).toBe(2);
+    expect(result?.refused).toBeUndefined();
+    expect(await store.getCache()).toHaveLength(2);
+  });
+
+  it("a route_not_assigned refusal clears the cache and reports it", async () => {
+    await store.replaceCache([row("1111")]);
+    const { client } = fakeSupabase([
+      {
+        data: [{ outcome: "route_not_assigned", ticket_id: null, server_time: new Date().toISOString() }],
+        error: null,
+      },
+    ]);
+
+    const result = await pullCache(client, "route-1", "outbound");
+
+    expect(result?.refused).toBe(true);
+    expect(result?.rows).toBe(0);
+    expect(await store.getCache()).toHaveLength(0);
+  });
+
+  it("a transport error keeps the old cache", async () => {
+    await store.replaceCache([row("1111")]);
+    const { client } = fakeSupabase([
+      { data: null, error: { message: "Failed to fetch" } },
+    ]);
+
+    const result = await pullCache(client, "route-1", "outbound");
+
+    expect(result).toBeNull();
+    expect(await store.getCache()).toHaveLength(1);
   });
 });

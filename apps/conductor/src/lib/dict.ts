@@ -55,6 +55,10 @@ export const dict = {
     en: "Parcel not loaded yet",
     sn: "Katundu hausati wakwira",
   },
+  "result.route_not_assigned": {
+    en: "Not your route",
+    sn: "Haisi nzira yako",
+  },
 
   "change.offer": { en: "Change to credit", sn: "Chenji kuita kiredhiti" },
   "change.title": {

@@ -101,7 +101,8 @@ export async function flushQueue(supabase: SupabaseClient): Promise<FlushSummary
 }
 
 interface PullRow {
-  ticket_id: string;
+  outcome: "ok" | "route_not_assigned";
+  ticket_id: string | null;
   purpose: CachedCode["purpose"];
   code_salt: string;
   code_hash: string;
@@ -116,19 +117,28 @@ interface PullRow {
 /**
  * Download the pending codes for this route + direction and measure clock
  * skew against the server. Returns null on any failure (the old cache and
- * skew stay in place).
+ * skew stay in place). A route the conductor is not assigned to answers
+ * with a refusal marker: the local cache is cleared, nothing is kept.
  */
 export async function pullCache(
   supabase: SupabaseClient,
   routeId: string,
   direction: Direction,
-): Promise<{ rows: number; skewMs: number } | null> {
+): Promise<{ rows: number; skewMs: number; refused?: boolean } | null> {
   const { data, error } = await supabase.rpc("pull_offline_cache", {
     p_route: routeId,
     p_direction: direction,
   });
   if (error) return null;
-  const rows = (data as PullRow[] | null) ?? [];
+  const all = (data as PullRow[] | null) ?? [];
+  if (all.some((r) => r.outcome === "route_not_assigned")) {
+    await store.replaceCache([]);
+    const skewMs = (await store.getMeta<number>("skewMs")) ?? 0;
+    return { rows: 0, skewMs, refused: true };
+  }
+  const rows = all.filter(
+    (r): r is PullRow & { ticket_id: string } => r.ticket_id !== null,
+  );
 
   let skewMs = (await store.getMeta<number>("skewMs")) ?? 0;
   const first = rows[0];

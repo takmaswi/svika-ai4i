@@ -27,7 +27,8 @@ type Outcome =
   | "already_redeemed"
   | "invalid_code"
   | "rate_limited"
-  | "not_ready";
+  | "not_ready"
+  | "route_not_assigned";
 
 interface RedeemedTicket {
   ticketId: string;

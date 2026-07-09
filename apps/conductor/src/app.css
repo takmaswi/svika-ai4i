@@ -202,7 +202,8 @@
   color: var(--color-signal);
 }
 .hwindi-verdict-rate_limited,
-.hwindi-verdict-not_ready {
+.hwindi-verdict-not_ready,
+.hwindi-verdict-route_not_assigned {
   background: var(--color-amber);
   color: var(--color-char);
 }
@@ -210,7 +211,8 @@
   background: var(--color-char);
   color: var(--color-bone);
 }
-.hwindi-verdict-rate_limited .hwindi-cta {
+.hwindi-verdict-rate_limited .hwindi-cta,
+.hwindi-verdict-route_not_assigned .hwindi-cta {
   background: var(--color-char);
   color: var(--color-bone);
 }

@@ -417,6 +417,116 @@ export type Database = {
           },
         ]
       }
+      gps_pings: {
+        Row: {
+          accuracy_m: number | null
+          altitude_m: number | null
+          heading_deg: number | null
+          id: number
+          journey_id: string
+          lat: number
+          leg_index: number
+          lng: number
+          mode: string
+          recorded_at: string
+          seq: number
+          source: string
+          speed_mps: number | null
+        }
+        Insert: {
+          accuracy_m?: number | null
+          altitude_m?: number | null
+          heading_deg?: number | null
+          id?: never
+          journey_id: string
+          lat: number
+          leg_index: number
+          lng: number
+          mode: string
+          recorded_at: string
+          seq: number
+          source: string
+          speed_mps?: number | null
+        }
+        Update: {
+          accuracy_m?: number | null
+          altitude_m?: number | null
+          heading_deg?: number | null
+          id?: never
+          journey_id?: string
+          lat?: number
+          leg_index?: number
+          lng?: number
+          mode?: string
+          recorded_at?: string
+          seq?: number
+          source?: string
+          speed_mps?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gps_pings_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journeys: {
+        Row: {
+          created_at: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          ended_at: string | null
+          id: string
+          label: string
+          route_id: string
+          source: string
+          source_ref: string
+          started_at: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          ended_at?: string | null
+          id?: string
+          label?: string
+          route_id: string
+          source: string
+          source_ref: string
+          started_at: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          direction?: Database["public"]["Enums"]["route_direction"]
+          ended_at?: string | null
+          id?: string
+          label?: string
+          route_id?: string
+          source?: string
+          source_ref?: string
+          started_at?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journeys_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journeys_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ledger_accounts: {
         Row: {
           created_at: string
@@ -802,6 +912,74 @@ export type Database = {
           },
           {
             foreignKeyName: "saved_trips_to_stop_id_fkey"
+            columns: ["to_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      segment_times: {
+        Row: {
+          created_at: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          duration_seconds: number
+          from_stop_id: string
+          hour_bucket: number
+          id: string
+          journey_id: string
+          route_id: string
+          source: string
+          to_stop_id: string
+        }
+        Insert: {
+          created_at?: string
+          direction: Database["public"]["Enums"]["route_direction"]
+          duration_seconds: number
+          from_stop_id: string
+          hour_bucket: number
+          id?: string
+          journey_id: string
+          route_id: string
+          source: string
+          to_stop_id: string
+        }
+        Update: {
+          created_at?: string
+          direction?: Database["public"]["Enums"]["route_direction"]
+          duration_seconds?: number
+          from_stop_id?: string
+          hour_bucket?: number
+          id?: string
+          journey_id?: string
+          route_id?: string
+          source?: string
+          to_stop_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "segment_times_from_stop_id_fkey"
+            columns: ["from_stop_id"]
+            isOneToOne: false
+            referencedRelation: "stops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "segment_times_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journeys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "segment_times_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "segment_times_to_stop_id_fkey"
             columns: ["to_stop_id"]
             isOneToOne: false
             referencedRelation: "stops"
@@ -1292,6 +1470,10 @@ export type Database = {
           stage: string
           ticket_id: string
         }[]
+      }
+      reset_conductor_attempt_log: {
+        Args: { p_profile: string }
+        Returns: number
       }
       segment_fare_cents: {
         Args: { p_from: string; p_route: string; p_to: string }

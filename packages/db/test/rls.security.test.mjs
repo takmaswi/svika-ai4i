@@ -386,6 +386,38 @@ check(
   );
 }
 
+// ---- ride data pipeline (polish) ----
+// The real field rides in journeys/gps_pings belong to their uploader; a
+// rider who uploaded nothing must see none of them. Derived segment_times
+// carry no personal data and stay readable. Nobody writes without service role.
+{
+  const journeys = await A.c.from("journeys").select("id");
+  check("RIDE-1 a rider sees no journeys they did not upload", deniedOrEmpty(journeys));
+  const pings = await A.c.from("gps_pings").select("id").limit(1);
+  check("RIDE-1 a rider sees no GPS pings of other people's rides", deniedOrEmpty(pings));
+
+  const segments = await A.c
+    .from("segment_times")
+    .select("id, duration_seconds")
+    .limit(5);
+  check(
+    "RIDE-2 derived segment times are readable (they feed rider facing ETAs)",
+    !segments.error && (segments.data?.length ?? 0) > 0,
+    segments.error?.message ?? "no rows: run pnpm spine:ingest first",
+  );
+
+  const { data: anyRoute } = await A.c.from("routes").select("id").limit(1).single();
+  const forgeJourney = await A.c.from("journeys").insert({
+    source_ref: "jrn_forged",
+    uploaded_by: A.uid,
+    route_id: anyRoute.id,
+    direction: "outbound",
+    started_at: new Date().toISOString(),
+    source: "demo_sim",
+  });
+  check("RIDE-3 a rider cannot insert journeys", !!forgeJourney.error);
+}
+
 // ---- credit transfers (P1) ----
 {
   const send = await A.c.rpc("send_credit", { p_amount_cents: 25 });

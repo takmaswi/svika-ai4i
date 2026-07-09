@@ -17,7 +17,10 @@
     "db:ledger-test": "pnpm --filter @svika/db ledger-test",
     "db:offline-test": "pnpm --filter @svika/db offline-test",
     "spine:ingest": "pnpm --filter @svika/spine ingest",
-    "spine:train": "pnpm --filter @svika/spine train"
+    "spine:train": "pnpm --filter @svika/spine train",
+    "watchdog:eval": "pnpm --filter @svika/spine watchdog:eval",
+    "watchdog:run": "pnpm --filter @svika/spine watchdog:run",
+    "watchdog:bad-day": "pnpm --filter @svika/spine watchdog:bad-day"
   },
   "engines": {
     "node": ">=20"

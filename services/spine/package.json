@@ -10,7 +10,10 @@
     "test": "vitest run",
     "dev": "node --experimental-strip-types src/main.ts",
     "ingest": "node --experimental-strip-types src/ingest/run.ts",
-    "train": "node --experimental-strip-types src/eta/train-run.ts"
+    "train": "node --experimental-strip-types src/eta/train-run.ts",
+    "watchdog:eval": "node --experimental-strip-types src/watchdog/eval-run.ts",
+    "watchdog:run": "node --experimental-strip-types src/watchdog/run.ts",
+    "watchdog:bad-day": "node --experimental-strip-types src/watchdog/run.ts --bad-day"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.49.4",

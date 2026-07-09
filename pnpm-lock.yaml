@@ -138,6 +138,9 @@ importers:
 
   services/spine:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: 2.49.4
+        version: 2.49.4
       '@svika/shared':
         specifier: workspace:*
         version: link:../../packages/shared

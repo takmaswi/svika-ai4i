@@ -8,9 +8,11 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "dev": "node --experimental-strip-types src/main.ts"
+    "dev": "node --experimental-strip-types src/main.ts",
+    "ingest": "node --experimental-strip-types src/ingest/run.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "2.49.4",
     "@svika/shared": "workspace:*"
   },
   "devDependencies": {

@@ -1318,6 +1318,141 @@ export type Database = {
           },
         ]
       }
+      watchdog_day_flags: {
+        Row: {
+          created_at: string
+          data_source: string
+          day: string
+          digital_share: number
+          engine: string
+          explanation_en: string | null
+          explanation_sn: string | null
+          flagged: boolean
+          id: string
+          injected_leakage: string | null
+          owner_id: string
+          peak_share: number
+          route_id: string
+          score: number
+          tickets: number
+          tickets_ratio: number
+          worst_vehicle_ratio: number
+        }
+        Insert: {
+          created_at?: string
+          data_source?: string
+          day: string
+          digital_share: number
+          engine: string
+          explanation_en?: string | null
+          explanation_sn?: string | null
+          flagged: boolean
+          id?: string
+          injected_leakage?: string | null
+          owner_id: string
+          peak_share: number
+          route_id: string
+          score: number
+          tickets: number
+          tickets_ratio: number
+          worst_vehicle_ratio: number
+        }
+        Update: {
+          created_at?: string
+          data_source?: string
+          day?: string
+          digital_share?: number
+          engine?: string
+          explanation_en?: string | null
+          explanation_sn?: string | null
+          flagged?: boolean
+          id?: string
+          injected_leakage?: string | null
+          owner_id?: string
+          peak_share?: number
+          route_id?: string
+          score?: number
+          tickets?: number
+          tickets_ratio?: number
+          worst_vehicle_ratio?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watchdog_day_flags_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "watchdog_day_flags_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watchdog_vehicle_days: {
+        Row: {
+          created_at: string
+          data_source: string
+          day: string
+          digital_tickets: number
+          gross_cents: number
+          id: string
+          injected_leakage: string | null
+          owner_id: string
+          peak_tickets: number
+          route_id: string
+          tickets: number
+          vehicle_label: string
+        }
+        Insert: {
+          created_at?: string
+          data_source?: string
+          day: string
+          digital_tickets: number
+          gross_cents: number
+          id?: string
+          injected_leakage?: string | null
+          owner_id: string
+          peak_tickets: number
+          route_id: string
+          tickets: number
+          vehicle_label: string
+        }
+        Update: {
+          created_at?: string
+          data_source?: string
+          day?: string
+          digital_tickets?: number
+          gross_cents?: number
+          id?: string
+          injected_leakage?: string | null
+          owner_id?: string
+          peak_tickets?: number
+          route_id?: string
+          tickets?: number
+          vehicle_label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watchdog_vehicle_days_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "watchdog_vehicle_days_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       account_balances: {

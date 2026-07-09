@@ -532,5 +532,75 @@ check(
   }
 }
 
+// ---- watchdog synthetic history: owner read only, riders and anon blind ----
+{
+  const anonDays = await anon.from("watchdog_vehicle_days").select("id");
+  check("WD-1 anon sees zero watchdog vehicle days", deniedOrEmpty(anonDays));
+  const anonFlags = await anon.from("watchdog_day_flags").select("id");
+  check("WD-2 anon sees zero watchdog day flags", deniedOrEmpty(anonFlags));
+
+  const riderDays = await A.c.from("watchdog_vehicle_days").select("id");
+  check("WD-3 a rider sees zero watchdog vehicle days", deniedOrEmpty(riderDays));
+  const riderFlags = await A.c.from("watchdog_day_flags").select("id");
+  check("WD-4 a rider sees zero watchdog day flags", deniedOrEmpty(riderFlags));
+
+  const { data: wdRoute } = await A.c.from("routes").select("id").limit(1).single();
+  const riderForge = await A.c.from("watchdog_vehicle_days").insert({
+    owner_id: crypto.randomUUID(),
+    route_id: wdRoute.id,
+    vehicle_label: "Forged kombi",
+    day: "2026-01-01",
+    tickets: 1,
+    digital_tickets: 0,
+    peak_tickets: 0,
+    gross_cents: 150,
+  });
+  check("WD-5 a rider cannot insert watchdog history", !!riderForge.error);
+
+  const ownerCreds = {
+    email: process.env.DEMO_OWNER_EMAIL,
+    password: process.env.DEMO_OWNER_PASSWORD,
+  };
+  if (!ownerCreds.email || !ownerCreds.password) {
+    skip("watchdog owner read path", "DEMO_OWNER credentials not in env");
+  } else {
+    const oc = client();
+    const { data: oAuth, error: oErr } = await oc.auth.signInWithPassword(ownerCreds);
+    if (oErr) {
+      skip("watchdog owner read path", `owner sign in failed: ${oErr.message}`);
+    } else {
+      const { data: ownerRow } = await oc
+        .from("owners")
+        .select("id")
+        .eq("profile_id", oAuth.user.id)
+        .single();
+      const ownFlags = await oc.from("watchdog_day_flags").select("owner_id");
+      check(
+        "WD-6 the owner can read watchdog flags and only their own",
+        !ownFlags.error &&
+          (ownFlags.data ?? []).every((r) => r.owner_id === ownerRow.id),
+        ownFlags.error?.message,
+      );
+      // even the owner has no client write path: rows come from the
+      // simulator (service role) only, so nobody can forge their own history
+      const ownerForge = await oc.from("watchdog_day_flags").insert({
+        owner_id: ownerRow.id,
+        route_id: wdRoute.id,
+        day: "2026-01-01",
+        tickets: 1,
+        tickets_ratio: 1,
+        peak_share: 0.5,
+        digital_share: 0.5,
+        worst_vehicle_ratio: 1,
+        score: 0,
+        flagged: false,
+        engine: "threshold:v1",
+      });
+      check("WD-7 even the owner cannot insert watchdog rows", !!ownerForge.error);
+      await oc.auth.signOut();
+    }
+  }
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

@@ -80,8 +80,10 @@ function cleanVehicleDay(
   };
 }
 
-function drawShare(rng: Rng, band: LeakBand): number {
-  return uniform(rng, band.min, band.max);
+/** The forced demo day always takes the top of the band, so the injected
+ *  bad day is unambiguous on stage instead of a borderline draw. */
+function drawShare(rng: Rng, band: LeakBand, atBandMax: boolean): number {
+  return atBandMax ? band.max : uniform(rng, band.min, band.max);
 }
 
 /** Applies one leakage pattern to a clean day. Returns a new record. */
@@ -90,24 +92,28 @@ export function applyLeak(
   rng: Rng,
   clean: VehicleDay,
   kind: LeakKind,
+  atBandMax = false,
 ): VehicleDay {
   let { tickets, digitalTickets, peakTickets } = clean;
   if (kind === "heavy_skim") {
     const cash = tickets - digitalTickets;
-    const removed = Math.min(Math.round(drawShare(rng, config.heavySkim) * cash), cash);
+    const removed = Math.min(
+      Math.round(drawShare(rng, config.heavySkim, atBandMax) * cash),
+      cash,
+    );
     peakTickets -= Math.round((peakTickets * removed) / Math.max(tickets, 1));
     tickets -= removed;
   } else if (kind === "peak_skim") {
     const peakCash = Math.round(peakTickets * (1 - digitalTickets / Math.max(tickets, 1)));
     const removed = Math.min(
-      Math.round(drawShare(rng, config.peakSkim) * peakTickets),
+      Math.round(drawShare(rng, config.peakSkim, atBandMax) * peakTickets),
       peakCash,
     );
     tickets -= removed;
     peakTickets -= removed;
   } else {
     // short_day: recording stops mid afternoon, everything after is unwritten
-    const share = drawShare(rng, config.shortDay);
+    const share = drawShare(rng, config.shortDay, atBandMax);
     const removed = Math.round(tickets * share);
     digitalTickets -= Math.round(digitalTickets * share);
     // the evening peak falls after the cutoff, so peak loses more than average
@@ -156,7 +162,7 @@ export function simulateHistory(options: SimulateOptions): VehicleDay[] {
       const clean = cleanVehicleDay(config, rng, day, label);
       rows.push(
         leak && leak.vehicleLabels.includes(label)
-          ? applyLeak(config, rng, clean, leak.kind)
+          ? applyLeak(config, rng, clean, leak.kind, forced)
           : clean,
       );
     }

@@ -11,7 +11,7 @@ import type {
   CommuteAlertResult,
   AnomalyRequest,
   AnomalyResult,
-} from "./types";
+} from "./types.ts";
 
 /** Naive average-speed baseline: a flat per-leg time nudged by rush hours. */
 const BASE_LEG_SECONDS = 15 * 60;

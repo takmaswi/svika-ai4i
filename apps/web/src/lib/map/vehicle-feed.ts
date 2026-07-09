@@ -46,16 +46,24 @@ export interface SimulatedVehicle {
 
 const reverse = (deg: number) => (deg + 180) % 360;
 
+export interface SimulatedTravel {
+  /** Metres along the outbound line, regardless of travel direction. */
+  meters: number;
+  direction: CorridorDirectionName;
+}
+
 /**
- * Where a simulated kombi is after elapsedMs: it drives the line out, dwells
- * at the far rank (already turned to face home), drives back, dwells at the
- * near rank, and repeats.
+ * How far along the line a simulated kombi is after elapsedMs: it drives the
+ * line out, dwells at the far rank (already turned to face home), drives
+ * back, dwells at the near rank, and repeats. This is the single source of
+ * truth for the simulation; the map draws it and the server side ETA caller
+ * measures from it, so the two always agree on where a kombi is.
  */
-export function simulatedPositionAt(
+export function simulatedTravelAt(
   config: SimulationConfig,
   vehicle: SimulatedVehicle,
   elapsedMs: number,
-): VehiclePosition {
+): SimulatedTravel {
   const speed = config.speedMps ?? DEFAULT_KOMBI_SPEED_MPS;
   const { metrics } = config;
   const travelMs = (metrics.totalMeters / speed) * 1000;
@@ -67,39 +75,34 @@ export function simulatedPositionAt(
     (vehicle.headingOut ? 0 : travelMs + dwellMs);
   const t = (((elapsedMs + offsetMs) % cycleMs) + cycleMs) % cycleMs;
 
-  const shared = { id: vehicle.id, routeCode: config.routeCode };
-
   if (t < travelMs) {
-    const d = (speed * t) / 1000;
-    return {
-      ...shared,
-      direction: "outbound",
-      lngLat: pointAtDistance(metrics, d),
-      headingDeg: headingAtDistance(metrics, d),
-    };
+    return { direction: "outbound", meters: (speed * t) / 1000 };
   }
   if (t < travelMs + dwellMs) {
-    return {
-      ...shared,
-      direction: "inbound",
-      lngLat: pointAtDistance(metrics, metrics.totalMeters),
-      headingDeg: reverse(headingAtDistance(metrics, metrics.totalMeters)),
-    };
+    return { direction: "inbound", meters: metrics.totalMeters };
   }
   if (t < 2 * travelMs + dwellMs) {
-    const d = metrics.totalMeters - (speed * (t - travelMs - dwellMs)) / 1000;
     return {
-      ...shared,
       direction: "inbound",
-      lngLat: pointAtDistance(metrics, d),
-      headingDeg: reverse(headingAtDistance(metrics, d)),
+      meters: metrics.totalMeters - (speed * (t - travelMs - dwellMs)) / 1000,
     };
   }
+  return { direction: "outbound", meters: 0 };
+}
+
+export function simulatedPositionAt(
+  config: SimulationConfig,
+  vehicle: SimulatedVehicle,
+  elapsedMs: number,
+): VehiclePosition {
+  const travel = simulatedTravelAt(config, vehicle, elapsedMs);
+  const heading = headingAtDistance(config.metrics, travel.meters);
   return {
-    ...shared,
-    direction: "outbound",
-    lngLat: pointAtDistance(metrics, 0),
-    headingDeg: headingAtDistance(metrics, 0),
+    id: vehicle.id,
+    routeCode: config.routeCode,
+    direction: travel.direction,
+    lngLat: pointAtDistance(config.metrics, travel.meters),
+    headingDeg: travel.direction === "inbound" ? reverse(heading) : heading,
   };
 }
 
@@ -113,11 +116,13 @@ export class SimulatedVehicleFeed implements VehicleFeed {
   constructor(
     private readonly config: SimulationConfig,
     private readonly vehicles: SimulatedVehicle[],
-    options: { tickMs?: number; now?: () => number } = {},
+    options: { tickMs?: number; now?: () => number; epochMs?: number } = {},
   ) {
     this.tickMs = options.tickMs ?? 1000;
     this.now = options.now ?? Date.now;
-    this.startedAt = this.now();
+    // A fixed epoch makes the simulation a function of wall clock time, so
+    // the server side ETA caller lands on the same positions the map shows.
+    this.startedAt = options.epochMs ?? this.now();
   }
 
   private positions(): VehiclePosition[] {

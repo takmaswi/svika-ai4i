@@ -4,6 +4,7 @@ import {
   DEFAULT_KOMBI_SPEED_MPS,
   SimulatedVehicleFeed,
   simulatedPositionAt,
+  simulatedTravelAt,
   type SimulatedVehicle,
   type SimulationConfig,
 } from "../src/lib/map/vehicle-feed";
@@ -76,6 +77,45 @@ describe("simulatedPositionAt", () => {
   test("ships a field-derived default speed", () => {
     // 13 466 m in 27 riding minutes, from corridor.summary.json
     expect(DEFAULT_KOMBI_SPEED_MPS).toBeCloseTo(13466 / (27 * 60), 2);
+  });
+});
+
+describe("simulatedTravelAt", () => {
+  test("agrees with the drawn position: same phase, same metres", () => {
+    for (const elapsed of [0, travelMs / 2, travelMs + dwellMs / 2, travelMs + dwellMs + travelMs / 4]) {
+      const travel = simulatedTravelAt(config, kombi, elapsed);
+      const position = simulatedPositionAt(config, kombi, elapsed);
+      expect(travel.direction).toBe(position.direction);
+    }
+  });
+
+  test("reports metres along the outbound line in both directions", () => {
+    expect(simulatedTravelAt(config, kombi, travelMs / 2).meters).toBeCloseTo(
+      metrics.totalMeters / 2,
+      6,
+    );
+    const homeward = simulatedTravelAt(config, kombi, travelMs + dwellMs + travelMs / 2);
+    expect(homeward.direction).toBe("inbound");
+    expect(homeward.meters).toBeCloseTo(metrics.totalMeters / 2, 6);
+  });
+
+  test("two feeds sharing an epoch agree no matter when each started", () => {
+    // this is what keeps the server's ETA and the map marker on the same
+    // kombi: position is a function of wall clock time, not of mount time
+    let clock = 50_000;
+    const feedA = new SimulatedVehicleFeed(config, [kombi], { now: () => clock, epochMs: 0 });
+    clock = 80_000; // the second feed is created 30 s later
+    const feedB = new SimulatedVehicleFeed(config, [kombi], { now: () => clock, epochMs: 0 });
+    let a: number[] = [];
+    let b: number[] = [];
+    feedA.subscribe((p) => {
+      a = p.map((x) => x.lngLat[1]);
+    })();
+    feedB.subscribe((p) => {
+      b = p.map((x) => x.lngLat[1]);
+    })();
+    expect(a).toEqual(b);
+    expect(a).toHaveLength(1);
   });
 });
 

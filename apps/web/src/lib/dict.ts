@@ -237,6 +237,14 @@ export const dict = {
     en: "demo estimate",
     sn: "fungidziro yekuratidzira",
   },
+  "home.etaFromRide": {
+    en: "from 1 recorded ride",
+    sn: "kubva parwendo 1 rwakarekodhwa",
+  },
+  "home.etaFromRides": {
+    en: "from {count} recorded rides",
+    sn: "kubva panzendo {count} dzakarekodhwa",
+  },
 
   "plan.saveTitle": {
     en: "Save this trip for your home map",

@@ -8,13 +8,9 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
-import {
-  CORRIDOR_ROUTE_CODE,
-  corridorLine,
-  corridorMetrics,
-  corridorStops,
-} from "@/lib/map/corridor-data";
+import { corridorLine, corridorStops } from "@/lib/map/corridor-data";
 import { lerpHeading, lerpLngLat, type LngLat } from "@/lib/map/geometry";
+import { SIM_EPOCH_MS, SIM_VEHICLES, simConfig } from "@/lib/map/sim-config";
 import { mapStyleUrl, warmSvikaStyle } from "@/lib/map/style";
 import {
   SimulatedVehicleFeed,
@@ -29,7 +25,6 @@ const BONE = "#FFFCEF";
 const MOSS = "#4D5C44";
 
 const TICK_MS = 1000;
-const DWELL_SECONDS = 20;
 
 export interface LiveMapLabels {
   ariaLabel: string;
@@ -188,18 +183,12 @@ export function LiveMap({ labels }: LiveMapProps) {
         addCorridorLayers(map);
         setReady(true);
 
-        const feed: VehicleFeed = new SimulatedVehicleFeed(
-          {
-            routeCode: CORRIDOR_ROUTE_CODE,
-            metrics: corridorMetrics,
-            dwellSeconds: DWELL_SECONDS,
-          },
-          [
-            { id: "sim-1", startMeters: corridorMetrics.totalMeters * 0.12, headingOut: true },
-            { id: "sim-2", startMeters: corridorMetrics.totalMeters * 0.55, headingOut: false },
-          ],
-          { tickMs: TICK_MS },
-        );
+        // The fixed epoch keeps these markers in step with the server side
+        // ETA caller, which measures from the same simulated fleet.
+        const feed: VehicleFeed = new SimulatedVehicleFeed(simConfig, SIM_VEHICLES, {
+          tickMs: TICK_MS,
+          epochMs: SIM_EPOCH_MS,
+        });
 
         unsubscribe = feed.subscribe((positions) => {
           if (!map || disposed) return;

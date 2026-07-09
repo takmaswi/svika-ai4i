@@ -12,7 +12,9 @@ import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
-import { etaProvider } from "@/lib/map/eta";
+import { CORRIDOR_ROUTE_CODE } from "@/lib/map/corridor-data";
+import type { EtaEstimate } from "@/lib/map/eta";
+import { homeEtaProvider } from "@/lib/map/eta-home";
 
 interface SavedTripRow {
   id: string;
@@ -32,6 +34,14 @@ interface TicketRow {
   from_stop: { name: string } | null;
   to_stop: { name: string } | null;
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
+}
+
+// Every rendered estimate says what it stands on: recorded rides for the
+// real thing, the demo label for the mock twin.
+function etaBasisLabel(lang: Awaited<ReturnType<typeof getLang>>, eta: EtaEstimate): string {
+  if (eta.isMock) return t(lang, "home.etaDemo");
+  const key = eta.rides === 1 ? "home.etaFromRide" : "home.etaFromRides";
+  return t(lang, key).replace("{count}", String(eta.rides));
 }
 
 // Rider home: the live map is the whole screen; everything else floats over
@@ -56,7 +66,7 @@ export default async function RiderHome({
 
   const role = await resolveRole(supabase, user.id);
 
-  const [balanceRes, savedRes, ticketsRes] = await Promise.all([
+  const [balanceRes, savedRes, ticketsRes, corridorRes] = await Promise.all([
     supabase
       .from("account_balances")
       .select("balance_cents")
@@ -77,17 +87,26 @@ export default async function RiderHome({
       .eq("kind", "fare")
       .order("purchased_at", { ascending: false })
       .limit(8),
+    supabase
+      .from("route_stops")
+      .select("stop_id, seq, routes!inner(code)")
+      .eq("routes.code", CORRIDOR_ROUTE_CODE)
+      .eq("direction", "outbound")
+      .order("seq"),
   ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
   const savedTrips = (savedRes.data ?? []) as unknown as SavedTripRow[];
   const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
 
-  // the "your kombi is N minutes away" slot: mock ETA adapter until Spine 1
-  // lands, and every rendering carries the demo label
-  const etaByTrip = new Map<string, number>();
+  // the "your kombi is N minutes away" slot: Spine 1 answers with a number
+  // built from recorded rides (measured against the map's simulated kombi);
+  // the mock twin serves off corridor trips or a downed spine, labelled demo
+  const corridorStopIds = (corridorRes.data ?? []).map((r) => r.stop_id as string);
+  const etaProvider = homeEtaProvider(corridorStopIds);
+  const etaByTrip = new Map<string, EtaEstimate>();
   for (const trip of savedTrips) {
-    etaByTrip.set(trip.id, await etaProvider.etaMinutes(trip.from_stop_id));
+    etaByTrip.set(trip.id, await etaProvider.estimate(trip.from_stop_id, trip.to_stop_id));
   }
 
   // statuses only for the tickets on screen; the rider's full history is
@@ -181,29 +200,32 @@ export default async function RiderHome({
           <section className="home-picks" aria-label={t(lang, "home.yourTrips")}>
             <h2 className="svika-meta tickets-heading">{t(lang, "home.yourTrips")}</h2>
             <ul className="home-pick-list">
-              {savedTrips.map((trip) => (
-                <li key={trip.id}>
-                  <Link
-                    className="home-pick svika-card touch-target"
-                    href={`/app/plan?from=${trip.from_stop_id}&to=${trip.to_stop_id}`}
-                  >
-                    <span className="home-pick-body">
-                      <span className="svika-body home-pick-name">{trip.nickname}</span>
-                      <span className="svika-meta">
-                        {trip.from_stop?.name} → {trip.to_stop?.name}
+              {savedTrips.map((trip) => {
+                const eta = etaByTrip.get(trip.id)!;
+                return (
+                  <li key={trip.id}>
+                    <Link
+                      className="home-pick svika-card touch-target"
+                      href={`/app/plan?from=${trip.from_stop_id}&to=${trip.to_stop_id}`}
+                    >
+                      <span className="home-pick-body">
+                        <span className="svika-body home-pick-name">{trip.nickname}</span>
+                        <span className="svika-meta">
+                          {trip.from_stop?.name} → {trip.to_stop?.name}
+                        </span>
                       </span>
-                    </span>
-                    <span className="home-pick-eta">
-                      <span className="svika-mono-code">
-                        ~{etaByTrip.get(trip.id)} {t(lang, "common.minutes")}
+                      <span className="home-pick-eta">
+                        <span className="svika-mono-code">
+                          ~{eta.minutes} {t(lang, "common.minutes")}
+                        </span>
+                        <span className="svika-meta home-pick-demo">
+                          {etaBasisLabel(lang, eta)}
+                        </span>
                       </span>
-                      <span className="svika-meta home-pick-demo">
-                        {t(lang, "home.etaDemo")}
-                      </span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         )}

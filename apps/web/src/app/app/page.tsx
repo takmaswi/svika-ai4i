@@ -83,7 +83,7 @@ export default async function RiderHome({
   const savedTrips = (savedRes.data ?? []) as unknown as SavedTripRow[];
   const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
 
-  // the "your kombi is N minutes away" slot: mock ETA adapter until Spine 2
+  // the "your kombi is N minutes away" slot: mock ETA adapter until Spine 1
   // lands, and every rendering carries the demo label
   const etaByTrip = new Map<string, number>();
   for (const trip of savedTrips) {

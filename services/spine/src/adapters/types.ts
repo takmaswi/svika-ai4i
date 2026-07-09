@@ -1,4 +1,6 @@
-// The three AI spines behind a single interface. Every implementation (mock or,
+// The three AI spines behind a single interface. Canonical numbering, used
+// everywhere in code and docs: Spine 1 arrival prediction (ETA), Spine 2
+// commute alerts, Spine 3 revenue anomaly. Every implementation (mock or,
 // later, a trained model served on ZCHPC CCE) is swappable behind this contract,
 // so the ride path never calls a live vendor directly and the demo never dies
 // because a provider is down. Each real spine must beat a named baseline on held

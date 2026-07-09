@@ -26,7 +26,7 @@ Every feature is labelled in the
 Tier 1 real and working · Tier 2 clickable with fixed backend · Tier 3 slides only, never in code.
 Two things on the map are Tier 2 today and say so on screen: kombi movement
 is simulated along the real road, and arrival estimates come from a labelled
-mock until the ETA model (Spine 2) lands.
+mock until the ETA model (Spine 1, arrival prediction) lands.
 
 ## Workspace layout
 

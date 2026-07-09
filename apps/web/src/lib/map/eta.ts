@@ -1,4 +1,4 @@
-// Arrival estimates behind an adapter. The real ETA model is Spine 2 of the
+// Arrival estimates behind an adapter. The real ETA model is Spine 1 of the
 // AI layer and is not built yet; MockEtaProvider is the clearly-declared
 // stand-in so the home surface can hold the "your kombi is N minutes away"
 // slot without faking a prediction. Every rendering of a mock ETA must carry

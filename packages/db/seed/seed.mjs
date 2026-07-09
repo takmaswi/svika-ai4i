@@ -131,10 +131,46 @@ async function ensureConductor(uid, ownerId) {
     .maybeSingle();
   if (data) return data.id;
   // commission stays 0: real rates come from fieldwork, never invented here.
-  const { error } = await admin
+  const { data: ins, error } = await admin
     .from("conductors")
-    .insert({ profile_id: uid, owner_id: ownerId, commission_rate_bps: 0 });
+    .insert({ profile_id: uid, owner_id: ownerId, commission_rate_bps: 0 })
+    .select("id")
+    .single();
   if (error) throw error;
+  return ins.id;
+}
+
+// a conductor clears fares only on routes they are assigned to work
+// (migration 0018); assignments are service role writes, so the seed is
+// the only place they are created for rehearsal
+async function ensureAssignment(conductorId, routeCode) {
+  const { data: route } = await admin
+    .from("routes")
+    .select("id")
+    .eq("code", routeCode)
+    .maybeSingle();
+  if (!route) return;
+  const { data } = await admin
+    .from("conductor_route_assignments")
+    .select("id, active")
+    .eq("conductor_id", conductorId)
+    .eq("route_id", route.id)
+    .maybeSingle();
+  if (data) {
+    if (!data.active) {
+      const { error } = await admin
+        .from("conductor_route_assignments")
+        .update({ active: true })
+        .eq("id", data.id);
+      if (error) throw error;
+    }
+    return;
+  }
+  const { error } = await admin
+    .from("conductor_route_assignments")
+    .insert({ conductor_id: conductorId, route_id: route.id });
+  if (error) throw error;
+  console.log(`assigned conductor ${conductorId} to ${routeCode}`);
 }
 
 // rehearsals and e2e runs walk the failure paths on purpose; reset the demo
@@ -376,11 +412,33 @@ const ids = {};
 for (const p of people) ids[p.key] = await ensureUser(p);
 
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
-await ensureConductor(ids.CONDUCTOR, ownerId);
+const demoConductorId = await ensureConductor(ids.CONDUCTOR, ownerId);
 await resetAttemptLog(ids.CONDUCTOR);
 await topUpRider(ids.RIDER);
 await refillTestRiders();
 await seedNetwork();
+
+// route assignments: the demo hwindi works the two corridors the rehearsal
+// and e2e flows drive; the RLS test conductor covers the synthetic TEST-01
+// route plus the corridor the offline proof suite replays
+for (const code of ["HEIGHTS-REZENDE", "WESTGATE-COPA"]) {
+  await ensureAssignment(demoConductorId, code);
+}
+if (process.env.TEST_CONDUCTOR_EMAIL) {
+  const testUser = await findUserByEmail(process.env.TEST_CONDUCTOR_EMAIL);
+  if (testUser) {
+    const { data: testConductor } = await admin
+      .from("conductors")
+      .select("id")
+      .eq("profile_id", testUser.id)
+      .maybeSingle();
+    if (testConductor) {
+      for (const code of ["TEST-01", "HEIGHTS-REZENDE"]) {
+        await ensureAssignment(testConductor.id, code);
+      }
+    }
+  }
+}
 
 console.log(
   "\nseed complete: rider, owner, conductor and network ready for rehearsal.",

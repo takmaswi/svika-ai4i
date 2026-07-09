@@ -285,6 +285,107 @@ check(
   check("rider cannot read the redemption attempt log", deniedOrEmpty(attempts));
 }
 
+// ---- conductor route assignment (migration 0018) ----
+// A conductor works only the routes an active assignment says they work.
+// Three named proofs: own route serves the cache, another route is refused
+// and audit logged, and a rider gets nothing from the conductor RPCs.
+{
+  // ASSIGN-1: own route works (the seed assigns the test conductor TEST-01)
+  const own = await C.c.rpc("pull_offline_cache", {
+    p_route: routeId,
+    p_direction: "outbound",
+  });
+  check(
+    "ASSIGN-1 conductor pulls the cache for their own assigned route",
+    !own.error &&
+      own.data.length > 0 &&
+      own.data.every((r) => r.outcome === "ok" && !("code" in r)),
+    own.error?.message,
+  );
+
+  // ASSIGN-2: a seeded route the conductor is NOT assigned to
+  const { data: otherRows } = await anon
+    .from("routes")
+    .select("id")
+    .eq("code", "MARKETSQ-AVONDALE");
+  const otherRouteId = otherRows?.[0]?.id;
+  if (!otherRouteId) {
+    skip("ASSIGN-2 unassigned route checks", "MARKETSQ-AVONDALE is not seeded");
+  } else {
+    const refusedPull = await C.c.rpc("pull_offline_cache", {
+      p_route: otherRouteId,
+      p_direction: "outbound",
+    });
+    check(
+      "ASSIGN-2 unassigned route cache pull is refused with a coarse reason",
+      !refusedPull.error &&
+        refusedPull.data.length === 1 &&
+        refusedPull.data[0].outcome === "route_not_assigned" &&
+        refusedPull.data[0].ticket_id === null,
+      refusedPull.error?.message,
+    );
+
+    const { data: pullLog } = await C.c
+      .from("cache_pulls")
+      .select("outcome, row_count")
+      .eq("route_id", otherRouteId)
+      .order("pulled_at", { ascending: false })
+      .limit(1);
+    check(
+      "ASSIGN-2 the refused pull is audit logged",
+      pullLog?.length === 1 &&
+        pullLog[0].outcome === "refused_unassigned" &&
+        pullLog[0].row_count === 0,
+    );
+
+    const refusedRedeem = await C.c.rpc("redeem_board_code", {
+      p_route: otherRouteId,
+      p_direction: "outbound",
+      p_code: "1234",
+    });
+    if (!refusedRedeem.error && refusedRedeem.data[0].outcome === "rate_limited") {
+      skip(
+        "ASSIGN-2 unassigned route redemption checks",
+        "conductor is rate limited from a previous run; re-run in 10 minutes",
+      );
+    } else {
+      check(
+        "ASSIGN-2 unassigned route redemption is refused, code untouched",
+        !refusedRedeem.error &&
+          refusedRedeem.data[0].outcome === "route_not_assigned" &&
+          refusedRedeem.data[0].ticket_id === null,
+        refusedRedeem.error?.message ?? refusedRedeem.data?.[0]?.outcome,
+      );
+      const { data: attemptLog } = await C.c
+        .from("code_redemption_attempts")
+        .select("outcome")
+        .eq("route_id", otherRouteId)
+        .order("attempted_at", { ascending: false })
+        .limit(1);
+      check(
+        "ASSIGN-2 the refused redemption attempt is logged",
+        attemptLog?.length === 1 && attemptLog[0].outcome === "route_not_assigned",
+      );
+    }
+  }
+
+  // ASSIGN-3: a rider is refused outright, and sees no assignments
+  const riderPull = await A.c.rpc("pull_offline_cache", {
+    p_route: routeId,
+    p_direction: "outbound",
+  });
+  check(
+    "ASSIGN-3 a rider cannot pull any offline cache",
+    !!riderPull.error,
+    riderPull.error?.message,
+  );
+  const riderAssignments = await A.c.from("conductor_route_assignments").select("id");
+  check(
+    "ASSIGN-3 a rider sees no route assignments",
+    deniedOrEmpty(riderAssignments),
+  );
+}
+
 // ---- credit transfers (P1) ----
 {
   const send = await A.c.rpc("send_credit", { p_amount_cents: 25 });

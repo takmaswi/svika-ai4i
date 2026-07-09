@@ -141,6 +141,7 @@ export type Database = {
           conductor_id: string
           direction: Database["public"]["Enums"]["route_direction"]
           id: number
+          outcome: string
           pulled_at: string
           route_id: string
           row_count: number
@@ -149,6 +150,7 @@ export type Database = {
           conductor_id: string
           direction: Database["public"]["Enums"]["route_direction"]
           id?: never
+          outcome?: string
           pulled_at?: string
           route_id: string
           row_count: number
@@ -157,6 +159,7 @@ export type Database = {
           conductor_id?: string
           direction?: Database["public"]["Enums"]["route_direction"]
           id?: never
+          outcome?: string
           pulled_at?: string
           route_id?: string
           row_count?: number
@@ -239,6 +242,45 @@ export type Database = {
             columns: ["ticket_id"]
             isOneToOne: false
             referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conductor_route_assignments: {
+        Row: {
+          active: boolean
+          conductor_id: string
+          created_at: string
+          id: string
+          route_id: string
+        }
+        Insert: {
+          active?: boolean
+          conductor_id: string
+          created_at?: string
+          id?: string
+          route_id: string
+        }
+        Update: {
+          active?: boolean
+          conductor_id?: string
+          created_at?: string
+          id?: string
+          route_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conductor_route_assignments_conductor_id_fkey"
+            columns: ["conductor_id"]
+            isOneToOne: false
+            referencedRelation: "conductors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conductor_route_assignments_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
             referencedColumns: ["id"]
           },
         ]
@@ -1180,6 +1222,7 @@ export type Database = {
           code_salt: string
           fare_cents: number
           kind: string
+          outcome: string
           payment_method: string
           purpose: string
           server_time: string

@@ -11,22 +11,14 @@
 //   pnpm spine:ingest -- --route CODE --source real_field_ride <bundle.json...>
 
 import { createClient } from "@supabase/supabase-js";
-import { existsSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { parseBundle } from "./bundle.ts";
 import { buildIngestPlan, type RideSource } from "./plan.ts";
 import type { OrderedStop } from "./segments.ts";
+import { loadRepoEnv, repoRoot } from "../lib/env.ts";
 
-const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "..");
-for (const f of [".env.local", ".env"]) {
-  const p = join(repoRoot, f);
-  if (!existsSync(p)) continue;
-  for (const line of readFileSync(p, "utf8").split("\n")) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (m && m[1] && process.env[m[1]] === undefined) process.env[m[1]] = m[2];
-  }
-}
+loadRepoEnv();
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;

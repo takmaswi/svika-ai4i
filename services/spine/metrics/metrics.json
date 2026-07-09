@@ -1,0 +1,18 @@
+{
+  "journeys": 2,
+  "segments": 20,
+  "baseline": {
+    "maeSeconds": 96.4,
+    "predictions": 20
+  },
+  "model": {
+    "maeSeconds": 96.4,
+    "predictions": 20
+  },
+  "generatedAt": "2026-07-09T21:32:49.535Z",
+  "routeCode": "HEIGHTS-REZENDE",
+  "dataSource": "real_field_ride",
+  "minJourneysForPromotion": 10,
+  "verdict": "insufficient_data",
+  "served": "baseline:v1"
+}

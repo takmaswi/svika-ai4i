@@ -16,7 +16,8 @@
     "auth:verify": "pnpm --filter web auth:verify",
     "db:ledger-test": "pnpm --filter @svika/db ledger-test",
     "db:offline-test": "pnpm --filter @svika/db offline-test",
-    "spine:ingest": "pnpm --filter @svika/spine ingest"
+    "spine:ingest": "pnpm --filter @svika/spine ingest",
+    "spine:train": "pnpm --filter @svika/spine train"
   },
   "engines": {
     "node": ">=20"

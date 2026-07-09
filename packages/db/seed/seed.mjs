@@ -418,10 +418,11 @@ await topUpRider(ids.RIDER);
 await refillTestRiders();
 await seedNetwork();
 
-// route assignments: the demo hwindi works the two corridors the rehearsal
-// and e2e flows drive; the RLS test conductor covers the synthetic TEST-01
-// route plus the corridor the offline proof suite replays
-for (const code of ["HEIGHTS-REZENDE", "WESTGATE-COPA"]) {
+// route assignments: the demo hwindi works every corridor the rehearsal
+// and e2e flows drive (owner.spec clears a MARKETSQ-AVONDALE fare); the RLS
+// test conductor covers the synthetic TEST-01 route plus the corridor the
+// offline proof suite replays
+for (const code of ["HEIGHTS-REZENDE", "WESTGATE-COPA", "MARKETSQ-AVONDALE"]) {
   await ensureAssignment(demoConductorId, code);
 }
 if (process.env.TEST_CONDUCTOR_EMAIL) {

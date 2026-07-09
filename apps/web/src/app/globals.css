@@ -529,6 +529,32 @@ body {
 .owner-table tr:last-child td {
   border-bottom: none;
 }
+.watchdog-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.watchdog-label {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.watchdog-flags {
+  display: grid;
+  gap: var(--space-3);
+}
+.watchdog-flag {
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: var(--space-3);
+}
+.watchdog-flag:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.watchdog-day {
+  margin: 0 0 var(--space-1);
+  color: var(--color-ink-mute);
+}
 
 /* --- authenticated shell ------------------------------------------------ */
 .shell-card {

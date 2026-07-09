@@ -218,6 +218,27 @@ export const dict = {
     en: "Every figure comes straight from the ledger. Cash fares stay with the crew and are not counted here.",
     sn: "Nhamba dzese dzinobva mubhuku remari. Cash inosara nevashandi haiverengwi pano.",
   },
+  "owner.watchdog": { en: "Revenue watchdog", sn: "Murindi wemari" },
+  "owner.watchdogSimulated": {
+    en: "Simulated history",
+    sn: "Nhoroondo yakagadzirwa",
+  },
+  "owner.watchdogSummary": {
+    en: "{count} simulated days scanned, {flagged} flagged",
+    sn: "Mazuva {count} akaongororwa, {flagged} akadomwa",
+  },
+  "owner.watchdogNone": {
+    en: "No unusual days in the scanned history.",
+    sn: "Hapana zuva risina kujairika pane akaongororwa.",
+  },
+  "owner.watchdogEmpty": {
+    en: "No simulated history loaded yet.",
+    sn: "Hapasati pane nhoroondo yakagadzirwa.",
+  },
+  "owner.watchdogNote": {
+    en: "Flags describe patterns, never a person. This card runs on clearly labelled simulated history until the network has months of real fares.",
+    sn: "Zviratidzo zvinotaura maitiro, kwete munhu. Kadhi iri rinoshanda nenhoroondo yakagadzirwa kusvika network yava nemwedzi yemari chaiyo.",
+  },
 
   "home.sheetHint": {
     en: "Type in Shona or English.",

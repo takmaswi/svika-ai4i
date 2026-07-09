@@ -15,6 +15,15 @@ interface RevenueRow {
   net_cents: number;
 }
 
+interface WatchdogFlagRow {
+  day: string;
+  flagged: boolean;
+  explanation_en: string | null;
+  explanation_sn: string | null;
+}
+
+const WATCHDOG_FLAGS_SHOWN = 3;
+
 // The owner ledger view: settled digital fares aggregated per day and route,
 // every number derived from the double entry ledger at read time. Audit
 // language talks about patterns and totals, never about a named person.
@@ -30,18 +39,28 @@ export default async function OwnerPage() {
   const role = await resolveRole(supabase, user.id);
   if (role !== "owner") redirect("/app");
 
-  const [summaryRes, balanceRes] = await Promise.all([
+  const [summaryRes, balanceRes, watchdogRes] = await Promise.all([
     supabase.rpc("owner_revenue_summary"),
     supabase
       .from("account_balances")
       .select("balance_cents")
       .eq("kind", "owner_wallet")
       .maybeSingle(),
+    supabase
+      .from("watchdog_day_flags")
+      .select("day, flagged, explanation_en, explanation_sn")
+      .order("day", { ascending: false }),
   ]);
 
   const rows = (summaryRes.data ?? []) as RevenueRow[];
   const balance = balanceRes.data?.balance_cents ?? 0;
   const totalNet = rows.reduce((sum, r) => sum + r.net_cents, 0);
+
+  const watchdogDays = (watchdogRes.data ?? []) as WatchdogFlagRow[];
+  const flaggedDays = watchdogDays.filter((d) => d.flagged);
+  const watchdogSummary = t(lang, "owner.watchdogSummary")
+    .replace("{count}", String(watchdogDays.length))
+    .replace("{flagged}", String(flaggedDays.length));
 
   return (
     <main className="shell">
@@ -97,6 +116,38 @@ export default async function OwnerPage() {
           </div>
         )}
         <p className="svika-meta empty-note">{t(lang, "owner.note")}</p>
+      </section>
+
+      <section className="svika-card wallet-panel" data-testid="owner-watchdog">
+        <div className="watchdog-head">
+          <h2 className="svika-headline">{t(lang, "owner.watchdog")}</h2>
+          <span className="svika-meta watchdog-label">
+            {t(lang, "owner.watchdogSimulated")}
+          </span>
+        </div>
+        {watchdogDays.length === 0 ? (
+          <p className="svika-body empty-note">{t(lang, "owner.watchdogEmpty")}</p>
+        ) : (
+          <>
+            <p className="svika-meta">{watchdogSummary}</p>
+            {flaggedDays.length === 0 ? (
+              <p className="svika-body empty-note">{t(lang, "owner.watchdogNone")}</p>
+            ) : (
+              <div className="watchdog-flags">
+                {flaggedDays.slice(0, WATCHDOG_FLAGS_SHOWN).map((d) => (
+                  <div key={d.day} className="watchdog-flag">
+                    <p className="svika-mono-code watchdog-day">{d.day}</p>
+                    <p className="svika-body">
+                      {(lang === "sn" ? d.explanation_sn : d.explanation_en) ??
+                        d.explanation_en}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+        <p className="svika-meta empty-note">{t(lang, "owner.watchdogNote")}</p>
       </section>
     </main>
   );

@@ -62,6 +62,14 @@ test("a settled wallet fare lands in the owner's revenue view", async ({ page })
   const m = balanceText.match(/\$(\d+)\.(\d{2})/);
   const balanceCents = Number(m![1]) * 100 + Number(m![2]);
   expect(balanceCents).toBeGreaterThanOrEqual(fare); // commission is 0 in seed
+
+  // the watchdog card is present and labelled as simulated history, whether
+  // or not the synthetic history has been loaded (pnpm watchdog:run)
+  const watchdog = page.getByTestId("owner-watchdog");
+  await expect(watchdog).toBeVisible();
+  await expect(watchdog).toContainText("Revenue watchdog");
+  await expect(watchdog).toContainText("Simulated history");
+  await expect(watchdog).toContainText("never a person");
 });
 
 test("a rider cannot open the owner view", async ({ page }) => {

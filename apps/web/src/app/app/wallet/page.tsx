@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { sendCredit, claimCredit, cancelTransfer } from "@/lib/actions";
 import { formatUsd } from "@svika/shared";
 import { StoryBar } from "@/components/story/StoryBar";
+import { HomeIcon, KombiIcon, PlusIcon, RidesIcon, WalletIcon } from "@/components/icons";
 
 interface PostingRow {
   amount_cents: number;
@@ -20,7 +21,8 @@ interface TransferRow {
   transfer_events: { event_type: string; created_at: string }[];
 }
 
-// The wallet: ledger derived balance, history, and the transfer flows.
+// The wallet (reference screen 5): the balance as the dark feature card with
+// the change kept chip, ledger history as icon rows, transfer flows intact.
 // Sending parks credit in escrow under a claim code; the code lives here,
 // never in a URL.
 export default async function WalletPage({
@@ -92,46 +94,37 @@ export default async function WalletPage({
   return (
     <main className="shell">
       <StoryBar params={params} lang={lang} />
-      <header className="shell-top">
-        <Link href="/app" className="auth-link">
-          ← {t(lang, "common.back")}
-        </Link>
-      </header>
 
-      <section className="wallet-strip svika-card svika-animate-fade-up">
-        <div>
-          <p className="svika-meta">{t(lang, "wallet.title")}</p>
-          <p className="wallet-amount svika-mono-code" data-testid="wallet-balance">
-            {formatUsd(balance)}
-          </p>
-        </div>
-      </section>
+      <h1 className="svika-headline">{t(lang, "wallet.title")}</h1>
 
-      <section className="svika-card wallet-panel wallet-change" data-testid="change-story">
-        <div className="watchdog-head">
-          <h2 className="svika-headline wallet-change-title">
-            <span className="svika-pulse-dot" aria-hidden /> {t(lang, "wallet.changeTitle")}
-          </h2>
-          {changeTotal > 0 && (
-            <span className="svika-meta watchdog-label">
-              {t(lang, "wallet.changeTotal")}
-            </span>
+      <section
+        className="feature-card svika-animate-fade-up"
+        data-testid="change-story"
+      >
+        <p className="feature-label">{t(lang, "wallet.balanceLabel")}</p>
+        <p className="feature-amount" data-testid="wallet-balance">
+          {formatUsd(balance)}
+        </p>
+        <div className="feature-chips">
+          {changeTotal > 0 ? (
+            <>
+              <span className="change-chip">
+                {t(lang, "wallet.changeChip")}
+                <span className="svika-mono-code">{formatUsd(changeTotal)}</span>
+              </span>
+              <span className="feature-chip-note">{t(lang, "wallet.changeTotal")}</span>
+            </>
+          ) : (
+            <span className="feature-chip-note">{t(lang, "wallet.changeNone")}</span>
           )}
         </div>
-        {changeTotal > 0 ? (
-          <>
-            <p className="wallet-change-amount svika-mono-code">
-              {formatUsd(changeTotal)}
-            </p>
-            <p className="svika-body empty-note">{t(lang, "wallet.changeBody")}</p>
-          </>
-        ) : (
-          <p className="svika-body empty-note">{t(lang, "wallet.changeNone")}</p>
-        )}
       </section>
+      <p className="wallet-note svika-animate-fade-up svika-rise-2">
+        {t(lang, "wallet.changeBody")}
+      </p>
 
-      <section className="svika-card wallet-panel">
-        <h2 className="svika-headline">{t(lang, "wallet.sendTitle")}</h2>
+      <section className="svika-card wallet-panel svika-animate-fade-up svika-rise-3">
+        <h2 className="svika-title">{t(lang, "wallet.sendTitle")}</h2>
         <p className="svika-meta empty-note">{t(lang, "wallet.sendHint")}</p>
         <form action={sendCredit} className="wallet-inline-form">
           <input
@@ -156,8 +149,9 @@ export default async function WalletPage({
               <li key={tr.id} className="transfer-item">
                 <div>
                   <p className="svika-meta">
-                    {t(lang, "wallet.sent")} · {formatUsd(tr.amount_cents)} ·{" "}
-                    {t(lang, "wallet.pending")}
+                    {t(lang, "wallet.sent")} ·{" "}
+                    <span className="svika-mono-code">{formatUsd(tr.amount_cents)}</span>{" "}
+                    · {t(lang, "wallet.pending")}
                   </p>
                   <p className="transfer-code svika-mono-code" data-testid="claim-code">
                     {tr.claim_code}
@@ -175,8 +169,8 @@ export default async function WalletPage({
         )}
       </section>
 
-      <section className="svika-card wallet-panel">
-        <h2 className="svika-headline">{t(lang, "wallet.claimTitle")}</h2>
+      <section className="svika-card wallet-panel svika-animate-fade-up svika-rise-4">
+        <h2 className="svika-title">{t(lang, "wallet.claimTitle")}</h2>
         <form action={claimCredit} className="wallet-inline-form">
           <input
             name="code"
@@ -200,21 +194,26 @@ export default async function WalletPage({
         )}
       </section>
 
-      <section className="svika-card wallet-panel">
-        <h2 className="svika-meta tickets-heading">{t(lang, "wallet.history")}</h2>
+      <section className="svika-animate-fade-up svika-rise-5">
+        <div className="section-head">
+          <h2>{t(lang, "wallet.history")}</h2>
+        </div>
         <ul className="history-list">
           {history.map((h, i) => {
             const kind = h.ledger_transactions?.kind ?? "adjustment";
             const key = `wallet.txn.${kind}` as DictKey;
-            const isChange = kind === "change_credit";
+            const isCredit = h.amount_cents > 0;
             return (
               <li key={i} className="history-item">
-                <span className="svika-body history-kind">
-                  {isChange && <span className="svika-pulse-dot" aria-hidden />}
-                  {t(lang, key)}
-                </span>
                 <span
-                  className={`svika-mono-code ${h.amount_cents > 0 ? "wallet-ok" : ""}`}
+                  className={`txn-chip${isCredit ? " txn-chip-credit" : ""}`}
+                  aria-hidden
+                >
+                  {isCredit ? <PlusIcon size={16} /> : <KombiIcon size={16} />}
+                </span>
+                <span className="history-kind">{t(lang, key)}</span>
+                <span
+                  className={`history-amount${isCredit ? " history-amount-credit" : ""}`}
                 >
                   {formatUsd(h.amount_cents)}
                 </span>
@@ -223,6 +222,21 @@ export default async function WalletPage({
           })}
         </ul>
       </section>
+
+      <nav className="tab-nav tab-nav-flow" aria-label="Primary">
+        <Link className="tab-item" href="/app">
+          <HomeIcon />
+          {t(lang, "nav.home")}
+        </Link>
+        <Link className="tab-item" href="/app?sheet=open">
+          <RidesIcon />
+          {t(lang, "nav.rides")}
+        </Link>
+        <span className="tab-item tab-item-active" aria-current="page">
+          <WalletIcon />
+          {t(lang, "nav.wallet")}
+        </span>
+      </nav>
     </main>
   );
 }

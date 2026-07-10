@@ -21,12 +21,14 @@ command (`pnpm watchdog:eval`) if any change.
   fares, or a 45 to 65% skim of rush hour fares, or recording stopping mid
   afternoon
 
-## 2. Return leg of the recorded rides (task 3)
+## 2. Return leg of the recorded rides (task 3) — CLOSED 2026-07-10
 
-The two field rides cover the corridor in both directions. The pipeline
-treats the return ride as its own direction with its own segment times, not
-a mirror of the outbound geometry. Confirm that matches how the kombis
-actually run (same road both ways, or a different loop through town).
+Mhofu confirmed: the kombis use the same road both ways, taking off from the
+front of the Rezende rank and parking at its end. The return therefore stays
+its own direction with its own segment times on the shared geometry, which is
+exactly what the pipeline and the map simulation do: one base line, and each
+direction replays its own recorded ride clock (outbound ~39 riding minutes
+with touting, return ~26 clean minutes; apps/web/src/lib/map/sim-profile.json).
 
 ## 3. Ride upload attribution (task 3)
 
@@ -35,13 +37,13 @@ Ingested ride files are attributed to the maintainer account that runs
 machine. If rides should carry the name of whoever rode and recorded them,
 say so and the ingest gains a recorded_by field.
 
-## 4. The demo estimate window (task 4)
+## 4. The demo estimate window (task 4) — CLOSED 2026-07-10
 
-About 20% of the time both simulated kombis run outbound at once, so a saved
-trip toward town briefly shows the mock twin's "demo estimate" label instead
-of a live number. Honest but visible. Decide whether that is fine for the
-stage demo or whether the simulator should keep one kombi per direction at
-all times.
+Mhofu's call: run four kombis so both directions always show a live arrival
+number. Done. The simulated fleet is four kombis, two per direction at any
+instant, staggered unevenly around the loop; a unit test samples a full cycle
+and proves each direction always has at least one kombi on the road, so the
+"demo estimate" window from two kombis bunching one way is gone.
 
 ## 5. Shona strings (all tasks)
 

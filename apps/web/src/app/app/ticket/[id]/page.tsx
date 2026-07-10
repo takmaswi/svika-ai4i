@@ -71,7 +71,7 @@ export default async function TicketPage({
         <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
           <BackIcon />
         </Link>
-        <h1 className="svika-headline">{t(lang, "ticket.title")}</h1>
+        <h1 className="svika-headline">{t(lang, "ticket.screenTitle")}</h1>
       </header>
 
       <article

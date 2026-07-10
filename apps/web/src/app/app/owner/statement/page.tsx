@@ -112,7 +112,7 @@ export default async function StatementPage() {
                 {sorted.map((r, i) => (
                   <tr key={i}>
                     <td className="svika-mono-code">{r.day}</td>
-                    <td className="svika-body">{r.route_code}</td>
+                    <td className="svika-mono-code">{r.route_code}</td>
                     <td className="svika-mono-code">{r.tickets}</td>
                     <td className="svika-mono-code">{formatUsd(r.gross_cents)}</td>
                     <td className="svika-mono-code">{formatUsd(r.commission_cents)}</td>

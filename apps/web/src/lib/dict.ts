@@ -188,6 +188,7 @@ export const dict = {
   },
 
   "ticket.title": { en: "Board code", sn: "Kodhi yekukwira" },
+  "ticket.screenTitle": { en: "Your ticket", sn: "Tikiti rako" },
   "ticket.showHwindi": {
     en: "Show this code to the hwindi when you board.",
     sn: "Ratidza hwindi kodhi iyi paunokwira.",

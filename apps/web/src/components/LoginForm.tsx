@@ -86,7 +86,8 @@ export function LoginForm({ lang }: { lang: AppLanguage }) {
       ) : (
         <form onSubmit={verifyCode} className="auth-form">
           <p className="svika-body">
-            {t(lang, "login.codeSentTo")} <strong>{phone}</strong>
+            {t(lang, "login.codeSentTo")}{" "}
+            <strong className="svika-mono-code">{phone}</strong>
           </p>
           <label className="svika-meta" htmlFor="code">
             {t(lang, "login.codeLabel")}

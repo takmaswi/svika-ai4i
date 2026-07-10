@@ -104,7 +104,7 @@ export default async function RiderHome({
         .eq("direction", "outbound")
         .order("seq"),
       supabase
-        .from("route_fare_defaults")
+        .from("route_fares")
         .select("fare_cents, effective_from, routes!inner(code, name)")
         .eq("routes.code", CORRIDOR_ROUTE_CODE)
         .order("effective_from", { ascending: false })
@@ -230,12 +230,10 @@ export default async function RiderHome({
               <div className="peek-stats" data-testid="peek-stats">
                 <div>
                   <p className="peek-label">{t(lang, "ticket.route")}</p>
-                  <p className="peek-route">
-                    {corridorFare.routes.name}
-                    <span className="peek-route-sub">
-                      {t(lang, "home.peekFrom")} {corridorFirstStop}
-                    </span>
-                  </p>
+                  <p className="peek-route">{corridorFare.routes.name}</p>
+                  <span className="peek-route-sub">
+                    {t(lang, "home.peekFrom")} {corridorFirstStop}
+                  </span>
                 </div>
                 <div>
                   <p className="peek-label">{t(lang, "home.peekArrives")}</p>
@@ -336,7 +334,10 @@ export default async function RiderHome({
                             : (ticket.routes?.name ?? "")}
                         </span>
                         <span className="svika-meta">
-                          {formatUsd(ticket.fare_cents)} ·{" "}
+                          <span className="svika-mono-code">
+                            {formatUsd(ticket.fare_cents)}
+                          </span>{" "}
+                          ·{" "}
                           {t(
                             lang,
                             ticket.payment_method === "cash"

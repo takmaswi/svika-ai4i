@@ -264,10 +264,17 @@ body {
   color: var(--color-action-soft-ink);
 }
 
+/* mono runs inside meta and body lines keep the line's size */
+.svika-meta .svika-mono-code,
+.svika-body .svika-mono-code,
+.plan-fare-meta .svika-mono-code {
+  font-size: inherit;
+}
+
 /* --- demo account chip: marigold means demo, no live dot ------------------- */
 .demo-account-chip {
   position: fixed;
-  top: var(--space-3);
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 60;
@@ -285,11 +292,19 @@ body {
   text-transform: uppercase;
   pointer-events: none;
 }
+/* shell pages start below the floating demo chip; on map screens the chip
+   drops under the pill row instead */
+.demo-account-chip ~ .shell {
+  padding-top: 56px;
+}
+body:has(.home-screen) .demo-account-chip {
+  top: 62px;
+}
 
 /* --- story mode chrome ------------------------------------------------------ */
 .story-bar {
   position: fixed;
-  top: 64px;
+  top: 108px;
   left: 50%;
   transform: translateX(-50%);
   width: min(92vw, 448px);
@@ -1083,6 +1098,10 @@ body {
   flex-direction: column;
   gap: var(--space-3);
 }
+.wallet-panel h1,
+.wallet-panel h2 {
+  margin: 0;
+}
 .wallet-inline-form {
   display: flex;
   gap: var(--space-2);
@@ -1707,10 +1726,10 @@ body {
   box-shadow: none;
   min-height: 0;
 }
-/* the sheet covers the bottom; keep the demo chip above its resting edge */
+/* the sheet covers the bottom; the demo chips stack below the top pills */
 .home-map .live-map-chip {
   bottom: auto;
-  top: calc(var(--space-4) + 52px);
+  top: calc(var(--space-4) + 96px);
   left: var(--space-3);
 }
 
@@ -1764,6 +1783,7 @@ body {
 .home-sheet-body {
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
   padding: 0 18px var(--space-6);
   display: flex;
   flex-direction: column;
@@ -1781,6 +1801,12 @@ body {
   flex-direction: column;
   gap: var(--space-4);
   padding-top: var(--space-4);
+}
+.home-sheet:not(.home-sheet-open) .home-sheet-more {
+  visibility: hidden;
+}
+.home-sheet:not(.home-sheet-open) .home-sheet-body {
+  overflow-y: hidden;
 }
 .home-sheet-footer {
   display: flex;
@@ -1812,6 +1838,14 @@ body {
   font-weight: var(--weight-semibold);
   color: var(--color-ink);
   margin: 4px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.peek-stats .peek-route-sub {
+  display: block;
+  margin-top: 2px;
 }
 .peek-route-sub {
   display: block;
@@ -1952,7 +1986,7 @@ body {
   color: var(--color-ink);
 }
 .plan-sheet {
-  --sheet-peek: 356px;
+  --sheet-peek: 330px;
 }
 .plan-sheet-head {
   display: flex;

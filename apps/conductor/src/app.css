@@ -29,6 +29,19 @@
   color: var(--color-ink-mute);
 }
 
+/* --- first use consent ---------------------------------------------------- */
+.hwindi-consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.hwindi-consent-points {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+}
+
 /* --- sign in ------------------------------------------------------------ */
 .hwindi-form {
   display: flex;

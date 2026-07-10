@@ -25,6 +25,32 @@ export const dict = {
     sn: "Account iyi haisi yehwindi.",
   },
 
+  // first use consent. Shona is machine drafted and waits for the external
+  // translator pass, like every other Shona string in this file.
+  "consent.title": { en: "Before you work", sn: "Usati washanda" },
+  "consent.intro": {
+    en: "Svika records the fares you clear so owners see totals and you earn commission on digital fares. Agree before you start.",
+    sn: "Svika inonyora mari yaunotambira kuti varidzi vaone huwandu uye iwe uwane komisheni pamari yedhijitari. Bvuma usati watanga.",
+  },
+  "consent.point1": {
+    en: "Your account details are stored: name, phone and this sign in.",
+    sn: "Ruzivo rweakaunti yako runochengetwa: zita, foni nekupinda uku.",
+  },
+  "consent.point2": {
+    en: "Every fare you clear is recorded and never edited or deleted.",
+    sn: "Mari imwe neimwe yaunotambira inonyorwa uye haigadziridzwe kana kudzimwa.",
+  },
+  "consent.point3": {
+    en: "Audit checks look at patterns and totals. They never accuse a person.",
+    sn: "Kuongorora kunotarisa mafambiro nehuwandu. Hakupomere munhu.",
+  },
+  "consent.accept": { en: "I understand and agree", sn: "Ndanzwisisa uye ndinobvuma" },
+  "consent.busy": { en: "Saving…", sn: "Kuchengetedza…" },
+  "consent.error": {
+    en: "That did not save. Try again.",
+    sn: "Hazvina kuchengetedzwa. Edzazve.",
+  },
+
   "route.title": { en: "Pick your route", sn: "Sarudza nzira yako" },
   "route.towards": { en: "Towards", sn: "Kuenda ku" },
 

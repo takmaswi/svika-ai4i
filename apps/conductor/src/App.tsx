@@ -5,7 +5,12 @@
 // pill in the header shows the connection and what is waiting to sync.
 import { useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { formatUsd } from "@svika/shared";
+import {
+  CONSENT_VERSION,
+  formatUsd,
+  hasActiveConsent,
+  type ConsentRecord,
+} from "@svika/shared";
 import { supabase } from "./lib/supabase";
 import { t, type Lang } from "./lib/dict";
 import { appendDigit, eraseDigit, isComplete } from "./lib/keypad";
@@ -72,6 +77,29 @@ export default function App() {
   const [faresCovered, setFaresCovered] = useState(1);
 
   const offline = useOfflineBoarding(route?.id ?? null, direction);
+  const [consented, setConsented] = useState<boolean | null>(null);
+
+  // the consent gate: nothing past sign in renders until the latest consent
+  // record says accepted. The verdict is cached in the offline store so a
+  // hwindi who already agreed is never locked out in a dead zone.
+  useEffect(() => {
+    if (!session) {
+      setConsented(null);
+      return;
+    }
+    void (async () => {
+      const { data, error } = await supabase
+        .from("consent_records")
+        .select("action, created_at");
+      if (error) {
+        setConsented((await getMeta<boolean>("consented")) ?? false);
+        return;
+      }
+      const ok = hasActiveConsent((data ?? []) as ConsentRecord[]);
+      await setMeta("consented", ok);
+      setConsented(ok);
+    })();
+  }, [session]);
 
   useEffect(() => {
     void supabase.auth.getSession().then(({ data }) => {
@@ -171,6 +199,21 @@ export default function App() {
 
   if (!session) {
     return <SignIn lang={lang} langToggle={langToggle} />;
+  }
+
+  if (consented === null) return <main className="hwindi-shell" />;
+  if (!consented) {
+    return (
+      <Consent
+        lang={lang}
+        langToggle={langToggle}
+        userId={session.user.id}
+        onAccepted={() => {
+          setConsented(true);
+          void setMeta("consented", true);
+        }}
+      />
+    );
   }
 
   const resetForNext = () => {
@@ -547,6 +590,84 @@ export default function App() {
       >
         {busy ? t(lang, "keypad.busy") : t(lang, "keypad.clear")}
       </button>
+    </main>
+  );
+}
+
+// First use consent, hwindi sized: one screen, one action, big button.
+// Accepting appends a consent_records row (the same table the rider app
+// gates on); declining is signing out.
+function Consent({
+  lang,
+  langToggle,
+  userId,
+  onAccepted,
+}: {
+  lang: Lang;
+  langToggle: React.ReactNode;
+  userId: string;
+  onAccepted: () => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(false);
+
+  const accept = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(false);
+    const { error: err } = await supabase.from("consent_records").insert({
+      user_id: userId,
+      action: "accepted",
+      version: CONSENT_VERSION,
+    });
+    setBusy(false);
+    if (err) {
+      setError(true);
+      return;
+    }
+    onAccepted();
+  };
+
+  return (
+    <main className="hwindi-shell">
+      <header className="hwindi-header">
+        <div className="hwindi-topline">
+          <span className="svika-meta">{t(lang, "app.brand")}</span>
+          {langToggle}
+        </div>
+        <h1 className="svika-headline">{t(lang, "consent.title")}</h1>
+      </header>
+      <div className="hwindi-consent">
+        <p className="svika-body">{t(lang, "consent.intro")}</p>
+        <ul className="hwindi-consent-points">
+          {(["consent.point1", "consent.point2", "consent.point3"] as const).map(
+            (key) => (
+              <li key={key} className="svika-body">
+                {t(lang, key)}
+              </li>
+            ),
+          )}
+        </ul>
+        {error && (
+          <p className="hwindi-error svika-body">{t(lang, "consent.error")}</p>
+        )}
+        <button
+          className="hwindi-cta touch-target"
+          type="button"
+          data-testid="hwindi-consent-accept"
+          disabled={busy}
+          onClick={() => void accept()}
+        >
+          {busy ? t(lang, "consent.busy") : t(lang, "consent.accept")}
+        </button>
+        <button
+          className="hwindi-quiet"
+          type="button"
+          onClick={() => void supabase.auth.signOut()}
+        >
+          {t(lang, "keypad.signOut")}
+        </button>
+      </div>
     </main>
   );
 }

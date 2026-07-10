@@ -709,5 +709,121 @@ check(
   );
 }
 
+// --- rider prefs and emergency details (migration 0023) --------------------
+// Prefs are plain rider-owned rows. Emergency details are sensitive: clients
+// have no direct write path at all; the only way in is the RPC that records
+// consent in the same transaction.
+{
+  const A = await signIn("RIDER_A");
+  const B = await signIn("RIDER_B");
+
+  await A.c.from("rider_prefs").delete().eq("rider_id", A.uid);
+  const prefUp = await A.c
+    .from("rider_prefs")
+    .insert({ rider_id: A.uid, commute_alerts: true, voice_en: true });
+  check("RP-1 a rider can write their own prefs", !prefUp.error, prefUp.error?.message);
+
+  const prefCross = await B.c.from("rider_prefs").select("rider_id");
+  check(
+    "RP-2 a rider sees only their own prefs",
+    !prefCross.error && (prefCross.data ?? []).every((r) => r.rider_id === B.uid),
+  );
+
+  const prefForge = await B.c
+    .from("rider_prefs")
+    .insert({ rider_id: A.uid, commute_alerts: true });
+  check("RP-3 a rider cannot write prefs onto another account", !!prefForge.error);
+
+  const anonPrefs = await anon.from("rider_prefs").select("rider_id");
+  check("RP-4 anon sees zero prefs", deniedOrEmpty(anonPrefs));
+
+  const edDirect = await A.c.from("emergency_details").insert({
+    rider_id: A.uid,
+    next_of_kin_name: "Direct write",
+  });
+  check(
+    "ED-1 even the owner has no direct write path into emergency details",
+    !!edDirect.error,
+  );
+
+  const edSave = await A.c.rpc("save_emergency_details", {
+    p_next_of_kin_name: "Amai Chido",
+    p_next_of_kin_phone: "+263 77 000 0000",
+    p_medical_aid_name: "PSMAS",
+    p_medical_aid_number: "PS 12345",
+    p_consent_version: "emergency-v1",
+  });
+  const edRow = await A.c
+    .from("emergency_details")
+    .select("next_of_kin_name")
+    .eq("rider_id", A.uid)
+    .maybeSingle();
+  const edConsent = await A.c
+    .from("consent_records")
+    .select("action")
+    .eq("user_id", A.uid)
+    .eq("version", "emergency-v1")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  check(
+    "ED-2 the save RPC stores details and records consent together",
+    !edSave.error &&
+      edRow.data?.next_of_kin_name === "Amai Chido" &&
+      edConsent.data?.action === "accepted",
+    edSave.error?.message,
+  );
+
+  const edCross = await B.c.from("emergency_details").select("rider_id");
+  check("ED-3 a rider sees zero of another rider's emergency details", deniedOrEmpty(edCross));
+
+  const edAnonRead = await anon.from("emergency_details").select("rider_id");
+  check("ED-4 anon sees zero emergency details", deniedOrEmpty(edAnonRead));
+
+  const edAnonSave = await anon.rpc("save_emergency_details", {
+    p_next_of_kin_name: "Mallory",
+    p_next_of_kin_phone: "+263 77 111 1111",
+    p_medical_aid_name: "",
+    p_medical_aid_number: "",
+    p_consent_version: "emergency-v1",
+  });
+  check("ED-5 anon cannot call the emergency save RPC", !!edAnonSave.error);
+
+  const edTamper = await B.c
+    .from("emergency_details")
+    .update({ next_of_kin_name: "hacked" })
+    .eq("rider_id", A.uid)
+    .select();
+  check(
+    "ED-6 a rider cannot rewrite another rider's emergency details",
+    deniedOrEmpty(edTamper),
+  );
+
+  const edDelete = await A.c.rpc("delete_emergency_details", {
+    p_consent_version: "emergency-v1",
+  });
+  const edGone = await A.c
+    .from("emergency_details")
+    .select("rider_id")
+    .eq("rider_id", A.uid);
+  const edWithdrawn = await A.c
+    .from("consent_records")
+    .select("action")
+    .eq("user_id", A.uid)
+    .eq("version", "emergency-v1")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  check(
+    "ED-7 the delete RPC removes details and records the withdrawal",
+    !edDelete.error &&
+      (edGone.data ?? []).length === 0 &&
+      edWithdrawn.data?.action === "withdrawn",
+    edDelete.error?.message,
+  );
+
+  await A.c.from("rider_prefs").delete().eq("rider_id", A.uid);
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

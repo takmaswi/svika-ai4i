@@ -1,5 +1,3 @@
-// Generated from the live Svika schema (project xbsawnsdvibarhjobvrm) via the
-// Supabase type generator. Do not edit by hand; regenerate after migrations.
 export type Json =
   | string
   | number
@@ -441,6 +439,41 @@ export type Database = {
           },
         ]
       }
+      emergency_details: {
+        Row: {
+          medical_aid_name: string | null
+          medical_aid_number: string | null
+          next_of_kin_name: string | null
+          next_of_kin_phone: string | null
+          rider_id: string
+          updated_at: string
+        }
+        Insert: {
+          medical_aid_name?: string | null
+          medical_aid_number?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          rider_id: string
+          updated_at?: string
+        }
+        Update: {
+          medical_aid_name?: string | null
+          medical_aid_number?: string | null
+          next_of_kin_name?: string | null
+          next_of_kin_phone?: string | null
+          rider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_details_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fare_segments: {
         Row: {
           created_at: string
@@ -853,6 +886,38 @@ export type Database = {
           preferred_language?: Database["public"]["Enums"]["app_language"]
         }
         Relationships: []
+      }
+      rider_prefs: {
+        Row: {
+          commute_alerts: boolean
+          rider_id: string
+          updated_at: string
+          voice_en: boolean
+          voice_sn: boolean
+        }
+        Insert: {
+          commute_alerts?: boolean
+          rider_id: string
+          updated_at?: string
+          voice_en?: boolean
+          voice_sn?: boolean
+        }
+        Update: {
+          commute_alerts?: boolean
+          rider_id?: string
+          updated_at?: string
+          voice_en?: boolean
+          voice_sn?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_prefs_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       route_fares: {
         Row: {
@@ -1599,6 +1664,10 @@ export type Database = {
       }
       claim_demo_persona: { Args: never; Returns: string }
       current_fare_cents: { Args: { p_route: string }; Returns: number }
+      delete_emergency_details: {
+        Args: { p_consent_version: string }
+        Returns: undefined
+      }
       demo_reset_mine: {
         Args: { p_consent_version: string }
         Returns: undefined
@@ -1700,6 +1769,16 @@ export type Database = {
       reset_conductor_attempt_log: {
         Args: { p_profile: string }
         Returns: number
+      }
+      save_emergency_details: {
+        Args: {
+          p_consent_version: string
+          p_medical_aid_name: string
+          p_medical_aid_number: string
+          p_next_of_kin_name: string
+          p_next_of_kin_phone: string
+        }
+        Returns: undefined
       }
       segment_fare_cents: {
         Args: { p_from: string; p_route: string; p_to: string }

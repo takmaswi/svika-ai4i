@@ -327,6 +327,38 @@ export type Database = {
           },
         ]
       }
+      consent_records: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          user_id: string
+          version: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          user_id: string
+          version: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consent_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       credit_transfers: {
         Row: {
           amount_cents: number
@@ -747,6 +779,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          anonymised_at: string | null
           created_at: string
           full_name: string
           id: string
@@ -754,6 +787,7 @@ export type Database = {
           preferred_language: Database["public"]["Enums"]["app_language"]
         }
         Insert: {
+          anonymised_at?: string | null
           created_at?: string
           full_name?: string
           id: string
@@ -761,6 +795,7 @@ export type Database = {
           preferred_language?: Database["public"]["Enums"]["app_language"]
         }
         Update: {
+          anonymised_at?: string | null
           created_at?: string
           full_name?: string
           id?: string
@@ -1502,6 +1537,7 @@ export type Database = {
       }
     }
     Functions: {
+      anonymise_me: { Args: never; Returns: undefined }
       assert_plausible_fare: { Args: { p_fare: number }; Returns: number }
       cancel_transfer: { Args: { p_transfer: string }; Returns: undefined }
       claim_credit: {

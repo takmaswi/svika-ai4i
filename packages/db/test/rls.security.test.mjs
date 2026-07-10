@@ -602,5 +602,74 @@ check(
   }
 }
 
+// ---- consent records: own rows only, append only, anonymise scrubs -------
+{
+  const anonConsent = await anon.from("consent_records").select("id");
+  check("CN-1 anon sees zero consent records", deniedOrEmpty(anonConsent));
+
+  const anonInsert = await anon
+    .from("consent_records")
+    .insert({ user_id: A.uid, action: "accepted", version: "v1" });
+  check("CN-2 anon cannot record consent", !!anonInsert.error);
+
+  const own = await A.c
+    .from("consent_records")
+    .insert({ user_id: A.uid, action: "accepted", version: "v1" });
+  check("CN-3 a rider can record their own consent", !own.error, own.error?.message);
+
+  const bView = await B.c.from("consent_records").select("user_id");
+  check(
+    "CN-4 a rider sees only their own consent rows",
+    !bView.error && (bView.data ?? []).every((r) => r.user_id === B.uid),
+    bView.error?.message,
+  );
+
+  const forge = await A.c
+    .from("consent_records")
+    .insert({ user_id: B.uid, action: "accepted", version: "v1" });
+  check("CN-5 a rider cannot record consent for someone else", !!forge.error);
+
+  const rewrite = await A.c
+    .from("consent_records")
+    .update({ action: "withdrawn" })
+    .eq("user_id", A.uid);
+  check("CN-6 consent history cannot be rewritten", !!rewrite.error);
+
+  const erase = await A.c.from("consent_records").delete().eq("user_id", A.uid);
+  check("CN-7 consent history cannot be deleted", !!erase.error);
+
+  // the privacy page delete action: profile stripped, withdrawal appended.
+  // History (tickets, ledger) stays; only who the rider is goes away.
+  const anonMe = await A.c.rpc("anonymise_me");
+  const profAfter = await A.c
+    .from("profiles")
+    .select("full_name, phone, anonymised_at")
+    .eq("id", A.uid)
+    .single();
+  const latest = await A.c
+    .from("consent_records")
+    .select("action")
+    .eq("user_id", A.uid)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .single();
+  check(
+    "CN-8 anonymise_me strips the profile and appends a withdrawal",
+    !anonMe.error &&
+      profAfter.data?.full_name === "" &&
+      profAfter.data?.phone === null &&
+      profAfter.data?.anonymised_at !== null &&
+      latest.data?.action === "withdrawn",
+    anonMe.error?.message ?? profAfter.error?.message,
+  );
+
+  // leave rider A usable for the next run: restore the name through the
+  // rider's own column grant and re-accept
+  await A.c.from("profiles").update({ full_name: "Test Rider A" }).eq("id", A.uid);
+  await A.c
+    .from("consent_records")
+    .insert({ user_id: A.uid, action: "accepted", version: "v1" });
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

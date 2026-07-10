@@ -408,8 +408,64 @@ async function refillTestRiders() {
   }
 }
 
+// every surface sits behind first use consent (migration 0021); the demo
+// people arrive consented so rehearsal and e2e flows start inside the app
+async function ensureConsent(uid) {
+  const { data, error } = await admin
+    .from("consent_records")
+    .select("action")
+    .eq("user_id", uid)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  if (data?.action === "accepted") return;
+  const { error: insErr } = await admin
+    .from("consent_records")
+    .insert({ user_id: uid, action: "accepted", version: "v1" });
+  if (insErr) throw insErr;
+  console.log(`recorded consent for ${uid}`);
+}
+
+// the consent e2e proof needs a user who has never consented. Derived from
+// the rider creds (a plus alias, same password), created like any demo
+// person, then reset to unconsented and unanonymised before every run. This
+// service role delete is why consent_records carries no forbid_mutation
+// trigger (see migration 0021); clients still have no mutation path at all.
+async function ensureFreshUser() {
+  const riderEmail = process.env.DEMO_RIDER_EMAIL;
+  const password = process.env.DEMO_RIDER_PASSWORD;
+  const [local, domain] = riderEmail.split("@");
+  const email = `${local}+fresh@${domain}`;
+  let user = await findUserByEmail(email);
+  if (!user) {
+    const { data, error } = await admin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: "Fresh Rider" },
+    });
+    if (error) throw error;
+    user = data.user;
+    console.log(`created FRESH ${email}`);
+  }
+  const { error: cErr } = await admin
+    .from("consent_records")
+    .delete()
+    .eq("user_id", user.id);
+  if (cErr) throw cErr;
+  const { error: pErr } = await admin
+    .from("profiles")
+    .update({ full_name: "Fresh Rider", phone: null, anonymised_at: null })
+    .eq("id", user.id);
+  if (pErr) throw pErr;
+  console.log("FRESH user reset to unconsented");
+}
+
 const ids = {};
 for (const p of people) ids[p.key] = await ensureUser(p);
+for (const key of Object.keys(ids)) await ensureConsent(ids[key]);
+await ensureFreshUser();
 
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
 const demoConductorId = await ensureConductor(ids.CONDUCTOR, ownerId);

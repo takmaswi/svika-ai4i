@@ -218,7 +218,7 @@ async function main() {
       colorScheme: variant.theme === "dark" ? "dark" : "light",
     });
     const hwindi = await hwindiContext.newPage();
-    await hwindi.goto("http://localhost:5173/");
+    await hwindi.goto("http://localhost:5174/");
     await hwindi.waitForTimeout(800);
     // the in-app language pill drives EN/SN
     await hwindi

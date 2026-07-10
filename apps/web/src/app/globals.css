@@ -138,14 +138,6 @@ body {
   background: var(--color-action-chip);
   color: var(--color-action-chip-ink);
 }
-/* full-width plain CTA (keypad confirm): centered label, no chip */
-.cta-plain {
-  justify-content: center;
-  min-height: var(--cta-confirm-height);
-  padding: 9px 22px;
-  font-size: 18px;
-  font-weight: var(--weight-bold);
-}
 
 /* medium form action (send, claim, accept): same pill, centered label */
 .auth-submit {
@@ -605,11 +597,6 @@ body:has(.home-screen) .demo-account-chip {
 }
 
 /* --- rider home ---------------------------------------------------------- */
-.shell-top-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
 .tickets-block {
   display: flex;
   flex-direction: column;
@@ -672,8 +659,7 @@ body:has(.home-screen) .demo-account-chip {
 }
 
 /* --- plan page (screen 3 grammar) ------------------------------------------ */
-.picker-card,
-.plan-card {
+.picker-card {
   margin-top: var(--space-4);
   padding: var(--space-5);
   display: flex;
@@ -765,17 +751,6 @@ body:has(.home-screen) .demo-account-chip {
   font-weight: var(--weight-medium);
   color: var(--color-ink-soft);
   margin-top: 1px;
-}
-.plan-endpoints {
-  color: var(--color-ink-soft);
-}
-.plan-summary {
-  border-top: 1px solid var(--color-hairline);
-  padding-top: var(--space-4);
-}
-.plan-summary .svika-meta {
-  text-transform: uppercase;
-  color: var(--color-ink-mute);
 }
 .plan-total {
   font-size: 28px;
@@ -1051,12 +1026,6 @@ body:has(.home-screen) .demo-account-chip {
 .amount-marigold {
   color: var(--color-marigold);
 }
-.feature-sub {
-  font-size: 12px;
-  font-weight: var(--weight-medium);
-  color: var(--feature-soft);
-  margin: 8px 0 0;
-}
 .feature-chips {
   display: flex;
   align-items: center;
@@ -1199,18 +1168,6 @@ body:has(.home-screen) .demo-account-chip {
   color: var(--credit-ink);
 }
 
-/* the change-to-credit story card */
-.wallet-change-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-}
-.wallet-change-amount {
-  font-size: 28px;
-  margin: 0;
-  color: var(--color-ink);
-}
 
 /* --- parcels: staged LOAD and COLLECT boarding cards ---------------------- */
 .parcel-item {
@@ -1301,12 +1258,6 @@ body:has(.home-screen) .demo-account-chip {
 }
 
 /* --- owner dashboard (screen 6) ---------------------------------------------- */
-.owner-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
 .owner-head-title {
   margin: 0;
 }
@@ -1590,26 +1541,6 @@ body:has(.home-screen) .demo-account-chip {
   gap: var(--space-4);
 }
 
-/* --- authenticated shell ------------------------------------------------ */
-.shell-card {
-  margin-top: var(--space-6);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.shell-facts {
-  display: grid;
-  gap: var(--space-4);
-  margin: 0;
-}
-.shell-facts dt {
-  text-transform: uppercase;
-  color: var(--color-ink-mute);
-}
-.shell-facts dd {
-  margin: var(--space-1) 0 0;
-}
 
 /* --- live map ------------------------------------------------------------ */
 .live-map {
@@ -1992,12 +1923,6 @@ body:has(.home-screen) .demo-account-chip {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-}
-.plan-endpoints-line {
-  margin: 0;
-  text-transform: none;
-  font-size: var(--text-sub);
-  font-weight: var(--weight-medium);
 }
 .plan-fare-row {
   display: flex;

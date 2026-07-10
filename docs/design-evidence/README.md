@@ -1,18 +1,25 @@
-# Design evidence packs (Phase A)
+# Design evidence packs (Mbare Sun reskin)
 
-Screenshot packs for the six raised screens, captured at the 360px reference
-viewport (2x) in all four variants: day and night theme, English and Shona.
-Regenerate with the dev server up: `node scripts/design-evidence.mjs` from
+Screenshot packs for every screen, captured at the 360px reference viewport
+(2x) in all four variants: day and night theme, English and Shona.
+Regenerate with the dev servers up: `node scripts/design-evidence.mjs` from
 `apps/web` (headed Chromium; the MapLibre canvas paints blank in headless).
+The pre-ship answers per DESIGN.md section 14 live in
+[MBARE-SUN-CHECKLIST.md](MBARE-SUN-CHECKLIST.md); agreed deviations in
+[../DESIGN-DEVIATIONS.md](../DESIGN-DEVIATIONS.md).
 
-| Folder | Screen | What to look for |
-| --- | --- | --- |
-| `landing/` | The landing over the live map | The change problem in two sentences, the real sign in door and the demo door with story entries, demo movement chip on the map. |
-| `plan/` | Trip plan on the live map | Heights to Avondale: ride legs on the real road, the walking leg dashed, destination in coral, pay actions in the bottom sheet peek. |
-| `ticket/` | The boarding card | Forest route strip, big mono code, perforated fold; `stamped-light-en.png` shows the redemption stamp moment on a cleared fare. |
-| `wallet/` | Wallet with the change story | The change to credit card with the kept total riding above send, claim and history. |
-| `parcel/` | Staged parcel boarding card | LOAD active and COLLECT waiting on one card, one arrow between the stages. |
-| `owner/` | Owner dashboard | Forest hero band, hand rolled SVG revenue bars, route cards, the watchdog card labelled simulated with its bilingual narrative toggle, the dated ZIMRA presumptive tax card, statement link. |
+| Folder | Screen | Reference | What to look for |
+| --- | --- | --- | --- |
+| `landing/` | Landing | 1 | Kombi highlight headline, live map in a drawn card, change story stat cards, the section 5 CTA, demo doors below the fold line. |
+| `home/` | Map home | 2 | Full screen map with the dotted route and marigold kombi markers (night: glow and headlight beams), peek sheet with route + arrival + fare visible without scrolling, floating bottom nav. |
+| `plan/` | Trip plan | 3 | Back button and title pill over the map, ride legs on the real road, the walking leg dashed, one CTA to pay from wallet, cash reserve as the text action. |
+| `ticket/` | The boarding card | 4 | Char card on white by day, white card on char by night, 58px mono code, perforated fold; `stamped-light-en.png` shows the redemption stamp on a cleared fare. |
+| `wallet/` | Wallet | 5 | Balance as the dark feature card with the change kept chip, icon transaction rows, bottom nav with wallet active (outline glyph per section 15). |
+| `owner/` | Owner dashboard | 6 | Takings as the dark feature card with the marigold amount, route badges, the watchdog card labelled simulated with its bilingual narrative toggle, the ZIMRA statement as the one CTA. |
+| `keypad/` | Conductor keypad | 7 | Route pill, code slot boxes, 72px keys, the 64px plain confirm; offline pill wears marigold + char. |
+| `parcel/` | Staged parcel card | composed | LOAD active and COLLECT waiting on one bordered card with the perforation. |
 
 All figures on these screens are live values from the seeded demo database at
-capture time; nothing is mocked into the DOM for the shot.
+capture time; nothing is mocked into the DOM for the shot. The only staged
+values in the product are the landing stat card examples, declared in the
+disclosure register.

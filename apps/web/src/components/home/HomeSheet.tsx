@@ -11,6 +11,8 @@ interface HomeSheetProps {
   closeLabel: string;
   /** Open on arrival, e.g. right after a booking so the code is in view. */
   defaultOpen?: boolean;
+  /** Extra class on the sheet, e.g. a per-screen peek height. */
+  className?: string;
   /** Always visible: title + search live here. */
   peek: ReactNode;
   /** Revealed when the sheet opens. */
@@ -21,6 +23,7 @@ export function HomeSheet({
   openLabel,
   closeLabel,
   defaultOpen = false,
+  className,
   peek,
   children,
 }: HomeSheetProps) {
@@ -28,7 +31,7 @@ export function HomeSheet({
 
   return (
     <section
-      className={`home-sheet svika-glass-strong${open ? " home-sheet-open" : ""}`}
+      className={`home-sheet svika-glass-strong${open ? " home-sheet-open" : ""}${className ? ` ${className}` : ""}`}
       data-testid="home-sheet"
     >
       <button

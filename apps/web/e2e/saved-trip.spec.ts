@@ -14,6 +14,8 @@ test.describe("saved trips", () => {
     await page.goto("/app/plan?from=heights&to=rezende");
     await expect(page.locator(".plan-total")).toHaveText("$1.50");
 
+    // the save form lives in the expanded half of the plan sheet
+    await page.click(".home-sheet-grabber");
     await page.fill("#nickname", "Town trip");
     await page.click(".plan-save-cta");
     await expect(page.getByTestId("trip-saved")).toBeVisible();
@@ -33,6 +35,7 @@ test.describe("saved trips", () => {
 
   test("renaming the same stop pair keeps one quick pick", async ({ page }) => {
     await page.goto("/app/plan?from=heights&to=rezende");
+    await page.click(".home-sheet-grabber");
     await page.fill("#nickname", "Kumba");
     await page.click(".plan-save-cta");
     await expect(page.getByTestId("trip-saved")).toBeVisible();

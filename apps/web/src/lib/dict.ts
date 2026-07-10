@@ -80,6 +80,10 @@ export const dict = {
   },
 
   "plan.title": { en: "Your trip", sn: "Rwendo rwako" },
+  "plan.sheetOpen": {
+    en: "Show the legs of this trip",
+    sn: "Ona zvikamu zverwendo",
+  },
   "plan.ride": { en: "Ride", sn: "Kwira" },
   "plan.walk": { en: "Walk", sn: "Famba" },
   "plan.alightAt": { en: "Get off at", sn: "Buruka pa" },

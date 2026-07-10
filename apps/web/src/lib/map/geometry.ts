@@ -74,6 +74,28 @@ export function pointAtDistance(metrics: PolylineMetrics, meters: number): LngLa
   return [ax + (bx - ax) * f, ay + (by - ay) * f];
 }
 
+/**
+ * The stretch of the polyline between two distances, as its own coordinate
+ * list: interpolated endpoints plus every vertex in between. Returned in
+ * from -> to order even when from > to (a slice against the line's grain).
+ */
+export function sliceAtDistances(
+  metrics: PolylineMetrics,
+  fromMeters: number,
+  toMeters: number,
+): LngLat[] {
+  const lo = Math.max(0, Math.min(fromMeters, toMeters));
+  const hi = Math.min(metrics.totalMeters, Math.max(fromMeters, toMeters));
+  const coords: LngLat[] = [pointAtDistance(metrics, lo)];
+  for (let i = 0; i < metrics.coordinates.length; i++) {
+    const d = metrics.cumulative[i]!;
+    if (d > lo && d < hi) coords.push(metrics.coordinates[i]!);
+  }
+  coords.push(pointAtDistance(metrics, hi));
+  if (fromMeters > toMeters) coords.reverse();
+  return coords;
+}
+
 /** Linear interpolation between two positions (fine at street scale). */
 export function lerpLngLat(a: LngLat, b: LngLat, t: number): LngLat {
   return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];

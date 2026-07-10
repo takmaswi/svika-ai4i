@@ -1208,6 +1208,40 @@ body {
   color: var(--color-ink-mute);
 }
 
+/* --- plan on the live map -------------------------------------------------- */
+.plan-back {
+  gap: var(--space-2);
+  text-decoration: none;
+  color: var(--color-action);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+}
+.plan-sheet {
+  --sheet-peek: 332px;
+}
+.plan-sheet-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.plan-endpoints-line {
+  margin: 0;
+  text-transform: none;
+  font-size: var(--text-body);
+}
+.plan-fare-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+.plan-fare-row .plan-total {
+  margin: 0;
+}
+.plan-fare-meta {
+  color: var(--color-ink-mute);
+}
+
 /* --- save a trip (plan page) --------------------------------------------- */
 .plan-save {
   margin-top: var(--space-4);

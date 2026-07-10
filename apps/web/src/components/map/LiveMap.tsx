@@ -23,6 +23,7 @@ import {
 const FOREST = "#1F4D2E";
 const BONE = "#FFFCEF";
 const MOSS = "#4D5C44";
+const SIGNAL = "#E84C30";
 
 const TICK_MS = 1000;
 
@@ -32,16 +33,24 @@ export interface LiveMapLabels {
   unavailable: string;
 }
 
-interface LiveMapProps {
-  labels: LiveMapLabels;
+/** A planned trip drawn over the corridor; see lib/map/plan-overlay.ts. */
+export interface LiveMapOverlay {
+  legs: { kind: "ride" | "walk"; coordinates: LngLat[] }[];
+  origin: LngLat;
+  destination: LngLat;
 }
 
-function corridorBounds(): [LngLat, LngLat] {
+interface LiveMapProps {
+  labels: LiveMapLabels;
+  overlay?: LiveMapOverlay;
+}
+
+function boundsOf(coords: LngLat[]): [LngLat, LngLat] {
   let minLng = Infinity;
   let minLat = Infinity;
   let maxLng = -Infinity;
   let maxLat = -Infinity;
-  for (const [lng, lat] of corridorLine.coordinates) {
+  for (const [lng, lat] of coords) {
     minLng = Math.min(minLng, lng);
     minLat = Math.min(minLat, lat);
     maxLng = Math.max(maxLng, lng);
@@ -51,6 +60,15 @@ function corridorBounds(): [LngLat, LngLat] {
     [minLng, minLat],
     [maxLng, maxLat],
   ];
+}
+
+function mapBounds(overlay?: LiveMapOverlay): [LngLat, LngLat] {
+  if (!overlay) return boundsOf(corridorLine.coordinates);
+  return boundsOf([
+    overlay.origin,
+    overlay.destination,
+    ...overlay.legs.flatMap((l) => l.coordinates),
+  ]);
 }
 
 function makeKombiElement(): HTMLDivElement {
@@ -67,7 +85,85 @@ function makeKombiElement(): HTMLDivElement {
   return el;
 }
 
-function addCorridorLayers(map: maplibregl.Map) {
+// The planned trip over the corridor: ride legs ride the road in forest,
+// walking legs are dashed moss, and the two ends get bone dots (forest ring
+// for the start, the single coral accent for where you are going).
+function addOverlayLayers(map: maplibregl.Map, overlay: LiveMapOverlay) {
+  const legFeatures = overlay.legs.map((l) => ({
+    type: "Feature" as const,
+    properties: { kind: l.kind },
+    geometry: { type: "LineString" as const, coordinates: l.coordinates },
+  }));
+  map.addSource("plan-legs", {
+    type: "geojson",
+    data: { type: "FeatureCollection", features: legFeatures },
+  });
+  map.addSource("plan-ends", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature" as const,
+          properties: { end: "origin" },
+          geometry: { type: "Point" as const, coordinates: overlay.origin },
+        },
+        {
+          type: "Feature" as const,
+          properties: { end: "destination" },
+          geometry: { type: "Point" as const, coordinates: overlay.destination },
+        },
+      ],
+    },
+  });
+
+  map.addLayer({
+    id: "plan-ride-casing",
+    type: "line",
+    source: "plan-legs",
+    filter: ["==", ["get", "kind"], "ride"],
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: { "line-color": BONE, "line-width": 10, "line-opacity": 0.9 },
+  });
+  map.addLayer({
+    id: "plan-ride-line",
+    type: "line",
+    source: "plan-legs",
+    filter: ["==", ["get", "kind"], "ride"],
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: { "line-color": FOREST, "line-width": 5 },
+  });
+  map.addLayer({
+    id: "plan-walk-line",
+    type: "line",
+    source: "plan-legs",
+    filter: ["==", ["get", "kind"], "walk"],
+    layout: { "line-cap": "round", "line-join": "round" },
+    paint: {
+      "line-color": MOSS,
+      "line-width": 3.5,
+      "line-dasharray": [0.1, 1.8],
+    },
+  });
+  map.addLayer({
+    id: "plan-ends",
+    type: "circle",
+    source: "plan-ends",
+    paint: {
+      "circle-radius": 7,
+      "circle-color": BONE,
+      "circle-stroke-width": 3.5,
+      "circle-stroke-color": [
+        "case",
+        ["==", ["get", "end"], "destination"],
+        SIGNAL,
+        FOREST,
+      ],
+    },
+  });
+}
+
+function addCorridorLayers(map: maplibregl.Map, muted: boolean) {
   map.addSource("corridor-route", {
     type: "geojson",
     data: {
@@ -89,19 +185,20 @@ function addCorridorLayers(map: maplibregl.Map) {
   });
 
   // Bone casing under the forest line lifts the route off the base map.
+  // Under a plan overlay the corridor fades to context so the trip reads.
   map.addLayer({
     id: "corridor-route-casing",
     type: "line",
     source: "corridor-route",
     layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": BONE, "line-width": 8, "line-opacity": 0.9 },
+    paint: { "line-color": BONE, "line-width": 8, "line-opacity": muted ? 0.4 : 0.9 },
   });
   map.addLayer({
     id: "corridor-route-line",
     type: "line",
     source: "corridor-route",
     layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": FOREST, "line-width": 4 },
+    paint: { "line-color": FOREST, "line-width": 4, "line-opacity": muted ? 0.3 : 1 },
   });
   map.addLayer({
     id: "corridor-stop-dots",
@@ -112,6 +209,8 @@ function addCorridorLayers(map: maplibregl.Map) {
       "circle-color": BONE,
       "circle-stroke-color": FOREST,
       "circle-stroke-width": 2,
+      "circle-opacity": muted ? 0.5 : 1,
+      "circle-stroke-opacity": muted ? 0.5 : 1,
     },
   });
   map.addLayer({
@@ -135,7 +234,7 @@ function addCorridorLayers(map: maplibregl.Map) {
   });
 }
 
-export function LiveMap({ labels }: LiveMapProps) {
+export function LiveMap({ labels, overlay }: LiveMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
@@ -166,15 +265,16 @@ export function LiveMap({ labels }: LiveMapProps) {
       map = new maplibregl.Map({
         container,
         style: style as maplibregl.StyleSpecification,
-        bounds: corridorBounds(),
-        fitBoundsOptions: { padding: 48 },
+        bounds: mapBounds(overlay),
+        fitBoundsOptions: { padding: overlay ? 64 : 48 },
         attributionControl: { compact: true },
       });
       map.touchPitch.disable();
 
       map.on("load", () => {
         if (!map || disposed) return;
-        addCorridorLayers(map);
+        addCorridorLayers(map, Boolean(overlay));
+        if (overlay) addOverlayLayers(map, overlay);
         setReady(true);
 
         // The fixed epoch keeps these markers in step with the server side

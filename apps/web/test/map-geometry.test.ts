@@ -114,3 +114,38 @@ describe("lerpHeading", () => {
     expect(lerpHeading(350, 10, 1)).toBeCloseTo(10, 5);
   });
 });
+
+describe("sliceAtDistances", () => {
+  // a 3-vertex due-north road, ~222 m long
+  const road: LngLat[] = [
+    [31.05, HARARE_LAT],
+    [31.05, HARARE_LAT + 0.001],
+    [31.05, HARARE_LAT + 0.002],
+  ];
+
+  test("returns interpolated endpoints plus interior vertices", async () => {
+    const { sliceAtDistances } = await import("../src/lib/map/geometry");
+    const m = measurePolyline(road);
+    const slice = sliceAtDistances(m, m.totalMeters * 0.25, m.totalMeters * 0.75);
+    expect(slice).toHaveLength(3); // from, middle vertex, to
+    expect(slice[0]![1]).toBeCloseTo(HARARE_LAT + 0.0005, 5);
+    expect(slice[1]![1]).toBeCloseTo(HARARE_LAT + 0.001, 9);
+    expect(slice[2]![1]).toBeCloseTo(HARARE_LAT + 0.0015, 5);
+  });
+
+  test("reverses when sliced against the line's grain", async () => {
+    const { sliceAtDistances } = await import("../src/lib/map/geometry");
+    const m = measurePolyline(road);
+    const slice = sliceAtDistances(m, m.totalMeters, 0);
+    expect(slice[0]![1]).toBeCloseTo(HARARE_LAT + 0.002, 9);
+    expect(slice[slice.length - 1]![1]).toBeCloseTo(HARARE_LAT, 9);
+  });
+
+  test("clamps beyond the ends", async () => {
+    const { sliceAtDistances } = await import("../src/lib/map/geometry");
+    const m = measurePolyline(road);
+    const slice = sliceAtDistances(m, -50, m.totalMeters + 50);
+    expect(slice[0]![1]).toBeCloseTo(HARARE_LAT, 9);
+    expect(slice[slice.length - 1]![1]).toBeCloseTo(HARARE_LAT + 0.002, 9);
+  });
+});

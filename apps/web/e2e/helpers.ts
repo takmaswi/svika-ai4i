@@ -32,9 +32,10 @@ export async function waitForHydration(page: Page): Promise<void> {
   );
 }
 
-/** Read the rider wallet balance shown on the rider home, in cents. */
+/** Read the rider wallet balance shown on the rider home, in cents. The
+    sheet must be open: at peek the strip is hidden and innerText is empty. */
 export async function walletBalanceCents(page: Page): Promise<number> {
-  await page.goto("/app");
+  await page.goto("/app?sheet=open");
   const text = await page.locator(".wallet-amount").innerText();
   const m = text.match(/\$(\d+)\.(\d{2})/);
   if (!m) throw new Error(`unreadable wallet amount: ${text}`);

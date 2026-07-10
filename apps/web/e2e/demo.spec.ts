@@ -79,8 +79,8 @@ test.describe("demo door and story mode", () => {
     await page.waitForURL(/story=transfer-trip&step=0/, { timeout: 20_000 });
 
     // the plan on the map shows a walking leg between two ride legs
-    await expect(page.locator(".plan-leg-kind")).toHaveCount(3);
-    await expect(page.locator(".plan-leg-walk")).toHaveCount(1);
+    await expect(page.locator(".plan-leg")).toHaveCount(3);
+    await expect(page.locator(".route-badge-soft")).toHaveCount(1);
 
     await waitForHydration(page);
     await page.getByTestId("story-next").click(); // to the fare quote caption

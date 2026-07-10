@@ -5,7 +5,7 @@ working against the live database. Tier 2 is clickable with a fixed or
 simulated backend, always labelled on screen. Tier 3 lives in slides only and
 never in code. We never present a Tier 2 surface as live to judges.
 
-Last updated: 2026-07-10 (consent and privacy milestone).
+Last updated: 2026-07-10 (Mbare Sun reskin).
 
 | Feature | Tier | What is actually happening |
 | --- | --- | --- |
@@ -16,12 +16,12 @@ Last updated: 2026-07-10 (consent and privacy milestone).
 | Change to credit, split a note, transfers | 1 | Real ledger operations with RLS isolation tests. |
 | Parcels (LOAD and COLLECT) | 1 | Real staged codes on the live database. |
 | Owner revenue view | 1 | Real aggregation over ledger postings. |
-| Live map: corridor geometry and stops | 1 | Real road line and 15 real stop names derived from field GPS rides on 2026-07-07 (packages/db/seed/geo). The warm map style is MapTiler tiles repainted to Brand v2. |
+| Live map: corridor geometry and stops | 1 | Real road line and 15 real stop names derived from field GPS rides on 2026-07-07 (packages/db/seed/geo). The map style is MapTiler tiles repainted to the Mbare Sun palette (DESIGN.md section 11), day and night. |
 | Live map: moving kombis | 2 | Simulated. There is no GPS feed from vehicles yet. A mock VehicleFeed adapter moves four markers (two per direction) along the real road by replaying the time curves of the two real rides recorded 2026-07-07, so each direction keeps its own recorded pace, slowdowns and stops (apps/web/src/lib/map/sim-profile.json, derived by a committed script). The map carries a permanent "Demo movement" chip. A real feed swaps in behind the same adapter without touching the map. |
 | Saved trips (nickname a trip) | 1 | Real rider owned rows under RLS, proven by the security suite. |
 | Arrival estimate on saved trips: the minutes | 1 | Computed by services/spine (GET /eta) from the two real corridor rides recorded 2026-07-07: per segment averages with a corridor average fallback (baseline:v1). The label under every estimate says how many recorded rides it stands on. With only two journeys the trained model is not promoted (services/spine/metrics/METRICS.md says so); when the spine is unreachable or a trip is off the corridor, the MockEtaProvider twin serves and the label says "demo estimate". |
 | Arrival estimate on saved trips: the kombi position | 2 | Simulated. The minutes are measured from the same simulated kombi the live map shows (shared fixed epoch, sim-config.ts); there is still no GPS feed from real vehicles. A real feed swaps in behind the VehicleFeed adapter without touching the estimate. |
-| Day and night theme | 1 | Real, cookie backed, follows the device by default. The map keeps its day style at night for now. |
+| Day and night theme | 1 | Real, cookie backed, follows the device by default. The map repaints to the Mbare Sun night palette in place when the theme flips. |
 | Voice guidance | 3 | Not in code yet. Pre generated audio lands in a later phase. |
 | Spine 1 arrival prediction | 1 | Served baseline (per segment averages over real rides) with a committed evaluation: leave one journey out, model versus baseline, verdict in services/spine/metrics. The model is promoted only when it beats the baseline with at least 10 recorded journeys; today the verdict is insufficient data and the baseline serves. |
 | Spine 3 revenue watchdog: the detector | 1 | A real isolation forest scored against the named fixed threshold baseline on held out labelled days, verdict committed in services/spine/metrics/WATCHDOG-METRICS.md (forest F1 0.756 versus baseline 0; the threshold never fires because leakage hides inside one kombi's takings). Serving follows the committed verdict and nothing else. |
@@ -31,5 +31,7 @@ Last updated: 2026-07-10 (consent and privacy milestone).
 | Demo door (landing page) | 1 | Real. One tap signs a visitor in as a pooled demo persona (Tariro) on the same live backend every user hits. Personas are real accounts flagged demo_sim at the profile, so every row they own is attributable as demo data and isolated from real rows by ordinary RLS; the pool is claimed least recently used and rate limited (migration 0022), and each visit resets the persona's fixture state (float, saved trip, consent) through a security definer RPC with proper double entry. Every demo surface carries a permanent "Demo account" chip. The real phone sign in is untouched. |
 | Story mode | 2 | The writes are real, one actor is simulated. A story replays a scripted scenario step by step over the real screens: bookings and money moves run through the same RPCs and ledger as production, but the hwindi who clears the code is played by the server signing in the demo conductor account, and the caption on screen says so. Every story ends back in free roam. |
 | Spine 2 commute alerts | 3 | Not built yet. Its baseline and metrics table arrive with the feature. |
+| Landing page stat cards | 2 | Illustrative product preview on the marketing surface: the "Change kept $1.50 this week" and "Boarding code 74 21" cards show example values in the reference design's grammar, not any user's data. Everything behind the sign in shows real ledger figures. |
+| Home peek card (route, arrives, fare) | 1 | Real: the corridor route and fare come from routes and route_fares in Postgres, the arrival minutes from the same ETA provider as saved trips, with its basis labelled on screen (recorded rides or demo estimate). |
 
 Update this file in the same commit as any feature that changes tier.

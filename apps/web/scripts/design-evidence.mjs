@@ -169,6 +169,10 @@ async function main() {
     });
     if (!res.ok()) throw new Error(`persona web login failed: ${res.status()}`);
 
+    await page.goto(`${BASE}/app`);
+    await settleMap(page);
+    await shot(page, "home", variant);
+
     await page.goto(`${BASE}/app/plan?from=heights&to=avondale`);
     await settleMap(page);
     await shot(page, "plan", variant);
@@ -206,6 +210,39 @@ async function main() {
     await page.goto(`${BASE}/app/owner`);
     await page.waitForTimeout(1_200);
     await shot(page, "owner", variant);
+
+    // conductor keypad (separate Vite app; themes ride prefers-color-scheme)
+    const hwindiContext = await browser.newContext({
+      viewport: { width: 360, height: 740 },
+      deviceScaleFactor: 2,
+      colorScheme: variant.theme === "dark" ? "dark" : "light",
+    });
+    const hwindi = await hwindiContext.newPage();
+    await hwindi.goto("http://localhost:5173/");
+    await hwindi.waitForTimeout(800);
+    // the in-app language pill drives EN/SN
+    await hwindi
+      .locator(".lang-toggle button", { hasText: variant.lang.toUpperCase() })
+      .click()
+      .catch(() => {});
+    const emailBox = hwindi.locator("#email");
+    if (await emailBox.count()) {
+      await emailBox.fill(process.env.DEMO_CONDUCTOR_EMAIL);
+      await hwindi.locator("#password").fill(process.env.DEMO_CONDUCTOR_PASSWORD);
+      await hwindi.locator(".hwindi-cta").click();
+    }
+    await hwindi
+      .locator(".hwindi-route", { hasText: "HEIGHTS-REZENDE" })
+      .first()
+      .click({ timeout: 20_000 })
+      .catch(() => {});
+    await hwindi.waitForTimeout(600);
+    for (const d of ["7", "4"]) {
+      await hwindi.locator(".hwindi-key", { hasText: d }).first().click().catch(() => {});
+    }
+    await hwindi.waitForTimeout(400);
+    await shot(hwindi, "keypad", variant);
+    await hwindiContext.close();
 
     await context.close();
   }

@@ -59,11 +59,12 @@ test.describe("search, plan, pay", () => {
     page,
   }) => {
     await page.goto("/app/plan?from=heights&to=avondale");
-    const kinds = page.locator(".plan-leg-kind");
-    await expect(kinds).toHaveCount(3);
-    await expect(kinds.nth(0)).toHaveText(/ride/i);
-    await expect(kinds.nth(1)).toHaveText(/walk/i);
-    await expect(kinds.nth(2)).toHaveText(/ride/i);
+    // two ride legs wear route badges, the middle leg is the walk
+    const legs = page.locator(".plan-leg");
+    await expect(legs).toHaveCount(3);
+    await expect(legs.nth(0).locator(".route-badge")).not.toHaveClass(/route-badge-soft/);
+    await expect(legs.nth(1).locator(".plan-leg-name")).toHaveText(/walk|famba/i);
+    await expect(legs.nth(2).locator(".route-badge")).not.toHaveClass(/route-badge-soft/);
     await expect(page.locator(".plan-total")).toHaveText("$3.00");
   });
 
@@ -71,7 +72,7 @@ test.describe("search, plan, pay", () => {
     page,
   }) => {
     await page.goto("/app/plan?from=gweru city hall&to=avondale");
-    await expect(page.locator(".picker-card h1")).toBeVisible();
+    await expect(page.locator(".screen-head h1")).toBeVisible();
     // pick a real stop from the picker and land on a plan
     await page.locator(".picker-item", { hasText: "Market Square Rank" }).click();
     await expect(page.locator(".plan-total")).toBeVisible();

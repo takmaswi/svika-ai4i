@@ -8,6 +8,7 @@ import { buildPlanOverlay } from "@/lib/map/plan-overlay";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
 import { StoryBar } from "@/components/story/StoryBar";
+import { ArrowIcon, BackIcon } from "@/components/icons";
 import {
   formatUsd,
   planTrip,
@@ -30,11 +31,11 @@ function resolveParam(
   return { stop: result.match, suggestions: result.suggestions };
 }
 
-// The plan page. Receives free text or stop ids; free text that resolves
-// confidently plans straight away, anything else becomes a stop picker.
-// A resolved plan renders on the live map itself: ride legs on the real
-// road, walking legs dashed, and the pay actions one thumb away in the
-// same bottom sheet grammar as home.
+// The plan page (reference screen 3). Receives free text or stop ids; free
+// text that resolves confidently plans straight away, anything else becomes
+// a stop picker. A resolved plan renders on the live map itself: ride legs
+// on the real road, walking legs dashed, and one section 5 CTA in the same
+// bottom sheet grammar as home.
 export default async function PlanPage({
   searchParams,
 }: {
@@ -63,19 +64,21 @@ export default async function PlanPage({
     from.stop && to.stop ? planTrip(network, from.stop.id, to.stop.id) : null;
 
   const stopName = (id: string) => network.stops.find((s) => s.id === id)?.name ?? id;
+  const routeCode = (name: string) =>
+    network.routes.find((r) => r.name === name)?.code ?? name.slice(0, 2);
 
   if (!from.stop || !to.stop) {
     return (
       <main className="shell">
-        <header className="shell-top">
-          <Link href="/app" className="auth-link">
-            ← {t(lang, "common.back")}
+        <header className="screen-head">
+          <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+            <BackIcon />
           </Link>
-        </header>
-        <section className="svika-card picker-card svika-animate-fade-up">
           <h1 className="svika-headline">
             {!from.stop ? t(lang, "plan.pickFrom") : t(lang, "plan.pickTo")}
           </h1>
+        </header>
+        <section className="picker-card svika-animate-fade-up">
           <p className="svika-body empty-note">{t(lang, "plan.noMatch")}</p>
           <ul className="picker-list">
             {(!from.stop ? from.suggestions : to.suggestions).map((s) => {
@@ -99,12 +102,13 @@ export default async function PlanPage({
   if (!plan) {
     return (
       <main className="shell">
-        <header className="shell-top">
-          <Link href="/app" className="auth-link">
-            ← {t(lang, "common.back")}
+        <header className="screen-head">
+          <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+            <BackIcon />
           </Link>
+          <h1 className="svika-headline">{t(lang, "plan.title")}</h1>
         </header>
-        <section className="svika-card picker-card">
+        <section className="picker-card svika-card">
           <p className="svika-body">{t(lang, "plan.noRoute")}</p>
         </section>
       </main>
@@ -128,10 +132,11 @@ export default async function PlanPage({
 
       <StoryBar params={params} lang={lang} />
 
-      <header className="home-chips">
-        <Link className="home-chip svika-glass plan-back touch-target" href="/app">
-          ← {t(lang, "common.back")}
+      <header className="plan-back-row">
+        <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
+        <span className="plan-title-pill">{t(lang, "plan.title")}</span>
       </header>
 
       <HomeSheet
@@ -142,20 +147,20 @@ export default async function PlanPage({
         peek={
           <>
             <div className="plan-sheet-head">
-              <h1 className="svika-headline home-sheet-title">
-                {t(lang, "plan.title")}
+              <h1 className="svika-title home-sheet-title">
+                {from.stop.name} {t(lang, "common.to")} {to.stop.name}
               </h1>
-              <p className="svika-meta home-sheet-hint plan-endpoints-line">
-                {from.stop.name} → {to.stop.name}
-              </p>
             </div>
             <div className="plan-fare-row">
               <p className="plan-total svika-mono-code">
                 {formatUsd(plan.totalFareCents)}
               </p>
               <p className="svika-meta plan-fare-meta">
-                {t(lang, "plan.about")} {plan.totalMinutes} {t(lang, "common.minutes")}{" "}
-                · {plan.boardings} {t(lang, "plan.boardings")}
+                {t(lang, "plan.about")}{" "}
+                <span className="svika-mono-code">{plan.totalMinutes}</span>{" "}
+                {t(lang, "common.minutes")} ·{" "}
+                <span className="svika-mono-code">{plan.boardings}</span>{" "}
+                {t(lang, "plan.boardings")}
               </p>
             </div>
             {err === "balance" && (
@@ -168,12 +173,15 @@ export default async function PlanPage({
               <input type="hidden" name="from" value={from.stop.id} />
               <input type="hidden" name="to" value={to.stop.id} />
               <button
-                className="auth-submit touch-target"
+                className="cta touch-target"
                 type="submit"
                 name="payment"
                 value="wallet"
               >
                 {t(lang, "plan.payWallet")}
+                <span className="cta-chip" aria-hidden>
+                  <ArrowIcon />
+                </span>
               </button>
               <button
                 className="pay-cash touch-target"
@@ -191,30 +199,36 @@ export default async function PlanPage({
           {plan.legs.map((leg, i) =>
             leg.type === "ride" ? (
               <li key={i} className="plan-leg">
-                <span className="plan-leg-kind plan-leg-ride svika-meta">
-                  {t(lang, "plan.ride")}
+                <span className="route-badge" aria-hidden>
+                  {routeCode(leg.routeName)}
                 </span>
                 <span className="plan-leg-body">
-                  <span className="svika-body">{leg.routeName}</span>
-                  <span className="svika-meta">
-                    {t(lang, "plan.alightAt")} {stopName(leg.alightStopId)} ·{" "}
-                    {leg.rideMinutes} {t(lang, "common.minutes")} ·{" "}
-                    <span className="svika-mono-code plan-leg-fare">
-                      {formatUsd(leg.fareCents)}
-                    </span>
+                  <span className="plan-leg-name">{leg.routeName}</span>
+                  <span className="plan-leg-sub">
+                    {t(lang, "plan.alightAt")} {stopName(leg.alightStopId)}
                   </span>
+                </span>
+                <span className="plan-leg-figures">
+                  <span className="plan-leg-time">
+                    {leg.rideMinutes} {t(lang, "common.minutes")}
+                  </span>
+                  <span className="plan-leg-fare">{formatUsd(leg.fareCents)}</span>
                 </span>
               </li>
             ) : (
               <li key={i} className="plan-leg">
-                <span className="plan-leg-kind plan-leg-walk svika-meta">
-                  {t(lang, "plan.walk")}
+                <span className="route-badge route-badge-soft" aria-hidden>
+                  {t(lang, "plan.walk").slice(0, 1)}
                 </span>
                 <span className="plan-leg-body">
-                  <span className="svika-body">{stopName(leg.toStopId)}</span>
-                  <span className="svika-meta">
-                    {leg.walkMinutes} {t(lang, "common.minutes")} · {leg.walkMeters} m
+                  <span className="plan-leg-name">{t(lang, "plan.walk")}</span>
+                  <span className="plan-leg-sub">{stopName(leg.toStopId)}</span>
+                </span>
+                <span className="plan-leg-figures">
+                  <span className="plan-leg-time">
+                    {leg.walkMinutes} {t(lang, "common.minutes")}
                   </span>
+                  <span className="plan-leg-fare">{leg.walkMeters} m</span>
                 </span>
               </li>
             ),

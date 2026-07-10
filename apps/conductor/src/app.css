@@ -1,5 +1,6 @@
-/* Hwindi surface: sunlight contrast, huge targets, one action per screen.
-   All colour and type tokens come from @svika/ui; nothing here invents brand. */
+/* Hwindi surface (Mbare Sun, reference screen 7): sunlight contrast, huge
+   targets, one action per screen. All colour and type tokens come from
+   @svika/ui; nothing here invents brand. */
 .hwindi-shell {
   min-height: 100dvh;
   max-width: 480px;
@@ -7,7 +8,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding: var(--space-6) var(--space-5);
+  padding: 16px 20px 18px;
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -16,13 +17,14 @@
 .hwindi-header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .hwindi-topline {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .hwindi-note-left {
@@ -55,12 +57,14 @@
 }
 .hwindi-input {
   width: 100%;
-  padding: var(--space-4);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-sm);
-  background: var(--color-bg);
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  border: var(--border-key);
+  border-radius: var(--radius-full);
+  background: var(--key-bg);
   color: var(--color-ink);
-  font-size: var(--text-body);
+  font-size: 16px;
+  font-family: var(--font-sans);
 }
 .hwindi-input:focus-visible {
   outline: 2px solid var(--color-action);
@@ -70,70 +74,147 @@
   color: var(--color-signal);
 }
 
-/* --- route picker -------------------------------------------------------- */
+/* --- route picker (route option card grammar, screen 3) ------------------- */
 .hwindi-routes {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 10px;
 }
 .hwindi-route {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-1);
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius);
-  background: var(--color-bg);
+  min-height: 64px;
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-soft);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
   color: var(--color-ink);
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
   text-align: left;
+  font-family: var(--font-sans);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.hwindi-route:hover {
+  border: var(--border-card);
 }
 .hwindi-route:active {
   transform: scale(0.99);
 }
 .hwindi-route .svika-meta {
-  color: var(--color-action);
+  font-family: var(--font-mono);
+  color: var(--color-ink-soft);
   letter-spacing: 0.5px;
 }
 .hwindi-route-name {
-  font-size: var(--text-title);
+  font-size: var(--text-sheet-title);
   font-weight: var(--weight-semibold);
 }
 .hwindi-route-tag {
   color: var(--color-ink-soft);
 }
 
-/* --- keypad --------------------------------------------------------------- */
-.hwindi-code {
-  font-family: var(--font-mono);
-  font-size: 72px;
+/* --- the route pill on the keypad (screen 7 top-left) ---------------------- */
+.hwindi-route-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: var(--radius-full);
+  background: var(--pill-bg);
+  border: var(--border-pill);
+  font-size: 12px;
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.22em;
-  text-align: center;
   color: var(--color-ink);
+  min-width: 0;
+}
+.hwindi-route-pill .svika-mono-code {
+  font-size: 11.5px;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- keypad (screen 7) ------------------------------------------------------ */
+.hwindi-keypad-title {
+  font-size: 15px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+  text-align: center;
+  margin: 0;
+}
+
+/* the code as slot boxes: filled slots draw hard, empty ones wait */
+.hwindi-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.hwindi-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 64px;
+  border-radius: var(--radius);
+  border: 2px solid var(--slot-border-empty);
+  font-family: var(--font-mono);
+  font-weight: var(--weight-semibold);
+  font-size: 34px;
+  color: var(--slot-ink-empty);
+}
+.hwindi-slot-filled {
+  border-color: var(--slot-border-filled);
+  color: var(--color-ink);
+}
+.hwindi-shell {
+  --slot-border-empty: rgba(22, 29, 24, 0.3);
+  --slot-ink-empty: rgba(22, 29, 24, 0.3);
+  --slot-border-filled: var(--color-char);
+}
+:root[data-theme="dark"] .hwindi-shell {
+  --slot-border-empty: rgba(255, 255, 255, 0.25);
+  --slot-ink-empty: rgba(255, 255, 255, 0.3);
+  --slot-border-filled: rgba(255, 255, 255, 0.85);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hwindi-shell {
+    --slot-border-empty: rgba(255, 255, 255, 0.25);
+    --slot-ink-empty: rgba(255, 255, 255, 0.3);
+    --slot-border-filled: rgba(255, 255, 255, 0.85);
+  }
 }
 
 .hwindi-keys {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
+  gap: 10px;
 }
 .hwindi-key {
-  padding: var(--space-4);
+  min-height: var(--key-min);
+  border-radius: var(--radius-key);
+  border: var(--border-key);
+  background: var(--key-bg);
   font-family: var(--font-mono);
-  font-size: 32px;
+  font-size: 28px;
   font-weight: var(--weight-semibold);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius);
-  background: var(--color-bg);
   color: var(--color-ink);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 .hwindi-key:active {
   transform: scale(0.99);
-  background: var(--color-action-soft);
+  background: var(--key-bg-active);
+}
+.hwindi-key:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 .hwindi-key-quiet {
   color: var(--color-ink-soft);
@@ -142,19 +223,25 @@
   min-height: var(--touch-min);
 }
 
+/* the confirm bar: full-width plain CTA, 64px, no chip (§5) */
 .hwindi-cta {
   margin-top: auto;
   width: 100%;
-  padding: var(--space-5);
+  min-height: var(--cta-confirm-height);
+  padding: 9px 22px;
   border: none;
-  border-radius: var(--radius);
+  border-radius: var(--radius-full);
   background: var(--color-action);
-  color: var(--color-bone);
+  color: var(--color-action-ink);
   font-family: var(--font-sans);
-  font-size: var(--text-title);
-  font-weight: var(--weight-semibold);
+  font-size: 18px;
+  font-weight: var(--weight-bold);
   box-shadow: var(--shadow-cta);
   cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.hwindi-cta:hover {
+  background: var(--color-action-hover);
 }
 .hwindi-cta:active {
   transform: scale(0.99);
@@ -170,11 +257,36 @@
   background: transparent;
   color: var(--color-ink-soft);
   font-family: var(--font-sans);
-  font-size: var(--text-body);
+  font-size: 13px;
   font-weight: var(--weight-semibold);
   cursor: pointer;
-  padding: var(--space-2) 0;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-1);
   text-align: left;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.hwindi-quiet:active {
+  transform: scale(0.99);
+}
+.hwindi-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--pill-bg);
+  border: var(--border-pill);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.hwindi-back:active {
+  transform: scale(0.99);
 }
 
 /* --- verdict: readable from arm's length in sunlight ---------------------- */
@@ -197,37 +309,35 @@
   margin: 0;
 }
 .hwindi-verdict-success {
-  background: var(--color-action);
-  color: var(--color-bone);
+  background: var(--color-forest);
+  color: #ffffff;
 }
 .hwindi-verdict-success .hwindi-cta {
-  background: var(--color-bone);
-  color: var(--color-action);
+  background: #ffffff;
+  color: var(--color-forest);
 }
 .hwindi-verdict-already_redeemed,
 .hwindi-verdict-invalid_code {
   background: var(--color-signal);
-  color: var(--color-bone);
+  color: #ffffff;
 }
 .hwindi-verdict-already_redeemed .hwindi-cta,
 .hwindi-verdict-invalid_code .hwindi-cta {
-  background: var(--color-bone);
+  background: #ffffff;
   color: var(--color-signal);
 }
+/* warnings wear the sanctioned marigold + char pair (no amber, ever) */
 .hwindi-verdict-rate_limited,
 .hwindi-verdict-not_ready,
 .hwindi-verdict-route_not_assigned {
-  background: var(--color-amber);
+  background: var(--color-marigold);
   color: var(--color-char);
 }
-.hwindi-verdict-not_ready .hwindi-cta {
-  background: var(--color-char);
-  color: var(--color-bone);
-}
 .hwindi-verdict-rate_limited .hwindi-cta,
+.hwindi-verdict-not_ready .hwindi-cta,
 .hwindi-verdict-route_not_assigned .hwindi-cta {
   background: var(--color-char);
-  color: var(--color-bone);
+  color: var(--color-marigold);
 }
 
 .hwindi-verdict-sub {
@@ -239,15 +349,17 @@
 
 .hwindi-secondary {
   width: 100%;
-  padding: var(--space-4) var(--space-5);
+  min-height: 56px;
+  padding: var(--space-3) var(--space-5);
   border: 2px solid currentColor;
-  border-radius: var(--radius);
+  border-radius: var(--radius-full);
   background: transparent;
   color: inherit;
   font-family: var(--font-sans);
   font-size: var(--text-title);
   font-weight: var(--weight-semibold);
   cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 .hwindi-secondary:active {
   transform: scale(0.99);
@@ -282,22 +394,24 @@
 .hwindi-notes {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
+  gap: 10px;
 }
 .hwindi-note-btn {
-  padding: var(--space-5);
+  min-height: var(--key-min);
+  padding: var(--space-4);
   font-family: var(--font-mono);
   font-size: 28px;
   font-weight: var(--weight-semibold);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius);
-  background: var(--color-bg);
+  border: var(--border-key);
+  border-radius: var(--radius-key);
+  background: var(--key-bg);
   color: var(--color-ink);
   cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 .hwindi-note-btn:active {
   transform: scale(0.99);
-  background: var(--color-action-soft);
+  background: var(--key-bg-active);
 }
 .hwindi-note-btn:disabled {
   opacity: 0.35;
@@ -311,25 +425,30 @@
   gap: var(--space-2);
 }
 .hwindi-pill {
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border-radius: var(--radius-full);
-  padding: 6px 12px;
+  padding: 8px 12px;
   font-family: var(--font-sans);
-  font-size: var(--text-meta);
+  font-size: 11px;
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.5px;
   cursor: pointer;
-}
-.hwindi-pill-online {
-  background: var(--color-action-soft);
-  color: var(--color-action);
-}
-.hwindi-pill-offline {
-  background: var(--color-char);
-  color: var(--color-bone);
+  transition: transform var(--dur-fast) var(--ease-standard);
 }
 .hwindi-pill:active {
   transform: scale(0.99);
+}
+.hwindi-pill-online {
+  background: var(--pill-bg);
+  border: var(--border-pill);
+  color: var(--color-ink);
+}
+/* offline is the state that matters: the marigold + char warning pair */
+.hwindi-pill-offline {
+  background: var(--color-marigold);
+  border: none;
+  color: var(--color-char);
 }
 
 /* language pill reused from web */
@@ -338,7 +457,8 @@
   gap: 2px;
   padding: 3px;
   border-radius: var(--radius-full);
-  background: var(--color-action-soft);
+  background: var(--pill-bg);
+  border: var(--border-pill);
 }
 .lang-toggle button {
   border: none;
@@ -346,18 +466,13 @@
   border-radius: var(--radius-full);
   padding: 6px 12px;
   font-family: var(--font-sans);
-  font-size: var(--text-meta);
+  font-size: 11px;
   font-weight: var(--weight-semibold);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   color: var(--color-ink-soft);
   cursor: pointer;
 }
 .lang-toggle .lang-on {
   background: var(--color-action);
-  color: var(--color-bone);
-}
-
-.hwindi-verdict-success .lang-toggle button,
-.hwindi-verdict-invalid_code .lang-toggle button {
-  color: var(--color-bone);
+  color: var(--color-action-ink);
 }

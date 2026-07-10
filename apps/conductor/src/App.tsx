@@ -19,6 +19,35 @@ import { getMeta, setMeta } from "./lib/offlineStore";
 
 type Direction = "outbound" | "inbound";
 
+/** The mirrored back arrow (DESIGN.md section 3) — the only back glyph. */
+function BackIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M20 10.1c0-.72-.58-1.3-1.3-1.3H12V6.1c0-1.28-1.5-1.94-2.42-1.05L3.3 11.1c-.6.58-.6 1.54 0 2.12l6.28 6.05C10.5 20.16 12 19.5 12 18.22V15.5h6.7a1.3 1.3 0 0 0 1.3-1.3z" />
+    </svg>
+  );
+}
+
+/** The delete key glyph from reference screen 7, verbatim. */
+function DeleteIcon() {
+  return (
+    <svg
+      width="26"
+      height="26"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M9 4h11a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H9l-6-8z" />
+      <path d="m12 9 5 6M17 9l-5 6" />
+    </svg>
+  );
+}
+
 interface RouteInfo {
   id: string;
   code: string;
@@ -311,8 +340,13 @@ export default function App() {
       return (
         <main className="hwindi-shell" data-testid="change-picker">
           <header className="hwindi-header">
-            <button className="hwindi-quiet" type="button" onClick={resetForNext}>
-              ← {t(lang, "result.next")}
+            <button
+              className="hwindi-back"
+              type="button"
+              aria-label={t(lang, "result.next")}
+              onClick={resetForNext}
+            >
+              <BackIcon />
             </button>
             <h1 className="svika-headline">{t(lang, "change.title")}</h1>
           </header>
@@ -527,30 +561,43 @@ export default function App() {
       <header className="hwindi-header">
         <div className="hwindi-topline">
           <button
-            className="hwindi-quiet"
+            className="hwindi-back"
             type="button"
+            aria-label={t(lang, "keypad.changeRoute")}
             onClick={() => {
               setRoute(null);
               setCode("");
               void setMeta("shift", null);
             }}
           >
-            ← {t(lang, "keypad.changeRoute")}
+            <BackIcon />
           </button>
           <div className="hwindi-topline-right">
             {statusPill}
             {langToggle}
           </div>
         </div>
-        <p className="svika-meta hwindi-route-tag">
-          {route.code} · {t(lang, "route.towards")}{" "}
-          {direction === "outbound" ? route.lastStop : route.firstStop}
-        </p>
-        <h1 className="svika-headline">{t(lang, "keypad.title")}</h1>
+        <div className="hwindi-topline">
+          <span className="hwindi-route-pill">
+            {route.code}
+            <span className="svika-mono-code">
+              {t(lang, "route.towards")}{" "}
+              {direction === "outbound" ? route.lastStop : route.firstStop}
+            </span>
+          </span>
+        </div>
+        <p className="hwindi-keypad-title">{t(lang, "keypad.title")}</p>
       </header>
 
       <output className="hwindi-code" data-testid="code-display" aria-live="polite">
-        {code.padEnd(4, "·")}
+        {[0, 1, 2, 3].map((i) => (
+          <span
+            key={i}
+            className={`hwindi-slot${code[i] ? " hwindi-slot-filled" : ""}`}
+          >
+            {code[i] ?? "·"}
+          </span>
+        ))}
       </output>
 
       <div className="hwindi-keys">
@@ -570,7 +617,7 @@ export default function App() {
           aria-label={t(lang, "keypad.erase")}
           onClick={() => setCode((c) => eraseDigit(c))}
         >
-          ⌫
+          <DeleteIcon />
         </button>
         <button
           type="button"

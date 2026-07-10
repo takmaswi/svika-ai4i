@@ -1,8 +1,15 @@
 # Live map milestone evidence
 
-Proof pack for the live map gate (2026-07-07).
+Proof pack for the live map gate (2026-07-07), extended for Phase A
+(2026-07-10).
 
 ## Recordings
+
+| File | What it shows |
+| --- | --- |
+| `recordings/four-kombi-fleet.webm` | Phase A: ~50 seconds of the rider home with the four kombi fleet (two per direction) replaying the recorded field rides along the real road, sampled every animation frame, with the demo movement and demo account chips on screen. Regenerate with `node scripts/map-recording.mjs` from `apps/web`. |
+
+Earlier recordings from the first map gate:
 
 | File | What it shows |
 | --- | --- |

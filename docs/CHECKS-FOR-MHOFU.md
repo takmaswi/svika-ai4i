@@ -51,7 +51,19 @@ Every Shona string in the app is machine drafted placeholder text. An
 external translator pass happens before submission. New strings keep landing
 in both languages but the Shona stays draft quality until then.
 
-## 6. Account deletion design (task 6)
+## 6. Forms need JavaScript loaded (found 2026-07-10, pre-existing)
+
+Every form in the app (pay, save, send credit, demo door) breaks if tapped
+in the first moments before React finishes loading: the browser falls back
+to a plain POST and Next.js 15.1 answers it with a 500 (a framework bug in
+its no JavaScript form path, reproduced on the untouched wallet page too,
+so it predates Phase A and is not something we wrote). After load, all
+forms work normally, and production builds load much faster than the dev
+server where this was caught. Risk on stage: a judge would have to tap pay
+within roughly a second of first paint. Parked: revisit with a Next.js
+upgrade after the demo freeze; not worth a major version jump now.
+
+## 7. Account deletion design (task 6)
 
 You asked for a delete action on the "what Svika knows about you" page. The
 ledger and tickets are append only, so deletion anonymises instead of

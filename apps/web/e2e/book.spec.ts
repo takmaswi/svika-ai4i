@@ -2,7 +2,7 @@
 // stop picker; the plan prices from dated fare segments; wallet payment
 // debits the ledger, cash reservation books without touching money.
 import { test, expect } from "@playwright/test";
-import { loginAs, walletBalanceCents } from "./helpers";
+import { loginAs, waitForHydration, walletBalanceCents } from "./helpers";
 
 test.describe("search, plan, pay", () => {
   test.beforeEach(async ({ page }) => {
@@ -21,6 +21,7 @@ test.describe("search, plan, pay", () => {
 
     // the plan resolves the free text and quotes the verified fare
     await expect(page.locator(".plan-total")).toHaveText("$1.50");
+    await waitForHydration(page);
     await page.click("button[value=wallet]");
 
     // back home with the ticket on top, carrying a 4 digit code
@@ -42,6 +43,7 @@ test.describe("search, plan, pay", () => {
     await page.click("button[type=submit]");
 
     await expect(page.locator(".plan-total")).toHaveText("$1.50");
+    await waitForHydration(page);
     await page.click("button[value=cash]");
     await page.waitForURL("**/app?booked=1");
 
@@ -79,6 +81,7 @@ test.describe("search, plan, pay", () => {
     // book fresh so the top of the list is an ISSUED ticket (other suites
     // leave redeemed tickets behind, and those carry no live code)
     await page.goto("/app/plan?from=heights&to=rezende");
+    await waitForHydration(page);
     await page.click("button[value=cash]");
     await page.waitForURL("**/app?booked=1");
     await page.locator(".ticket-item").first().click();

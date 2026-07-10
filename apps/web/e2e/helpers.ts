@@ -17,6 +17,21 @@ export async function loginAs(page: Page, role: DemoRole): Promise<void> {
   expect(res.ok(), `login for ${role} failed: ${res.status()}`).toBeTruthy();
 }
 
+/**
+ * Wait until React is interactive on a screen that carries the bottom sheet
+ * (home, plan). A form submit that races hydration falls back to a native
+ * POST, and Next 15.1's no-JS action replay 500s (pre-existing upstream
+ * bug, see docs/CHECKS-FOR-MHOFU.md); real fingers are slower than
+ * Playwright, so the suite must not race.
+ */
+export async function waitForHydration(page: Page): Promise<void> {
+  await expect(page.getByTestId("home-sheet")).toHaveAttribute(
+    "data-hydrated",
+    "true",
+    { timeout: 15_000 },
+  );
+}
+
 /** Read the rider wallet balance shown on the rider home, in cents. */
 export async function walletBalanceCents(page: Page): Promise<number> {
   await page.goto("/app");

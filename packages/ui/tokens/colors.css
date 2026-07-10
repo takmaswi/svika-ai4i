@@ -48,7 +48,7 @@
   --color-ink:           var(--color-char);
   --color-ink-soft:      var(--color-soft-ink);
   --color-ink-mute:      var(--color-soft-ink);
-  --color-hairline:      rgba(22, 29, 24, 0.25);  /* de-emphasized border    */
+  --color-hairline:      rgba(22, 29, 24, 0.10);  /* row dividers            */
   --color-perf:          rgba(22, 29, 24, 0.35);  /* ticket perforation      */
 
   /* Drawn borders: 1.5px char by day (§8), 1px white-alpha by night */
@@ -85,6 +85,36 @@
   /* Kombi map marker (§10): stroke and beam flip with the theme */
   --marker-stroke:     2.5px solid var(--color-char);
   --kombi-beam-display: none;
+
+  /* Bottom nav active item (§9): char by day, marigold by night */
+  --nav-active: var(--color-char);
+
+  /* Dark feature card (§8): wallet balance, takings */
+  --feature-bg:     var(--color-char);
+  --feature-border: none;
+  --feature-shadow: 0 14px 32px rgba(22, 29, 24, 0.25);
+  --feature-ink:    #FFFFFF;
+  --feature-label:  rgba(255, 255, 255, 0.5);
+  --feature-soft:   rgba(255, 255, 255, 0.6);
+  --feature-amount: #FFFFFF;
+
+  /* Credit rows (wallet history): park chip, forest amount by day */
+  --credit-chip-bg:     var(--color-park);
+  --credit-chip-border: 1.5px solid var(--color-char);
+  --credit-ink:         var(--color-forest);
+
+  /* The ticket card (§8): char on white by day, white on char by night */
+  --ticket-bg:       var(--color-char);
+  --ticket-ink:      #FFFFFF;
+  --ticket-ink-soft: rgba(255, 255, 255, 0.6);
+  --ticket-label:    rgba(255, 255, 255, 0.5);
+  --ticket-code:     var(--color-marigold);
+  --ticket-perf:     rgba(255, 255, 255, 0.3);
+  --ticket-shadow:   0 16px 36px rgba(22, 29, 24, 0.28);
+  --ticket-chip-bg:  var(--color-marigold);
+  --ticket-chip-ink: var(--color-char);
+  --ticket-pill-border: 1px solid rgba(255, 255, 255, 0.12);
+  --ticket-pill-bg:  rgba(255, 255, 255, 0.08);
 
   /* --- Shadows (char/umber tinted, never grey — §2) ----------------------- */
   --shadow-card:      0 10px 28px rgba(22, 29, 24, 0.12);
@@ -143,6 +173,32 @@
   --marker-stroke:     3px solid #FFFFFF;
   --kombi-beam-display: block;
 
+  --nav-active: var(--color-marigold);
+
+  --feature-bg:     var(--night-overlay-card);
+  --feature-border: 1px solid rgba(255, 255, 255, 0.1);
+  --feature-shadow: none;
+  --feature-ink:    #FFFFFF;
+  --feature-label:  rgba(255, 255, 255, 0.5);
+  --feature-soft:   rgba(255, 255, 255, 0.6);
+  --feature-amount: var(--color-marigold);
+
+  --credit-chip-bg:     rgba(217, 232, 204, 0.12);
+  --credit-chip-border: 1px solid rgba(217, 232, 204, 0.3);
+  --credit-ink:         var(--color-park);
+
+  --ticket-bg:       #FFFFFF;
+  --ticket-ink:      var(--color-char);
+  --ticket-ink-soft: var(--color-soft-ink);
+  --ticket-label:    var(--color-soft-ink);
+  --ticket-code:     var(--color-char);
+  --ticket-perf:     rgba(22, 29, 24, 0.35);
+  --ticket-shadow:   0 16px 40px rgba(0, 0, 0, 0.5);
+  --ticket-chip-bg:  var(--color-char);
+  --ticket-chip-ink: var(--color-marigold);
+  --ticket-pill-border: 1.5px solid var(--color-char);
+  --ticket-pill-bg:  #FFFFFF;
+
   --map-base:         var(--night-map-base);
   --map-road-casing:  var(--night-road-casing);
   --map-road:         var(--night-road);
@@ -200,6 +256,32 @@
 
     --marker-stroke:     3px solid #FFFFFF;
     --kombi-beam-display: block;
+
+    --nav-active: var(--color-marigold);
+
+    --feature-bg:     var(--night-overlay-card);
+    --feature-border: 1px solid rgba(255, 255, 255, 0.1);
+    --feature-shadow: none;
+    --feature-ink:    #FFFFFF;
+    --feature-label:  rgba(255, 255, 255, 0.5);
+    --feature-soft:   rgba(255, 255, 255, 0.6);
+    --feature-amount: var(--color-marigold);
+
+    --credit-chip-bg:     rgba(217, 232, 204, 0.12);
+    --credit-chip-border: 1px solid rgba(217, 232, 204, 0.3);
+    --credit-ink:         var(--color-park);
+
+    --ticket-bg:       #FFFFFF;
+    --ticket-ink:      var(--color-char);
+    --ticket-ink-soft: var(--color-soft-ink);
+    --ticket-label:    var(--color-soft-ink);
+    --ticket-code:     var(--color-char);
+    --ticket-perf:     rgba(22, 29, 24, 0.35);
+    --ticket-shadow:   0 16px 40px rgba(0, 0, 0, 0.5);
+    --ticket-chip-bg:  var(--color-char);
+    --ticket-chip-ink: var(--color-marigold);
+    --ticket-pill-border: 1.5px solid var(--color-char);
+    --ticket-pill-bg:  #FFFFFF;
 
     --map-base:         var(--night-map-base);
     --map-road-casing:  var(--night-road-casing);

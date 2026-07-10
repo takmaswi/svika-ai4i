@@ -14,23 +14,20 @@ export const dict = {
   },
   "nav.signIn": { en: "Sign in", sn: "Pinda" },
 
-  "landing.headline": {
-    en: "Digital tickets for Harare kombis.",
-    sn: "Matikiti edijitari ekombi dzeHarare.",
+  "landing.headline1": { en: "Beyond the", sn: "Kupfuura" },
+  "landing.headlineWord": { en: "Kombi", sn: "Kombi" },
+  "landing.body": {
+    en: "Plan every trip, get smart suggestions before you leave, and ride with your safety looked after.",
+    sn: "Ronga rwendo rwega rwega, uwane mazano usati wasimuka, uye ufambe takachengetedza kuchengeteka kwako.",
   },
-  "landing.sub": {
-    en: "Plan a trip, board with a code, and stop losing your change.",
-    sn: "Ronga rwendo, kwira nekodhi, urege kurasikirwa nechenji yako.",
+  "landing.cta": { en: "Find your kombi", sn: "Tsvaga kombi yako" },
+  "landing.statChange": { en: "Change kept", sn: "Chenji yakachengetwa" },
+  "landing.statWeek": { en: "this week", sn: "svondo rino" },
+  "landing.signinHint": {
+    en: "Hwindi or fleet owner?",
+    sn: "Uri hwindi kana muridzi?",
   },
-  "landing.cta": { en: "Get started", sn: "Tanga" },
-  "landing.story1": {
-    en: "Pay a $1.50 fare with a $2 note and the change often stays on the kombi.",
-    sn: "Bhadhara mari ye$1.50 ne$2 uye chenji inowanzosara mukombi.",
-  },
-  "landing.story2": {
-    en: "Svika turns that change into wallet credit that is still yours tomorrow.",
-    sn: "Svika inoshandura chenji iyoyo kuita mari muchikwama, ichiri yako mangwana.",
-  },
+  "landing.signinLink": { en: "Sign in here", sn: "Pinda pano" },
   "landing.demoLead": {
     en: "Walk straight in as Tariro, a demo rider on the live system. No sign up.",
     sn: "Pinda pakarepo saTariro, mufambi wekuratidzira pane system chaiyo. Hapana kunyoresa.",
@@ -210,6 +207,8 @@ export const dict = {
   "ticket.status.collected": { en: "Collected", sn: "Watorwa" },
 
   "wallet.title": { en: "Your wallet", sn: "Chikwama chako" },
+  "wallet.balanceLabel": { en: "Balance", sn: "Mari iripo" },
+  "wallet.changeChip": { en: "Change kept", sn: "Chenji yakachengetwa" },
   "wallet.changeTitle": {
     en: "Change kept as credit",
     sn: "Chenji yakachengetwa semari",
@@ -378,6 +377,12 @@ export const dict = {
     en: "Show more of the map",
     sn: "Ona mepu yakakura",
   },
+
+  "home.peekArrives": { en: "Arrives", sn: "Inosvika" },
+  "home.peekFrom": { en: "from", sn: "kubva pa" },
+
+  "nav.home": { en: "Home", sn: "Kumba" },
+  "nav.rides": { en: "Rides", sn: "Nzendo" },
 
   "home.yourTrips": { en: "Your trips", sn: "Nzendo dzako" },
   "home.etaDemo": {

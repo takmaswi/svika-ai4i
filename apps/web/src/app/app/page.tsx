@@ -11,6 +11,7 @@ import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
 import { StoryBar } from "@/components/story/StoryBar";
+import { ArrowIcon, HomeIcon, RidesIcon, WalletIcon } from "@/components/icons";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 import { CORRIDOR_ROUTE_CODE } from "@/lib/map/corridor-data";
@@ -37,6 +38,12 @@ interface TicketRow {
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
 }
 
+interface CorridorStopRow {
+  stop_id: string;
+  seq: number;
+  stops: { name: string } | null;
+}
+
 // Every rendered estimate says what it stands on: recorded rides for the
 // real thing, the demo label for the mock twin.
 function etaBasisLabel(lang: Awaited<ReturnType<typeof getLang>>, eta: EtaEstimate): string {
@@ -45,9 +52,9 @@ function etaBasisLabel(lang: Awaited<ReturnType<typeof getLang>>, eta: EtaEstima
   return t(lang, key).replace("{count}", String(eta.rides));
 }
 
-// Rider home: the live map is the whole screen; everything else floats over
-// it. A peeking bottom sheet keeps the trip search one thumb away and opens
-// into wallet credit and live tickets. The search degrades exactly as
+// Rider home (reference screen 2): the live map is the whole screen, the
+// peek sheet always shows route + arrival + fare with no scroll (§9), and
+// the bottom nav floats over everything. The search degrades exactly as
 // before: free text the planner cannot place lands on the stop picker.
 export default async function RiderHome({
   searchParams,
@@ -58,6 +65,7 @@ export default async function RiderHome({
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   const params = await searchParams;
   const justBooked = params.booked === "1";
+  const sheetOpen = params.sheet === "open";
   const supabase = await createClient();
 
   const {
@@ -67,48 +75,71 @@ export default async function RiderHome({
 
   const role = await resolveRole(supabase, user.id);
 
-  const [balanceRes, savedRes, ticketsRes, corridorRes] = await Promise.all([
-    supabase
-      .from("account_balances")
-      .select("balance_cents")
-      .eq("kind", "rider_wallet")
-      .maybeSingle(),
-    supabase
-      .from("saved_trips")
-      .select(
-        "id, nickname, from_stop_id, to_stop_id, from_stop:stops!saved_trips_from_stop_id_fkey(name), to_stop:stops!saved_trips_to_stop_id_fkey(name)",
-      )
-      .order("created_at", { ascending: false })
-      .limit(4),
-    supabase
-      .from("tickets")
-      .select(
-        "id, fare_cents, payment_method, purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name), board_codes(code, valid_until)",
-      )
-      .eq("kind", "fare")
-      .order("purchased_at", { ascending: false })
-      .limit(8),
-    supabase
-      .from("route_stops")
-      .select("stop_id, seq, routes!inner(code)")
-      .eq("routes.code", CORRIDOR_ROUTE_CODE)
-      .eq("direction", "outbound")
-      .order("seq"),
-  ]);
+  const [balanceRes, savedRes, ticketsRes, corridorRes, corridorFareRes] =
+    await Promise.all([
+      supabase
+        .from("account_balances")
+        .select("balance_cents")
+        .eq("kind", "rider_wallet")
+        .maybeSingle(),
+      supabase
+        .from("saved_trips")
+        .select(
+          "id, nickname, from_stop_id, to_stop_id, from_stop:stops!saved_trips_from_stop_id_fkey(name), to_stop:stops!saved_trips_to_stop_id_fkey(name)",
+        )
+        .order("created_at", { ascending: false })
+        .limit(4),
+      supabase
+        .from("tickets")
+        .select(
+          "id, fare_cents, payment_method, purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name), board_codes(code, valid_until)",
+        )
+        .eq("kind", "fare")
+        .order("purchased_at", { ascending: false })
+        .limit(8),
+      supabase
+        .from("route_stops")
+        .select("stop_id, seq, stops(name), routes!inner(code, name)")
+        .eq("routes.code", CORRIDOR_ROUTE_CODE)
+        .eq("direction", "outbound")
+        .order("seq"),
+      supabase
+        .from("route_fare_defaults")
+        .select("fare_cents, effective_from, routes!inner(code, name)")
+        .eq("routes.code", CORRIDOR_ROUTE_CODE)
+        .order("effective_from", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
   const savedTrips = (savedRes.data ?? []) as unknown as SavedTripRow[];
   const tickets = (ticketsRes.data ?? []) as unknown as TicketRow[];
+  const toWord = t(lang, "common.to");
 
   // the "your kombi is N minutes away" slot: Spine 1 answers with a number
   // built from recorded rides (measured against the map's simulated kombi);
   // the mock twin serves off corridor trips or a downed spine, labelled demo
-  const corridorStopIds = (corridorRes.data ?? []).map((r) => r.stop_id as string);
+  const corridorRows = (corridorRes.data ?? []) as unknown as CorridorStopRow[];
+  const corridorStopIds = corridorRows.map((r) => r.stop_id);
   const etaProvider = homeEtaProvider(corridorStopIds);
   const etaByTrip = new Map<string, EtaEstimate>();
   for (const trip of savedTrips) {
     etaByTrip.set(trip.id, await etaProvider.estimate(trip.from_stop_id, trip.to_stop_id));
   }
+
+  // the peek card (§9): route + arrival + fare, never behind a scroll
+  const corridorFare = corridorFareRes.data as
+    | { fare_cents: number; routes: { code: string; name: string } }
+    | null;
+  const corridorEta =
+    corridorStopIds.length >= 2
+      ? await etaProvider.estimate(
+          corridorStopIds[0]!,
+          corridorStopIds[corridorStopIds.length - 1]!,
+        )
+      : null;
+  const corridorFirstStop = corridorRows[0]?.stops?.name ?? "";
 
   // statuses only for the tickets on screen; the rider's full history is
   // unbounded and grows forever
@@ -139,6 +170,7 @@ export default async function RiderHome({
 
       <header className="home-chips">
         <span className="home-chip home-chip-brand svika-glass">
+          {/* Exported wordmark, never rebuilt. */}
           <img className="wordmark" src="/wordmark.svg" alt="Svika" height={22} />
         </span>
         <span className="home-chips-right">
@@ -158,10 +190,10 @@ export default async function RiderHome({
       <HomeSheet
         openLabel={t(lang, "home.sheetOpen")}
         closeLabel={t(lang, "home.sheetClose")}
-        defaultOpen={justBooked}
+        defaultOpen={justBooked || sheetOpen}
         peek={
           <>
-            <h1 className="svika-headline home-sheet-title">
+            <h1 className="svika-title home-sheet-title">
               {t(lang, "rider.searchTitle")}
             </h1>
             <p className="svika-meta home-sheet-hint">{t(lang, "home.sheetHint")}</p>
@@ -190,12 +222,36 @@ export default async function RiderHome({
                   type="submit"
                   aria-label={t(lang, "rider.planCta")}
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                    <path d="M4 10.1c0-.72.58-1.3 1.3-1.3H12V6.1c0-1.28 1.5-1.94 2.42-1.05l6.28 6.05c.6.58.6 1.54 0 2.12l-6.28 6.05C13.5 20.16 12 19.5 12 18.22V15.5H5.3A1.3 1.3 0 0 1 4 14.2z" />
-                  </svg>
+                  <ArrowIcon />
                 </button>
               </div>
             </form>
+            {corridorFare && corridorEta && (
+              <div className="peek-stats" data-testid="peek-stats">
+                <div>
+                  <p className="peek-label">{t(lang, "ticket.route")}</p>
+                  <p className="peek-route">
+                    {corridorFare.routes.name}
+                    <span className="peek-route-sub">
+                      {t(lang, "home.peekFrom")} {corridorFirstStop}
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p className="peek-label">{t(lang, "home.peekArrives")}</p>
+                  <p className="peek-mono">
+                    {corridorEta.minutes} {t(lang, "common.minutes")}
+                  </p>
+                  <span className="peek-route-sub">
+                    {etaBasisLabel(lang, corridorEta)}
+                  </span>
+                </div>
+                <div>
+                  <p className="peek-label">{t(lang, "ticket.fare")}</p>
+                  <p className="peek-mono">{formatUsd(corridorFare.fare_cents)}</p>
+                </div>
+              </div>
+            )}
           </>
         }
       >
@@ -214,7 +270,7 @@ export default async function RiderHome({
                       <span className="home-pick-body">
                         <span className="svika-body home-pick-name">{trip.nickname}</span>
                         <span className="svika-meta">
-                          {trip.from_stop?.name} → {trip.to_stop?.name}
+                          {trip.from_stop?.name} {toWord} {trip.to_stop?.name}
                         </span>
                       </span>
                       <span className="home-pick-eta">
@@ -235,20 +291,20 @@ export default async function RiderHome({
 
         <section className="wallet-strip svika-card">
           <div>
-            <p className="svika-meta">{t(lang, "rider.walletBalance")}</p>
+            <p className="svika-meta tickets-heading">{t(lang, "rider.walletBalance")}</p>
             <p className="wallet-amount svika-mono-code">{formatUsd(balance)}</p>
           </div>
-          <Link className="home-nav-link touch-target" href="/app/wallet">
+          <Link className="inline-link touch-target" href="/app/wallet">
             {t(lang, "wallet.open")}
           </Link>
         </section>
 
-        <nav className="home-nav" aria-label="sections">
-          <Link className="home-nav-link touch-target" href="/app/parcel">
+        <nav className="picker-list" aria-label="sections">
+          <Link className="picker-item touch-target" href="/app/parcel">
             {t(lang, "parcel.open")}
           </Link>
           {role === "owner" && (
-            <Link className="home-nav-link touch-target" href="/app/owner">
+            <Link className="picker-item touch-target" href="/app/owner">
               {t(lang, "owner.open")}
             </Link>
           )}
@@ -276,7 +332,7 @@ export default async function RiderHome({
                       <span className="ticket-item-body">
                         <span className="svika-body ticket-item-route">
                           {ticket.from_stop && ticket.to_stop
-                            ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
+                            ? `${ticket.from_stop.name} ${toWord} ${ticket.to_stop.name}`
                             : (ticket.routes?.name ?? "")}
                         </span>
                         <span className="svika-meta">
@@ -305,6 +361,21 @@ export default async function RiderHome({
           <SignOutButton label={t(lang, "app.signOut")} />
         </footer>
       </HomeSheet>
+
+      <nav className="tab-nav tab-nav-fixed" aria-label="Primary">
+        <span className="tab-item tab-item-active" aria-current="page">
+          <HomeIcon active />
+          {t(lang, "nav.home")}
+        </span>
+        <Link className="tab-item" href="/app?sheet=open">
+          <RidesIcon />
+          {t(lang, "nav.rides")}
+        </Link>
+        <Link className="tab-item" href="/app/wallet">
+          <WalletIcon />
+          {t(lang, "nav.wallet")}
+        </Link>
+      </nav>
     </main>
   );
 }

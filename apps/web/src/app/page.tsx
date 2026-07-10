@@ -2,11 +2,12 @@ import Link from "next/link";
 import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
+import { ArrowIcon } from "@/components/icons";
 import { enterDemo } from "@/lib/demo-actions";
 
-// The landing: the live map is the pitch. Over it, the change problem in
-// two short sentences, the real door (phone sign in) and the demo door
-// (one tap in as a pooled demo persona, or a guided story).
+// The landing (reference screen 1): the Kombi highlight headline, the live
+// map in a drawn card as the pitch, the change story as stat cards, one
+// primary CTA into the real door, and the demo doors below the fold line.
 export default async function LandingPage({
   searchParams,
 }: {
@@ -17,8 +18,46 @@ export default async function LandingPage({
   const demoErr = params.demoerr === "1";
 
   return (
-    <main className="landing-screen">
-      <div className="home-map">
+    <main className="landing">
+      <header className="landing-top">
+        {/* Exported wordmark, never rebuilt. */}
+        <img className="wordmark" src="/wordmark.svg" alt="Svika" height={24} />
+        <LanguageToggle lang={lang} />
+      </header>
+
+      <h1 className="landing-h1">
+        <span className="landing-h1-line svika-animate-fade-up">
+          {t(lang, "landing.headline1")}
+        </span>
+        {/* The marigold Hiace behind the word (DESIGN.md §10), verbatim. */}
+        <span className="kombi-hl svika-drive">
+          <svg
+            className="kombi-hl-svg"
+            viewBox="0 0 200 62"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <path
+              d="M6 62 L6 20 Q6 5 22 5 L130 5 Q145 5 154 14 L186 40 Q200 48 200 56 L200 62 Z"
+              fill="#F5B301"
+            />
+            <path
+              d="M156 14 L161 14 Q167 15 171 20 L182 33 L156 33 Q153 33 153 27 L153 17 Q153 14 156 14 Z"
+              fill="#161D18"
+              opacity="0.8"
+            />
+          </svg>
+          <span className="kombi-hl-word">{t(lang, "landing.headlineWord")}</span>
+          <span className="kombi-hl-wheel kombi-hl-wheel-front" aria-hidden />
+          <span className="kombi-hl-wheel kombi-hl-wheel-back" aria-hidden />
+        </span>
+      </h1>
+
+      <p className="landing-body svika-animate-fade-up svika-rise-3">
+        {t(lang, "landing.body")}
+      </p>
+
+      <div className="landing-map svika-animate-fade-up svika-rise-4">
         <LiveMapLazy
           labels={{
             ariaLabel: t(lang, "map.ariaLabel"),
@@ -28,81 +67,85 @@ export default async function LandingPage({
         />
       </div>
 
-      <header className="home-chips">
-        <span className="home-chip home-chip-brand svika-glass">
-          {/* Exported wordmark, never rebuilt. */}
-          <img className="wordmark" src="/wordmark.svg" alt="Svika" height={22} />
-        </span>
-        <span className="home-chip svika-glass">
-          <LanguageToggle lang={lang} />
-        </span>
-      </header>
-
-      <section className="landing-panel svika-glass-strong svika-animate-fade-up">
-        <p className="svika-meta landing-eyebrow">{t(lang, "brand.tagline")}</p>
-        <h1 className="svika-display landing-headline">
-          {t(lang, "landing.headline")}
-        </h1>
-        <p className="svika-body landing-story">
-          {t(lang, "landing.story1")} {t(lang, "landing.story2")}
-        </p>
-
-        <Link className="cta touch-target landing-cta" href="/login">
-          {t(lang, "landing.cta")}
-        </Link>
-
-        <div className="landing-demo">
-          <p className="svika-meta landing-demo-lead">{t(lang, "landing.demoLead")}</p>
-          {demoErr && (
-            <p className="auth-error svika-body">{t(lang, "landing.demoErr")}</p>
-          )}
-          <div className="landing-demo-doors">
-            <form action={enterDemo}>
-              <input type="hidden" name="target" value="rider" />
-              <button
-                className="landing-demo-btn touch-target"
-                type="submit"
-                data-testid="demo-door"
-              >
-                {t(lang, "landing.demoEnter")}
-              </button>
-            </form>
-            <form action={enterDemo}>
-              <input type="hidden" name="target" value="owner" />
-              <button className="landing-demo-btn touch-target" type="submit">
-                {t(lang, "landing.demoOwner")}
-              </button>
-            </form>
-          </div>
-          <p className="svika-meta landing-demo-stories-lead">
-            {t(lang, "landing.demoStories")}
+      <div className="stat-row svika-animate-fade-up svika-rise-5">
+        <div className="stat-card">
+          <p className="stat-label">{t(lang, "landing.statChange")}</p>
+          <p className="stat-value">
+            $1.50
+            <span className="stat-value-sub"> {t(lang, "landing.statWeek")}</span>
           </p>
-          <div className="landing-demo-doors">
-            <form action={enterDemo}>
-              <input type="hidden" name="target" value="rider" />
-              <input type="hidden" name="story" value="tariro-town" />
-              <button
-                className="landing-story-btn touch-target"
-                type="submit"
-                data-testid="story-door-town"
-              >
-                {t(lang, "landing.demoStory1")}
-              </button>
-            </form>
-            <form action={enterDemo}>
-              <input type="hidden" name="target" value="rider" />
-              <input type="hidden" name="story" value="transfer-trip" />
-              <button
-                className="landing-story-btn touch-target"
-                type="submit"
-                data-testid="story-door-transfer"
-              >
-                {t(lang, "landing.demoStory2")}
-              </button>
-            </form>
-          </div>
         </div>
-      </section>
+        <div className="stat-card stat-ticket">
+          <span className="stat-stub" aria-hidden />
+          <span className="stat-ticket-body">
+            <p className="stat-label">{t(lang, "ticket.title")}</p>
+            <p className="stat-code">74 21</p>
+          </span>
+        </div>
+      </div>
+
+      <Link className="cta touch-target landing-cta svika-animate-fade-up svika-rise-6" href="/login">
+        {t(lang, "landing.cta")}
+        <span className="cta-chip" aria-hidden>
+          <ArrowIcon />
+        </span>
+      </Link>
+      <p className="landing-signin svika-animate-fade-up svika-rise-7">
+        {t(lang, "landing.signinHint")}{" "}
+        <Link href="/login">{t(lang, "landing.signinLink")}</Link>
+      </p>
+
+      <div className="landing-demo svika-animate-fade-up svika-rise-7">
+        <p className="svika-meta landing-demo-lead">{t(lang, "landing.demoLead")}</p>
+        {demoErr && (
+          <p className="auth-error svika-body">{t(lang, "landing.demoErr")}</p>
+        )}
+        <div className="landing-demo-doors">
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <button
+              className="landing-demo-btn touch-target"
+              type="submit"
+              data-testid="demo-door"
+            >
+              {t(lang, "landing.demoEnter")}
+            </button>
+          </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="owner" />
+            <button className="landing-demo-btn touch-target" type="submit">
+              {t(lang, "landing.demoOwner")}
+            </button>
+          </form>
+        </div>
+        <p className="svika-meta landing-demo-stories-lead">
+          {t(lang, "landing.demoStories")}
+        </p>
+        <div className="landing-demo-doors">
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="tariro-town" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-town"
+            >
+              {t(lang, "landing.demoStory1")}
+            </button>
+          </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="transfer-trip" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-transfer"
+            >
+              {t(lang, "landing.demoStory2")}
+            </button>
+          </form>
+        </div>
+      </div>
     </main>
   );
 }

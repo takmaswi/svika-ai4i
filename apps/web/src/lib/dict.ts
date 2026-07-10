@@ -126,6 +126,7 @@ export const dict = {
 
   "common.back": { en: "Back", sn: "Dzokera" },
   "common.minutes": { en: "min", sn: "min" },
+  "common.to": { en: "to", sn: "kusvika" },
 
   "rider.searchTitle": {
     en: "Where are you going?",
@@ -383,6 +384,7 @@ export const dict = {
 
   "nav.home": { en: "Home", sn: "Kumba" },
   "nav.rides": { en: "Rides", sn: "Nzendo" },
+  "nav.wallet": { en: "Wallet", sn: "Chikwama" },
 
   "home.yourTrips": { en: "Your trips", sn: "Nzendo dzako" },
   "home.etaDemo": {

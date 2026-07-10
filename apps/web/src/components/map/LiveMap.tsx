@@ -9,7 +9,7 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { corridorLine, corridorStops } from "@/lib/map/corridor-data";
-import { lerpHeading, lerpLngLat, type LngLat } from "@/lib/map/geometry";
+import type { LngLat } from "@/lib/map/geometry";
 import { SIM_EPOCH_MS, SIM_VEHICLES, simConfig } from "@/lib/map/sim-config";
 import { mapStyleUrl, warmSvikaStyle } from "@/lib/map/style";
 import {
@@ -153,12 +153,6 @@ export function LiveMap({ labels }: LiveMapProps) {
     let unsubscribe: (() => void) | null = null;
     let raf = 0;
     const markers = new Map<string, maplibregl.Marker>();
-    // Per-vehicle animation state: where the marker is drawn now, and the
-    // feed position it is gliding toward.
-    const anim = new Map<
-      string,
-      { from: VehiclePosition; to: VehiclePosition; startedAt: number }
-    >();
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -190,9 +184,8 @@ export function LiveMap({ labels }: LiveMapProps) {
           epochMs: SIM_EPOCH_MS,
         });
 
-        unsubscribe = feed.subscribe((positions) => {
+        const apply = (positions: VehiclePosition[], stampData: boolean) => {
           if (!map || disposed) return;
-          const now = performance.now();
           for (const pos of positions) {
             let marker = markers.get(pos.id);
             if (!marker) {
@@ -205,44 +198,34 @@ export function LiveMap({ labels }: LiveMapProps) {
                 .setRotation(pos.headingDeg)
                 .addTo(map);
               markers.set(pos.id, marker);
-              anim.set(pos.id, { from: pos, to: pos, startedAt: now });
-              const created = marker.getElement();
-              created.dataset.lng = String(pos.lngLat[0]);
-              created.dataset.lat = String(pos.lngLat[1]);
-              created.dataset.heading = String(Math.round(pos.headingDeg));
-              continue;
-            }
-            const current = anim.get(pos.id);
-            const from = current
-              ? {
-                  ...current.to,
-                  lngLat: marker.getLngLat().toArray() as LngLat,
-                  headingDeg: marker.getRotation(),
-                }
-              : pos;
-            anim.set(pos.id, { from, to: pos, startedAt: now });
-            if (reducedMotion) {
+            } else {
               marker.setLngLat(pos.lngLat).setRotation(pos.headingDeg);
             }
-            // e2e reads these to prove movement in coordinates, not pixels
-            const el = marker.getElement();
-            el.dataset.lng = String(pos.lngLat[0]);
-            el.dataset.lat = String(pos.lngLat[1]);
-            el.dataset.heading = String(Math.round(pos.headingDeg));
-          }
-        });
-
-        if (!reducedMotion) {
-          const frame = () => {
-            const now = performance.now();
-            for (const [id, a] of anim) {
-              const marker = markers.get(id);
-              if (!marker) continue;
-              const t = Math.min(1, (now - a.startedAt) / TICK_MS);
-              marker
-                .setLngLat(lerpLngLat(a.from.lngLat, a.to.lngLat, t))
-                .setRotation(lerpHeading(a.from.headingDeg, a.to.headingDeg, t));
+            if (stampData) {
+              // e2e reads these to prove movement in coordinates, not pixels
+              const el = marker.getElement();
+              el.dataset.lng = String(pos.lngLat[0]);
+              el.dataset.lat = String(pos.lngLat[1]);
+              el.dataset.heading = String(Math.round(pos.headingDeg));
             }
+          }
+        };
+
+        if (reducedMotion || !feed.sample) {
+          // Discrete once-a-second steps: no gliding under reduced motion,
+          // and a future real GPS feed lands here until it earns smoothing.
+          unsubscribe = feed.subscribe((positions) => apply(positions, true));
+        } else {
+          // The simulation is a pure function of wall clock time, so every
+          // frame samples the exact position along the recorded road line:
+          // no interpolation between ticks, no cut corners, no teleporting.
+          const sample = feed.sample.bind(feed);
+          let lastStamp = 0;
+          const frame = () => {
+            if (disposed) return;
+            const stamp = performance.now() - lastStamp > TICK_MS;
+            if (stamp) lastStamp = performance.now();
+            apply(sample(Date.now()), stamp);
             raf = requestAnimationFrame(frame);
           };
           raf = requestAnimationFrame(frame);

@@ -28,10 +28,15 @@ const corridor: CorridorContext = {
   stopLngLats: road,
 };
 
+// Constant 10 m/s profiles both ways: the old hand-checked timings hold.
+const legSeconds = metrics.totalMeters / 10;
 const simConfig: SimulationConfig = {
   routeCode: "TEST-01",
   metrics,
-  speedMps: 10,
+  profiles: {
+    outbound: { durationSeconds: legSeconds, points: [[0, 0], [legSeconds, metrics.totalMeters]] },
+    inbound: { durationSeconds: legSeconds, points: [[0, metrics.totalMeters], [legSeconds, 0]] },
+  },
   dwellSeconds: 0,
 };
 
@@ -94,7 +99,7 @@ function providerWith(overrides: Partial<SpineEtaDeps> = {}) {
     corridor,
     simConfig,
     // one kombi that just left stop-a, heading out
-    vehicles: [{ id: "sim-1", startMeters: 0, headingOut: true }],
+    vehicles: [{ id: "sim-1", phaseSeconds: 0 }],
     epochMs: 0,
     fallback: new MockEtaProvider(() => 1_700_000_000_000),
     fetchFn,

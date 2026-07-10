@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "auth:verify": "node scripts/auth-verify.mjs"
+    "auth:verify": "node scripts/auth-verify.mjs",
+    "sim:profile": "node scripts/derive-sim-profile.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.5.2",

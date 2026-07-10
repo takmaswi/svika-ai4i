@@ -303,6 +303,103 @@ export const dict = {
     en: "The map could not load. Your trips and wallet still work.",
     sn: "Mepu haina kukwanisa kuvhurika. Nzendo dzako nechikwama zvichiri kushanda.",
   },
+
+  // consent and privacy. Shona here is machine drafted and waits for the
+  // external translator pass, like every other Shona string in this file.
+  "consent.title": { en: "Before you ride", sn: "Usati wafamba" },
+  "consent.intro": {
+    en: "Svika keeps a record of your trips, tickets and wallet credit so your change never gets lost. Here is what that means.",
+    sn: "Svika inochengeta nzendo dzako, matikiti nemari yechikwama kuti chenji yako irege kurasika. Hezvino zvazvinoreva.",
+  },
+  "consent.point1": {
+    en: "Your name, phone number and language choice are stored with your account.",
+    sn: "Zita rako, nhamba yefoni nemutauro waunosarudza zvinochengetwa neakaunti yako.",
+  },
+  "consent.point2": {
+    en: "Every ticket and wallet movement is kept. Money history is never edited or deleted.",
+    sn: "Tikiti rimwe nerimwe nekufamba kwemari zvinochengetwa. Nhoroondo yemari haigadziridzwe kana kudzimwa.",
+  },
+  "consent.point3": {
+    en: "Trip patterns improve arrival predictions. Owners see route totals, never your name.",
+    sn: "Mafambiro enzendo anovandudza fungidziro dzekusvika. Varidzi vanoona huwandu hwenzira, kwete zita rako.",
+  },
+  "consent.point4": {
+    en: "You can see everything Svika holds about you and delete your details at any time.",
+    sn: "Unogona kuona zvese zvakachengetwa neSvika nezvako uye kudzima ruzivo rwako chero nguva.",
+  },
+  "consent.noticeLink": {
+    en: "Read the full privacy notice",
+    sn: "Verenga chiziviso chekuvanzika chizere",
+  },
+  "consent.accept": { en: "I understand and agree", sn: "Ndanzwisisa uye ndinobvuma" },
+  "consent.declineHint": {
+    en: "If you do not agree, sign out. Nothing beyond your sign in is stored.",
+    sn: "Kana usingabvume, buda. Hapana chinochengetwa kunze kwekupinda kwako.",
+  },
+  "consent.err": {
+    en: "That did not save. Try again.",
+    sn: "Hazvina kuchengetedzwa. Edzazve.",
+  },
+
+  "privacy.title": { en: "How Svika treats your data", sn: "Svika inobata sei ruzivo rwako" },
+  "privacy.collectH": { en: "What Svika stores", sn: "Zvinochengetwa neSvika" },
+  "privacy.collectB": {
+    en: "Your name, phone number, language, tickets, wallet credit and the trips you save. Nothing else.",
+    sn: "Zita rako, nhamba yefoni, mutauro, matikiti, mari yechikwama nenzendo dzaunochengeta. Hapana zvimwe.",
+  },
+  "privacy.whyH": { en: "Why", sn: "Sei" },
+  "privacy.whyB": {
+    en: "Tickets and credit are money, so they need a full record. Trip patterns make arrival predictions better for everyone.",
+    sn: "Matikiti nemari zvinoda nhoroondo izere. Mafambiro enzendo anonatsiridza fungidziro dzekusvika kune wese.",
+  },
+  "privacy.moneyH": { en: "The money rule", sn: "Mutemo wemari" },
+  "privacy.moneyB": {
+    en: "The wallet is an append only ledger. Entries are added, never edited, never deleted. That is how your change stays safe.",
+    sn: "Chikwama ibhuku remari rinongowedzerwa. Zvinyorwa zvinowedzerwa, hazvigadziridzwe, hazvidzimwe. Ndiko kuchengetedzwa kwechenji yako.",
+  },
+  "privacy.aiH": { en: "What the AI sees", sn: "Zvinoonekwa neAI" },
+  "privacy.aiB": {
+    en: "Predictions and leakage checks run on our servers over patterns and totals. They never name a person and nothing runs on your phone.",
+    sn: "Fungidziro nekuongorora mari zvinoshanda pamaseva edu zvichishandisa mafambiro nehuwandu. Hazvidome munhu uye hapana chinoshanda pafoni yako.",
+  },
+  "privacy.shareH": { en: "Who sees your data", sn: "Ndiani anoona ruzivo rwako" },
+  "privacy.shareB": {
+    en: "Nobody outside Svika. No selling, no adverts. Owners see route totals, conductors see board codes, neither sees who you are.",
+    sn: "Hapana ari kunze kweSvika. Hakuna kutengeswa, hakuna zvishambadzo. Varidzi vanoona huwandu hwenzira, mahwindi anoona makodhi, hapana anoona kuti ndiwe ani.",
+  },
+  "privacy.controlH": { en: "Your controls", sn: "Masimba ako" },
+  "privacy.controlB": {
+    en: "The your data page shows everything held about you. Deleting removes your name, phone and saved trips; ticket and money history stays but no longer says who you are.",
+    sn: "Peji reruzivo rwako rinoratidza zvese zvakachengetwa nezvako. Kudzima kunobvisa zita, foni nenzendo dzakachengetwa; nhoroondo yematikiti nemari inosara asi haichataure kuti ndiwe ani.",
+  },
+  "privacy.versionLabel": { en: "Notice version", sn: "Vhezheni yechiziviso" },
+  "privacy.yourDataLink": { en: "Your data and privacy", sn: "Ruzivo rwako nekuvanzika" },
+
+  "lang.english": { en: "English", sn: "Chirungu" },
+  "lang.shona": { en: "Shona", sn: "ChiShona" },
+
+  "yourdata.title": { en: "What Svika knows about you", sn: "Zvinozivikanwa neSvika nezvako" },
+  "yourdata.profileH": { en: "Your profile", sn: "Ruzivo rwako" },
+  "yourdata.name": { en: "Name", sn: "Zita" },
+  "yourdata.language": { en: "Language", sn: "Mutauro" },
+  "yourdata.none": { en: "Not set", sn: "Hapana" },
+  "yourdata.countsH": { en: "Your history", sn: "Nhoroondo yako" },
+  "yourdata.tickets": { en: "Tickets", sn: "Matikiti" },
+  "yourdata.movements": { en: "Wallet movements", sn: "Kufamba kwemari" },
+  "yourdata.savedTrips": { en: "Saved trips", sn: "Nzendo dzakachengetwa" },
+  "yourdata.consents": { en: "Consent records", sn: "Zvinyorwa zvemvumo" },
+  "yourdata.deleteH": { en: "Delete your details", sn: "Dzima ruzivo rwako" },
+  "yourdata.deleteB": {
+    en: "Money and ticket history is append only, so it cannot be erased. Deleting removes your name and phone, deletes your saved trips, and closes the app until you agree again. Your sign in stays until an operator removes it.",
+    sn: "Nhoroondo yemari nematikiti inongowedzerwa, saka haigone kudzimwa. Kudzima kunobvisa zita nefoni yako, kunodzima nzendo dzakachengetwa, uye kunovhara app kusvika wabvumazve. Kupinda kwako kunosara kusvika mushandi akubvisa.",
+  },
+  "yourdata.deleteCta": { en: "Delete my details", sn: "Dzima ruzivo rwangu" },
+  "yourdata.deleteConfirm": { en: "Yes, delete my details", sn: "Hongu, dzima ruzivo rwangu" },
+  "yourdata.deleteCancel": { en: "Keep them", sn: "Zvichengete" },
+  "yourdata.err": {
+    en: "That did not work. Try again.",
+    sn: "Hazvina kushanda. Edzazve.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

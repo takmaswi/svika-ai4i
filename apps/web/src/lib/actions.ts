@@ -6,7 +6,38 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { fetchNetwork } from "@/lib/network";
-import { dollarsToCents, planTrip, type RideLeg } from "@svika/shared";
+import { CONSENT_VERSION, dollarsToCents, planTrip, type RideLeg } from "@svika/shared";
+
+/** Appends the accept record that opens the app (see the /app layout gate). */
+export async function acceptConsent(): Promise<void> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { error } = await supabase.from("consent_records").insert({
+    user_id: user.id,
+    action: "accepted",
+    version: CONSENT_VERSION,
+  });
+  if (error) redirect("/consent?err=1");
+  redirect("/app");
+}
+
+/**
+ * The delete action on the your data page. The ledger is append only, so
+ * this anonymises instead of erasing: the RPC strips name and phone, drops
+ * saved trips and appends a consent withdrawal, then the session ends and
+ * the consent gate stays closed until a fresh accept.
+ */
+export async function deleteMyData(): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("anonymise_me");
+  if (error) redirect("/app/privacy?err=1");
+  await supabase.auth.signOut();
+  redirect("/");
+}
 
 export interface PurchasedTicket {
   ticketId: string;

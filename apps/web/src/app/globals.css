@@ -556,6 +556,58 @@ body {
   color: var(--color-ink-mute);
 }
 
+/* --- consent and privacy -------------------------------------------------- */
+.consent-points {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-2);
+}
+.privacy-section {
+  display: grid;
+  gap: var(--space-1);
+}
+.privacy-heading {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.yourdata-list {
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.yourdata-list dd {
+  margin: 0;
+}
+.yourdata-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.delete-data-cta {
+  border: 1px solid var(--color-signal);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-signal);
+  font: inherit;
+  font-weight: 600;
+  padding: var(--space-3) var(--space-5);
+  cursor: pointer;
+}
+.delete-data-cta:active {
+  transform: scale(0.99);
+}
+.delete-data-armed {
+  background: var(--color-signal);
+  color: var(--color-bone);
+}
+.delete-data-confirm {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 /* --- authenticated shell ------------------------------------------------ */
 .shell-card {
   margin-top: var(--space-6);

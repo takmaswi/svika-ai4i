@@ -296,6 +296,9 @@ export default async function RiderHome({
         </section>
 
         <footer className="home-sheet-footer">
+          <Link className="auth-link touch-target" href="/app/privacy">
+            {t(lang, "privacy.yourDataLink")}
+          </Link>
           <SignOutButton label={t(lang, "app.signOut")} />
         </footer>
       </HomeSheet>

@@ -71,11 +71,14 @@ body {
   text-transform: uppercase;
   margin: 0;
 }
+/* centred by auto margins, not a transform: the fade-up animation owns the
+   transform property and would cancel a translateX */
 .landing-panel {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   bottom: 0;
-  transform: translateX(-50%);
+  margin: 0 auto;
   width: 100%;
   max-width: 480px;
   max-height: 78dvh;
@@ -578,12 +581,18 @@ body {
   color: var(--color-ink-soft);
   max-width: 30ch;
 }
-/* the stamp moment: the cleared fare lands like an inked rubber stamp */
-.boarding-stamp {
+/* the stamp moment: the cleared fare lands like an inked rubber stamp.
+   The anchor owns the centring transform; the stamp animation owns the
+   inner transform (an animation's fill would cancel a shared translate). */
+.boarding-stamp-anchor {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(-8deg);
+  pointer-events: none;
+}
+.boarding-stamp {
+  display: inline-block;
   padding: var(--space-2) var(--space-5);
   border: 3px solid var(--color-signal);
   border-radius: var(--radius-sm);
@@ -593,7 +602,6 @@ body {
   font-weight: var(--weight-bold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  pointer-events: none;
 }
 /* the perforated fold between the code and the small print */
 .boarding-perf {

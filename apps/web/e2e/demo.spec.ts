@@ -56,11 +56,14 @@ test.describe("demo door and story mode", () => {
       await page.waitForURL(new RegExp(`step=${i + 1}`), { timeout: 20_000 });
     }
 
-    // final step: the wallet, with the 50 cents of change credited on top
-    // of the reset $5.00 float
+    // final step: the wallet. The balance is deterministic (the reset floats
+    // it to exactly $5.00 and the story adds 50 cents of change); the change
+    // story card's "kept so far" grows with each reuse of a pooled persona,
+    // because money history is append only by design, so it is asserted as
+    // present and non-empty rather than as an exact figure.
     await page.waitForURL(/\/app\/wallet/, { timeout: 20_000 });
     await expect(page.getByTestId("wallet-balance")).toHaveText("$5.50");
-    await expect(page.getByTestId("change-story")).toContainText("$0.50");
+    await expect(page.getByTestId("change-story")).toContainText(/\$\d+\.\d{2}/);
 
     // the story ends back in free roam
     await page.getByTestId("story-next").click();

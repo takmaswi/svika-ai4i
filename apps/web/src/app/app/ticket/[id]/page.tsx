@@ -88,18 +88,19 @@ export default async function TicketPage({
           <p className="ticket-code" data-testid="board-code">
             {boardCode?.code ?? "····"}
           </p>
-          {isLive ? (
+          {isLive && (
             <p className="svika-body ticket-hint">{t(lang, "ticket.showHwindi")}</p>
-          ) : (
-            <p
-              className={`ticket-status svika-meta${isStamped ? " ticket-status-live" : ""}`}
-            >
-              {t(lang, statusKey)}
-            </p>
+          )}
+          {!isLive && !isStamped && (
+            <p className="ticket-status svika-meta">{t(lang, statusKey)}</p>
           )}
           {isStamped && (
-            <span className="boarding-stamp svika-animate-stamp" aria-hidden>
-              {t(lang, statusKey)}
+            // outer span owns the centring transform; the stamp animation
+            // owns transform on the inner one, they must not share
+            <span className="boarding-stamp-anchor" aria-hidden>
+              <span className="boarding-stamp svika-animate-stamp">
+                {t(lang, statusKey)}
+              </span>
             </span>
           )}
         </div>

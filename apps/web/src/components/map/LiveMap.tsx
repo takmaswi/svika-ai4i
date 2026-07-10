@@ -266,7 +266,13 @@ export function LiveMap({ labels, overlay }: LiveMapProps) {
         container,
         style: style as maplibregl.StyleSpecification,
         bounds: mapBounds(overlay),
-        fitBoundsOptions: { padding: overlay ? 64 : 48 },
+        // under a plan the bottom sheet peeks over the map; the trip must
+        // fit in the visible band above it
+        fitBoundsOptions: {
+          padding: overlay
+            ? { top: 72, left: 48, right: 48, bottom: 356 }
+            : 48,
+        },
         attributionControl: { compact: true },
       });
       map.touchPitch.disable();

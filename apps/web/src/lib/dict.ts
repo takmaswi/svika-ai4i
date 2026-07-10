@@ -118,6 +118,7 @@ export const dict = {
     sn: "Ratidza hwindi kodhi iyi paunokwira.",
   },
   "ticket.fare": { en: "Fare", sn: "Mari" },
+  "ticket.payment": { en: "Payment", sn: "Kubhadhara" },
   "ticket.route": { en: "Route", sn: "Nzira" },
   "ticket.validUntil": { en: "Valid until", sn: "Inoshanda kusvika" },
   "ticket.payCash": { en: "Pay cash on board", sn: "Bhadhara cash mukombi" },
@@ -132,6 +133,19 @@ export const dict = {
   "ticket.status.collected": { en: "Collected", sn: "Watorwa" },
 
   "wallet.title": { en: "Your wallet", sn: "Chikwama chako" },
+  "wallet.changeTitle": {
+    en: "Change kept as credit",
+    sn: "Chenji yakachengetwa semari",
+  },
+  "wallet.changeTotal": { en: "Kept so far", sn: "Yakachengetwa kusvika zvino" },
+  "wallet.changeBody": {
+    en: "When you pay cash and the hwindi cannot give change, the difference lands here as credit instead of leaving with the kombi.",
+    sn: "Paunobhadhara cash uye hwindi asina chenji, mari inosara inopinda muno semari yako pane kuenda nekombi.",
+  },
+  "wallet.changeNone": {
+    en: "No change credited yet. The first time a hwindi owes you change, it lands here.",
+    sn: "Hapasati pane chenji yapinda. Kekutanga hwindi akakuomerwa nechenji, inopinda muno.",
+  },
   "wallet.open": { en: "Wallet", sn: "Chikwama" },
   "wallet.history": { en: "Recent activity", sn: "Zvichangobva kuitika" },
   "wallet.sendTitle": { en: "Send credit", sn: "Tumira mari" },
@@ -238,6 +252,41 @@ export const dict = {
   "owner.watchdogNote": {
     en: "Flags describe patterns, never a person. This card runs on clearly labelled simulated history until the network has months of real fares.",
     sn: "Zviratidzo zvinotaura maitiro, kwete munhu. Kadhi iri rinoshanda nenhoroondo yakagadzirwa kusvika network yava nemwedzi yemari chaiyo.",
+  },
+  "owner.netToDate": { en: "Net to date", sn: "Yako yese" },
+  "owner.chartTitle": {
+    en: "Digital fares, last 14 days",
+    sn: "Mari yedijitari, mazuva 14 apfuura",
+  },
+  "owner.chartNet": { en: "Net in this window", sn: "Yako mumazuva aya" },
+  "owner.routesTitle": { en: "By route", sn: "Nenzira" },
+  "owner.fares": { en: "fares", sn: "vafambi" },
+  "owner.taxTitle": {
+    en: "ZIMRA presumptive tax",
+    sn: "Mutero weZIMRA",
+  },
+  "owner.taxBody": {
+    en: "Kombis pay a flat monthly presumptive tax of $50 to $60, collected with the ZINARA licence. It is a fixed amount, not a share of takings.",
+    sn: "Makombi anobhadhara mutero wakatarwa we$50 kusvika $60 pamwedzi, unotorwa nerezinesi reZINARA. Imari yakatarwa, kwete chikamu chemari inopinda.",
+  },
+  "owner.taxHint": {
+    en: "Your statement is the digital record of what each kombi actually earned, ready for the conversation ZIMRA actually has.",
+    sn: "Statement yako ndiyo chinyorwa chedijitari chemari yakapinda pakombi imwe neimwe.",
+  },
+  "owner.statementOpen": {
+    en: "Print a statement",
+    sn: "Dhinda statement",
+  },
+
+  "statement.title": { en: "Revenue statement", sn: "Statement yemari" },
+  "statement.period": { en: "Period", sn: "Nguva" },
+  "statement.generated": { en: "Generated", sn: "Yagadzirwa" },
+  "statement.owner": { en: "Owner", sn: "Muridzi" },
+  "statement.print": { en: "Print", sn: "Dhinda" },
+  "statement.totals": { en: "Totals", sn: "Zvese" },
+  "statement.note": {
+    en: "Every figure derives from Svika's append only ledger of settled digital fares. Cash fares stay with the crew and are not counted. Presumptive tax for kombis is a flat $50 to $60 a month collected with the ZINARA licence; this statement is the earnings record beside it.",
+    sn: "Nhamba dzese dzinobva mubhuku remari reSvika risingagadziridzwe. Cash inosara nevashandi haiverengwi. Mutero wemakombi imari yakatarwa ye$50 kusvika $60 pamwedzi inotorwa nerezinesi reZINARA; statement iyi ndiyo chinyorwa chemari yakapinda parutivi pawo.",
   },
 
   "home.sheetHint": {

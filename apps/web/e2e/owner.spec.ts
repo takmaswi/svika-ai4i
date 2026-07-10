@@ -52,10 +52,10 @@ test("a settled wallet fare lands in the owner's revenue view", async ({ page })
   expect(res.ok()).toBeTruthy();
 
   await page.goto("/app/owner");
-  const table = page.getByTestId("owner-revenue");
-  await expect(table).toBeVisible();
-  const routeRow = table.locator("tr", { hasText: "MARKETSQ-AVONDALE" }).first();
-  await expect(routeRow).toBeVisible();
+  const revenue = page.getByTestId("owner-revenue");
+  await expect(revenue).toBeVisible();
+  const routeCard = revenue.locator('[data-route-code="MARKETSQ-AVONDALE"]');
+  await expect(routeCard).toBeVisible();
 
   // the owner's wallet balance is the ledger sum, at least this settlement
   const balanceText = await page.getByTestId("owner-balance").innerText();

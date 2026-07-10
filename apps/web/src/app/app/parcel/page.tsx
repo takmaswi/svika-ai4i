@@ -135,16 +135,25 @@ export default async function ParcelPage({
               const load = codes.find((c) => c.purpose === "load")?.code ?? "····";
               const collect =
                 codes.find((c) => c.purpose === "collect")?.code ?? "····";
+              const loadStage =
+                status === "issued" ? "active" : status === "loaded" ? "done" : "spent";
+              const collectStage =
+                status === "issued" ? "waiting" : status === "loaded" ? "active" : "spent";
               return (
-                <li key={p.id} className="svika-card parcel-item">
-                  <p className="svika-body ticket-item-route">
-                    {p.from_stop?.name} → {p.to_stop?.name}
-                  </p>
-                  <p className="svika-meta">
-                    {formatUsd(p.fare_cents)} · {t(lang, statusKey)}
-                  </p>
+                <li key={p.id} className="parcel-item boarding-card">
+                  <header className="boarding-strip">
+                    <span className="svika-meta boarding-strip-route">
+                      {p.from_stop?.name} → {p.to_stop?.name}
+                    </span>
+                    <span className="svika-mono-code boarding-strip-fare">
+                      {formatUsd(p.fare_cents)}
+                    </span>
+                  </header>
                   <div className="parcel-codes">
-                    <div>
+                    <div
+                      className={`parcel-code-panel parcel-stage-${loadStage}`}
+                      data-testid="load-panel"
+                    >
                       <p className="svika-meta">{t(lang, "parcel.loadCode")}</p>
                       <p
                         className="svika-mono-code parcel-code"
@@ -152,8 +161,19 @@ export default async function ParcelPage({
                       >
                         {status === "issued" ? load : "····"}
                       </p>
+                      {status === "loaded" && (
+                        <p className="svika-meta parcel-stage-note">
+                          {t(lang, "ticket.status.loaded")}
+                        </p>
+                      )}
                     </div>
-                    <div>
+                    <span className="parcel-stage-arrow" aria-hidden>
+                      →
+                    </span>
+                    <div
+                      className={`parcel-code-panel parcel-stage-${collectStage}`}
+                      data-testid="collect-panel"
+                    >
                       <p className="svika-meta">{t(lang, "parcel.collectCode")}</p>
                       <p
                         className="svika-mono-code parcel-code"
@@ -161,13 +181,19 @@ export default async function ParcelPage({
                       >
                         {status === "collected" ? "····" : collect}
                       </p>
+                      {status === "collected" && (
+                        <p className="svika-meta parcel-stage-note">
+                          {t(lang, "ticket.status.collected")}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  {status === "issued" && (
-                    <p className="svika-meta empty-note">
-                      {t(lang, "parcel.loadHint")}
-                    </p>
-                  )}
+                  <div className="boarding-perf" aria-hidden />
+                  <p className="svika-meta parcel-foot">
+                    {status === "issued"
+                      ? t(lang, "parcel.loadHint")
+                      : t(lang, statusKey)}
+                  </p>
                 </li>
               );
             })}

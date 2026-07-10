@@ -64,6 +64,10 @@ export default async function WalletPage({
 
   const balance = balanceRes.data?.balance_cents ?? 0;
   const history = (postings ?? []) as unknown as PostingRow[];
+  // the change story: every cent a hwindi could not hand back, kept as credit
+  const changeTotal = history
+    .filter((h) => h.ledger_transactions?.kind === "change_credit" && h.amount_cents > 0)
+    .reduce((sum, h) => sum + h.amount_cents, 0);
   const transfers = ((transfersRes.data ?? []) as unknown as TransferRow[]).filter(
     (tr) => {
       const latest = [...tr.transfer_events].sort((a, b) =>
@@ -99,6 +103,29 @@ export default async function WalletPage({
             {formatUsd(balance)}
           </p>
         </div>
+      </section>
+
+      <section className="svika-card wallet-panel wallet-change" data-testid="change-story">
+        <div className="watchdog-head">
+          <h2 className="svika-headline wallet-change-title">
+            <span className="svika-pulse-dot" aria-hidden /> {t(lang, "wallet.changeTitle")}
+          </h2>
+          {changeTotal > 0 && (
+            <span className="svika-meta watchdog-label">
+              {t(lang, "wallet.changeTotal")}
+            </span>
+          )}
+        </div>
+        {changeTotal > 0 ? (
+          <>
+            <p className="wallet-change-amount svika-mono-code">
+              {formatUsd(changeTotal)}
+            </p>
+            <p className="svika-body empty-note">{t(lang, "wallet.changeBody")}</p>
+          </>
+        ) : (
+          <p className="svika-body empty-note">{t(lang, "wallet.changeNone")}</p>
+        )}
       </section>
 
       <section className="svika-card wallet-panel">
@@ -177,9 +204,13 @@ export default async function WalletPage({
           {history.map((h, i) => {
             const kind = h.ledger_transactions?.kind ?? "adjustment";
             const key = `wallet.txn.${kind}` as DictKey;
+            const isChange = kind === "change_credit";
             return (
               <li key={i} className="history-item">
-                <span className="svika-body">{t(lang, key)}</span>
+                <span className="svika-body history-kind">
+                  {isChange && <span className="svika-pulse-dot" aria-hidden />}
+                  {t(lang, key)}
+                </span>
                 <span
                   className={`svika-mono-code ${h.amount_cents > 0 ? "wallet-ok" : ""}`}
                 >

@@ -348,22 +348,47 @@ body {
   transform: scale(0.99);
 }
 
-/* --- ticket page ----------------------------------------------------------- */
-.ticket-hero {
+/* --- ticket page: the boarding card ---------------------------------------- */
+.boarding-card {
+  position: relative;
   margin-top: var(--space-4);
-  padding: var(--space-8) var(--space-6);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.boarding-card-done {
+  opacity: 0.82;
+}
+.boarding-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface-dark);
+  color: var(--color-bone);
+}
+.boarding-strip-route {
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.boarding-strip-fare {
+  opacity: 0.92;
+}
+.boarding-body {
+  position: relative;
+  padding: var(--space-8) var(--space-6) var(--space-6);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-2);
   text-align: center;
 }
-.ticket-hero .svika-meta {
+.boarding-label {
   text-transform: uppercase;
   color: var(--color-ink-mute);
-}
-.ticket-hero-done {
-  opacity: 0.75;
 }
 .ticket-code {
   font-family: var(--font-mono);
@@ -387,9 +412,66 @@ body {
   color: var(--color-ink-soft);
   max-width: 30ch;
 }
-.ticket-facts {
-  margin-top: var(--space-4);
-  padding: var(--space-5);
+/* the stamp moment: the cleared fare lands like an inked rubber stamp */
+.boarding-stamp {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  padding: var(--space-2) var(--space-5);
+  border: 3px solid var(--color-signal);
+  border-radius: var(--radius-sm);
+  color: var(--color-signal);
+  font-family: var(--font-mono);
+  font-size: var(--text-title);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+/* the perforated fold between the code and the small print */
+.boarding-perf {
+  position: relative;
+  height: 0;
+  margin: 0 var(--space-5);
+  border-top: 2px dashed var(--color-hairline);
+}
+.boarding-perf::before,
+.boarding-perf::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+  border: 1px solid var(--color-hairline);
+}
+.boarding-perf::before {
+  left: -31px;
+}
+.boarding-perf::after {
+  right: -31px;
+}
+.boarding-facts {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+.boarding-facts dt {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.boarding-facts dd {
+  margin: var(--space-1) 0 0;
+}
+.boarding-pay {
+  font-weight: var(--weight-semibold);
+}
+.boarding-cash {
+  color: var(--color-amber);
 }
 
 /* --- home nav -------------------------------------------------------------- */
@@ -484,27 +566,252 @@ body {
 .history-item:last-child {
   border-bottom: none;
 }
+.history-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
 
-/* --- parcels ------------------------------------------------------------------ */
+/* the change-to-credit story card */
+.wallet-change-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+.wallet-change-amount {
+  font-size: var(--text-display);
+  margin: 0;
+  color: var(--color-action);
+}
+
+/* --- parcels: staged LOAD and COLLECT boarding cards ---------------------- */
 .parcel-item {
-  padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
 }
 .parcel-codes {
   display: flex;
-  gap: var(--space-6);
+  align-items: stretch;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4) var(--space-5);
 }
 .parcel-codes .svika-meta {
   text-transform: uppercase;
   color: var(--color-ink-mute);
+}
+.parcel-code-panel {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--color-hairline);
+  text-align: center;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+/* the stage that wants a hwindi's eyes right now */
+.parcel-stage-active {
+  border: 2px solid var(--color-action);
+  background: var(--color-bg);
+}
+.parcel-stage-waiting {
+  opacity: 0.55;
+}
+.parcel-stage-done,
+.parcel-stage-spent {
+  opacity: 0.55;
+}
+.parcel-stage-note {
+  margin: var(--space-1) 0 0;
+  color: var(--color-action);
+}
+.parcel-stage-arrow {
+  align-self: center;
+  color: var(--color-ink-mute);
+  font-size: var(--text-headline);
 }
 .parcel-code {
   font-size: var(--text-title);
   letter-spacing: 0.14em;
   color: var(--color-action);
   margin: var(--space-1) 0 0;
+}
+.parcel-foot {
+  padding: var(--space-3) var(--space-5) var(--space-4);
+  margin: 0;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+/* --- owner dashboard ------------------------------------------------------------ */
+/* the one inverse moment: a forest hero band; everything below stays bone */
+.owner-hero {
+  margin-top: var(--space-2);
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-dark);
+  color: var(--color-bone);
+  box-shadow: var(--shadow-cta);
+}
+.owner-hero-date {
+  text-transform: uppercase;
+  color: var(--color-bone);
+  opacity: 0.72;
+  margin: 0 0 var(--space-1);
+}
+.owner-hero .svika-display {
+  margin: 0;
+}
+.owner-hero-figures {
+  display: flex;
+  gap: var(--space-8);
+  margin: var(--space-5) 0 0;
+}
+.owner-hero-figures dt {
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+.owner-hero-figures dd {
+  margin: var(--space-1) 0 0;
+}
+.owner-hero-amount {
+  font-size: var(--text-title);
+}
+
+.owner-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.owner-chart-net {
+  margin: 0;
+  color: var(--color-action);
+}
+.revenue-bars {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.owner-routes {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.owner-route {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.owner-route-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.owner-route-name {
+  font-weight: var(--weight-semibold);
+}
+.owner-route-code {
+  color: var(--color-ink-mute);
+}
+.owner-route-figures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+}
+.owner-route-figures dt {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.owner-route-figures dd {
+  margin: var(--space-1) 0 0;
+}
+.owner-route-net {
+  color: var(--color-action);
+}
+
+.watchdog-lang {
+  align-self: flex-start;
+}
+.watchdog-narrative {
+  margin: 0;
+}
+
+.owner-tax .owner-tax-amount {
+  font-size: var(--text-display);
+  margin: 0;
+  color: var(--color-action);
+}
+
+/* --- printable statement ---------------------------------------------------- */
+.statement-sheet {
+  margin-top: var(--space-4);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.statement-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.statement-head .svika-headline {
+  margin: 0;
+}
+.statement-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+}
+.statement-facts dt {
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.statement-facts dd {
+  margin: var(--space-1) 0 0;
+}
+.statement-totals td {
+  border-top: 2px solid var(--color-ink);
+  border-bottom: none;
+  font-weight: var(--weight-semibold);
+}
+.statement-note {
+  color: var(--color-ink-soft);
+}
+.statement .auth-submit {
+  margin-top: var(--space-4);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  :root,
+  :root[data-theme="dark"] {
+    --color-bg: #fff;
+    --color-ink: #000;
+    --color-ink-soft: #333;
+    --color-ink-mute: #555;
+    --color-hairline: #bbb;
+  }
+  body {
+    background: #fff;
+  }
+  .statement {
+    padding: 0;
+    max-width: none;
+  }
+  .statement-sheet {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
 }
 
 /* --- owner ledger view ---------------------------------------------------------- */

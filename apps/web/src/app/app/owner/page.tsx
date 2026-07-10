@@ -4,6 +4,8 @@ import { getLang, t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { resolveRole } from "@/lib/roles";
 import { formatUsd } from "@svika/shared";
+import { RevenueBars, type DayNet } from "@/components/owner/RevenueBars";
+import { WatchdogNarratives } from "@/components/owner/WatchdogNarratives";
 
 interface RevenueRow {
   day: string;
@@ -23,6 +25,53 @@ interface WatchdogFlagRow {
 }
 
 const WATCHDOG_FLAGS_SHOWN = 3;
+const CHART_DAYS = 14;
+
+/** The last CHART_DAYS calendar days ending today, zero filled. */
+function chartWindow(rows: RevenueRow[]): DayNet[] {
+  const byDay = new Map<string, number>();
+  for (const r of rows) {
+    byDay.set(r.day, (byDay.get(r.day) ?? 0) + r.net_cents);
+  }
+  const days: DayNet[] = [];
+  const today = new Date();
+  for (let i = CHART_DAYS - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    days.push({ day: key, netCents: byDay.get(key) ?? 0 });
+  }
+  return days;
+}
+
+interface RouteTotal {
+  code: string;
+  name: string;
+  tickets: number;
+  gross: number;
+  commission: number;
+  net: number;
+}
+
+function routeTotals(rows: RevenueRow[]): RouteTotal[] {
+  const byRoute = new Map<string, RouteTotal>();
+  for (const r of rows) {
+    const acc = byRoute.get(r.route_code) ?? {
+      code: r.route_code,
+      name: r.route_name,
+      tickets: 0,
+      gross: 0,
+      commission: 0,
+      net: 0,
+    };
+    acc.tickets += r.tickets;
+    acc.gross += r.gross_cents;
+    acc.commission += r.commission_cents;
+    acc.net += r.net_cents;
+    byRoute.set(r.route_code, acc);
+  }
+  return [...byRoute.values()].sort((a, b) => b.net - a.net);
+}
 
 // The owner ledger view: settled digital fares aggregated per day and route,
 // every number derived from the double entry ledger at read time. Audit
@@ -55,12 +104,27 @@ export default async function OwnerPage() {
   const rows = (summaryRes.data ?? []) as RevenueRow[];
   const balance = balanceRes.data?.balance_cents ?? 0;
   const totalNet = rows.reduce((sum, r) => sum + r.net_cents, 0);
+  const days = chartWindow(rows);
+  const windowNet = days.reduce((sum, d) => sum + d.netCents, 0);
+  const routes = routeTotals(rows);
 
   const watchdogDays = (watchdogRes.data ?? []) as WatchdogFlagRow[];
   const flaggedDays = watchdogDays.filter((d) => d.flagged);
   const watchdogSummary = t(lang, "owner.watchdogSummary")
     .replace("{count}", String(watchdogDays.length))
     .replace("{flagged}", String(flaggedDays.length));
+
+  const today = new Date();
+  const dateLine = today.toLocaleDateString(lang === "sn" ? "sn-ZW" : "en-ZW", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  const monthLine = today.toLocaleDateString(lang === "sn" ? "sn-ZW" : "en-ZW", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <main className="shell">
@@ -70,53 +134,72 @@ export default async function OwnerPage() {
         </Link>
       </header>
 
-      <section className="wallet-strip svika-card svika-animate-fade-up">
-        <div>
-          <p className="svika-meta">{t(lang, "owner.balance")}</p>
-          <p className="wallet-amount svika-mono-code" data-testid="owner-balance">
-            {formatUsd(balance)}
-          </p>
-        </div>
-        <div>
-          <p className="svika-meta">{t(lang, "owner.title")}</p>
-          <p className="wallet-amount svika-mono-code">{formatUsd(totalNet)}</p>
-        </div>
+      <section className="owner-hero svika-animate-fade-up">
+        <p className="svika-meta owner-hero-date">{dateLine}</p>
+        <h1 className="svika-display">{t(lang, "owner.title")}</h1>
+        <dl className="owner-hero-figures">
+          <div>
+            <dt className="svika-meta">{t(lang, "owner.balance")}</dt>
+            <dd className="svika-mono-code owner-hero-amount" data-testid="owner-balance">
+              {formatUsd(balance)}
+            </dd>
+          </div>
+          <div>
+            <dt className="svika-meta">{t(lang, "owner.netToDate")}</dt>
+            <dd className="svika-mono-code owner-hero-amount">{formatUsd(totalNet)}</dd>
+          </div>
+        </dl>
       </section>
 
       <section className="svika-card wallet-panel">
-        <h1 className="svika-headline">{t(lang, "owner.title")}</h1>
-        {rows.length === 0 ? (
+        <div className="owner-chart-head">
+          <h2 className="svika-meta tickets-heading">{t(lang, "owner.chartTitle")}</h2>
+          <p className="svika-mono-code owner-chart-net">
+            {formatUsd(windowNet)}
+          </p>
+        </div>
+        <RevenueBars days={days} ariaLabel={t(lang, "owner.chartTitle")} />
+        {rows.length === 0 && (
           <p className="svika-body empty-note">{t(lang, "owner.none")}</p>
-        ) : (
-          <div className="owner-table-wrap">
-            <table className="owner-table" data-testid="owner-revenue">
-              <thead>
-                <tr>
-                  <th className="svika-meta">{t(lang, "owner.day")}</th>
-                  <th className="svika-meta">{t(lang, "owner.route")}</th>
-                  <th className="svika-meta">{t(lang, "owner.tickets")}</th>
-                  <th className="svika-meta">{t(lang, "owner.gross")}</th>
-                  <th className="svika-meta">{t(lang, "owner.commission")}</th>
-                  <th className="svika-meta">{t(lang, "owner.net")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r, i) => (
-                  <tr key={i}>
-                    <td className="svika-mono-code">{r.day}</td>
-                    <td className="svika-body">{r.route_code}</td>
-                    <td className="svika-mono-code">{r.tickets}</td>
-                    <td className="svika-mono-code">{formatUsd(r.gross_cents)}</td>
-                    <td className="svika-mono-code">{formatUsd(r.commission_cents)}</td>
-                    <td className="svika-mono-code">{formatUsd(r.net_cents)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         )}
-        <p className="svika-meta empty-note">{t(lang, "owner.note")}</p>
       </section>
+
+      {routes.length > 0 && (
+        <section className="owner-routes" data-testid="owner-revenue">
+          <h2 className="svika-meta tickets-heading">{t(lang, "owner.routesTitle")}</h2>
+          {routes.map((r) => (
+            <article
+              key={r.code}
+              className="svika-card owner-route"
+              data-route-code={r.code}
+            >
+              <header className="owner-route-head">
+                <span className="svika-body owner-route-name">{r.name}</span>
+                <span className="svika-meta owner-route-code">{r.code}</span>
+              </header>
+              <dl className="owner-route-figures">
+                <div>
+                  <dt className="svika-meta">{t(lang, "owner.tickets")}</dt>
+                  <dd className="svika-mono-code">{r.tickets}</dd>
+                </div>
+                <div>
+                  <dt className="svika-meta">{t(lang, "owner.gross")}</dt>
+                  <dd className="svika-mono-code">{formatUsd(r.gross)}</dd>
+                </div>
+                <div>
+                  <dt className="svika-meta">{t(lang, "owner.commission")}</dt>
+                  <dd className="svika-mono-code">{formatUsd(r.commission)}</dd>
+                </div>
+                <div>
+                  <dt className="svika-meta">{t(lang, "owner.net")}</dt>
+                  <dd className="svika-mono-code owner-route-net">{formatUsd(r.net)}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+          <p className="svika-meta empty-note">{t(lang, "owner.note")}</p>
+        </section>
+      )}
 
       <section className="svika-card wallet-panel" data-testid="owner-watchdog">
         <div className="watchdog-head">
@@ -133,21 +216,33 @@ export default async function OwnerPage() {
             {flaggedDays.length === 0 ? (
               <p className="svika-body empty-note">{t(lang, "owner.watchdogNone")}</p>
             ) : (
-              <div className="watchdog-flags">
-                {flaggedDays.slice(0, WATCHDOG_FLAGS_SHOWN).map((d) => (
-                  <div key={d.day} className="watchdog-flag">
-                    <p className="svika-mono-code watchdog-day">{d.day}</p>
-                    <p className="svika-body">
-                      {(lang === "sn" ? d.explanation_sn : d.explanation_en) ??
-                        d.explanation_en}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <WatchdogNarratives
+                initial={lang}
+                englishLabel={t(lang, "lang.english")}
+                shonaLabel={t(lang, "lang.shona")}
+                flags={flaggedDays.slice(0, WATCHDOG_FLAGS_SHOWN).map((d) => ({
+                  day: d.day,
+                  en: d.explanation_en ?? "",
+                  sn: d.explanation_sn ?? d.explanation_en ?? "",
+                }))}
+              />
             )}
           </>
         )}
         <p className="svika-meta empty-note">{t(lang, "owner.watchdogNote")}</p>
+      </section>
+
+      <section className="svika-card wallet-panel owner-tax">
+        <div className="watchdog-head">
+          <h2 className="svika-headline">{t(lang, "owner.taxTitle")}</h2>
+          <span className="svika-meta watchdog-label">{monthLine}</span>
+        </div>
+        <p className="owner-tax-amount svika-mono-code">$50 to $60</p>
+        <p className="svika-body">{t(lang, "owner.taxBody")}</p>
+        <p className="svika-meta empty-note">{t(lang, "owner.taxHint")}</p>
+        <Link className="home-nav-link touch-target" href="/app/owner/statement">
+          {t(lang, "owner.statementOpen")}
+        </Link>
       </section>
     </main>
   );

@@ -16,8 +16,10 @@ interface TicketDetail {
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
 }
 
-// The ticket: one big mono code the hwindi can read from across the kombi.
-// RLS means a rider can only ever open their own ticket here.
+// The ticket as a boarding card: forest route strip, one big mono code the
+// hwindi can read from across the kombi, a perforated fold, and the stamp
+// moment when the fare clears. RLS means a rider can only ever open their
+// own ticket here.
 export default async function TicketPage({
   params,
 }: {
@@ -55,6 +57,12 @@ export default async function TicketPage({
         minute: "2-digit",
       })
     : "";
+  const routeLine =
+    ticket.from_stop && ticket.to_stop
+      ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
+      : (ticket.routes?.name ?? "");
+  const isLive = status === "issued";
+  const isStamped = status === "redeemed";
 
   return (
     <main className="shell">
@@ -64,53 +72,70 @@ export default async function TicketPage({
         </Link>
       </header>
 
-      <section
-        className={`ticket-hero svika-card svika-animate-stamp${status !== "issued" ? " ticket-hero-done" : ""}`}
+      <article
+        className={`boarding-card svika-animate-fade-up${isLive ? "" : " boarding-card-done"}`}
+        data-status={status}
       >
-        <p className="svika-meta">{t(lang, "ticket.title")}</p>
-        <p className="ticket-code" data-testid="board-code">
-          {boardCode?.code ?? "····"}
-        </p>
-        <p
-          className={`ticket-status svika-meta${status === "redeemed" ? " ticket-status-live" : ""}`}
-        >
-          {t(lang, statusKey)}
-        </p>
-        {status === "issued" && (
-          <p className="svika-body ticket-hint">{t(lang, "ticket.showHwindi")}</p>
-        )}
-      </section>
+        <header className="boarding-strip">
+          <span className="svika-meta boarding-strip-route">{routeLine}</span>
+          <span className="svika-mono-code boarding-strip-fare">
+            {formatUsd(ticket.fare_cents)}
+          </span>
+        </header>
 
-      <section className="svika-card ticket-facts">
-        <dl className="shell-facts">
-          <div>
-            <dt className="svika-meta">{t(lang, "ticket.route")}</dt>
-            <dd className="svika-body">
-              {ticket.from_stop && ticket.to_stop
-                ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
-                : (ticket.routes?.name ?? "")}
-            </dd>
-          </div>
+        <div className="boarding-body">
+          <p className="svika-meta boarding-label">{t(lang, "ticket.title")}</p>
+          <p className="ticket-code" data-testid="board-code">
+            {boardCode?.code ?? "····"}
+          </p>
+          {isLive ? (
+            <p className="svika-body ticket-hint">{t(lang, "ticket.showHwindi")}</p>
+          ) : (
+            <p
+              className={`ticket-status svika-meta${isStamped ? " ticket-status-live" : ""}`}
+            >
+              {t(lang, statusKey)}
+            </p>
+          )}
+          {isStamped && (
+            <span className="boarding-stamp svika-animate-stamp" aria-hidden>
+              {t(lang, statusKey)}
+            </span>
+          )}
+        </div>
+
+        <div className="boarding-perf" aria-hidden />
+
+        <dl className="boarding-facts">
           <div>
             <dt className="svika-meta">{t(lang, "ticket.fare")}</dt>
-            <dd className="svika-mono-code">
-              {formatUsd(ticket.fare_cents)} ·{" "}
-              {t(
-                lang,
-                ticket.payment_method === "cash"
-                  ? "ticket.payCash"
-                  : "ticket.paidWallet",
-              )}
+            <dd className="svika-mono-code">{formatUsd(ticket.fare_cents)}</dd>
+          </div>
+          <div>
+            <dt className="svika-meta">{t(lang, "ticket.payment")}</dt>
+            <dd>
+              <span
+                className={`svika-body boarding-pay${
+                  ticket.payment_method === "cash" && isLive ? " boarding-cash" : ""
+                }`}
+              >
+                {t(
+                  lang,
+                  ticket.payment_method === "cash"
+                    ? "ticket.payCash"
+                    : "ticket.paidWallet",
+                )}
+              </span>
             </dd>
           </div>
-          {status === "issued" && validUntil && (
+          {isLive && validUntil && (
             <div>
               <dt className="svika-meta">{t(lang, "ticket.validUntil")}</dt>
               <dd className="svika-mono-code">{validUntil}</dd>
             </div>
           )}
         </dl>
-      </section>
+      </article>
     </main>
   );
 }

@@ -6,6 +6,7 @@ import { resolveRole } from "@/lib/roles";
 import { formatUsd } from "@svika/shared";
 import { RevenueBars, type DayNet } from "@/components/owner/RevenueBars";
 import { WatchdogNarratives } from "@/components/owner/WatchdogNarratives";
+import { ArrowIcon, BackIcon } from "@/components/icons";
 
 interface RevenueRow {
   day: string;
@@ -128,30 +129,33 @@ export default async function OwnerPage() {
 
   return (
     <main className="shell">
-      <header className="shell-top">
-        <Link href="/app" className="auth-link">
-          ← {t(lang, "common.back")}
+      <header className="screen-head">
+        <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
+        <div>
+          <h1 className="svika-headline owner-head-title">{t(lang, "owner.title")}</h1>
+          <p className="owner-head-sub">{dateLine}</p>
+        </div>
       </header>
 
-      <section className="owner-hero svika-animate-fade-up">
-        <p className="svika-meta owner-hero-date">{dateLine}</p>
-        <h1 className="svika-display">{t(lang, "owner.title")}</h1>
+      <section className="feature-card owner-hero svika-animate-fade-up">
+        <p className="feature-label">{t(lang, "owner.balance")}</p>
+        <p
+          className="feature-amount amount-marigold"
+          data-testid="owner-balance"
+        >
+          {formatUsd(balance)}
+        </p>
         <dl className="owner-hero-figures">
           <div>
-            <dt className="svika-meta">{t(lang, "owner.balance")}</dt>
-            <dd className="svika-mono-code owner-hero-amount" data-testid="owner-balance">
-              {formatUsd(balance)}
-            </dd>
-          </div>
-          <div>
-            <dt className="svika-meta">{t(lang, "owner.netToDate")}</dt>
-            <dd className="svika-mono-code owner-hero-amount">{formatUsd(totalNet)}</dd>
+            <dt>{t(lang, "owner.netToDate")}</dt>
+            <dd className="svika-mono-code">{formatUsd(totalNet)}</dd>
           </div>
         </dl>
       </section>
 
-      <section className="svika-card wallet-panel">
+      <section className="svika-card wallet-panel svika-animate-fade-up svika-rise-2">
         <div className="owner-chart-head">
           <h2 className="svika-meta tickets-heading">{t(lang, "owner.chartTitle")}</h2>
           <p className="svika-mono-code owner-chart-net">
@@ -174,8 +178,12 @@ export default async function OwnerPage() {
               data-route-code={r.code}
             >
               <header className="owner-route-head">
-                <span className="svika-body owner-route-name">{r.name}</span>
-                <span className="svika-meta owner-route-code">{r.code}</span>
+                <span className="owner-route-title">
+                  <span className="route-badge" aria-hidden>
+                    {r.code.slice(0, 2)}
+                  </span>
+                  <span className="svika-body owner-route-name">{r.name}</span>
+                </span>
               </header>
               <dl className="owner-route-figures">
                 <div>
@@ -239,11 +247,15 @@ export default async function OwnerPage() {
         </div>
         <p className="owner-tax-amount svika-mono-code">$50 to $60</p>
         <p className="svika-body">{t(lang, "owner.taxBody")}</p>
-        <p className="svika-meta empty-note">{t(lang, "owner.taxHint")}</p>
-        <Link className="home-nav-link touch-target" href="/app/owner/statement">
-          {t(lang, "owner.statementOpen")}
-        </Link>
       </section>
+
+      <Link className="cta touch-target owner-cta" href="/app/owner/statement">
+        {t(lang, "owner.statementOpen")}
+        <span className="cta-chip" aria-hidden>
+          <ArrowIcon />
+        </span>
+      </Link>
+      <p className="owner-note">{t(lang, "owner.taxHint")}</p>
     </main>
   );
 }

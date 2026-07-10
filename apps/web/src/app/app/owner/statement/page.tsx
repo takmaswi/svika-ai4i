@@ -4,6 +4,7 @@ import { getLang, t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { resolveRole } from "@/lib/roles";
 import { formatUsd } from "@svika/shared";
+import { BackIcon } from "@/components/icons";
 import { PrintButton } from "@/components/owner/PrintButton";
 
 interface RevenueRow {
@@ -58,14 +59,14 @@ export default async function StatementPage() {
   });
   const period =
     sorted.length > 0
-      ? `${sorted[0]!.day} → ${sorted[sorted.length - 1]!.day}`
+      ? `${sorted[0]!.day} ${t(lang, "common.to")} ${sorted[sorted.length - 1]!.day}`
       : generated;
 
   return (
     <main className="shell statement">
-      <header className="shell-top no-print">
-        <Link href="/app/owner" className="auth-link">
-          ← {t(lang, "common.back")}
+      <header className="screen-head no-print">
+        <Link href="/app/owner" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
       </header>
 

@@ -1,13 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { mapStyleUrl, warmColor, warmSvikaStyle } from "../src/lib/map/style";
-
-function hslOf(color: string): { h: number; s: number; l: number } {
-  const m = /^hsla?\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)%,\s*(\d+(?:\.\d+)?)%/.exec(
-    color,
-  );
-  if (!m) throw new Error(`not an hsl string: ${color}`);
-  return { h: Number(m[1]), s: Number(m[2]) / 100, l: Number(m[3]) / 100 };
-}
+import { MAP_COLORS, mapStyleUrl, mbareSunStyle } from "../src/lib/map/style";
 
 describe("mapStyleUrl", () => {
   test("builds the MapTiler style url from the raw key", () => {
@@ -25,122 +17,113 @@ describe("mapStyleUrl", () => {
   });
 });
 
-describe("warmColor", () => {
-  test("pulls neutral greys into the warm bone family", () => {
-    const { h, s } = hslOf(warmColor("#e0e0e0"));
-    expect(h).toBeGreaterThan(35);
-    expect(h).toBeLessThan(60);
-    expect(s).toBeGreaterThan(0);
-  });
-
-  test("never leaves pure white in the map", () => {
-    expect(warmColor("#ffffff")).not.toMatch(/100%\)$/);
-    const { h } = hslOf(warmColor("#ffffff"));
-    expect(h).toBeGreaterThan(35);
-  });
-
-  test("mutes water blues toward calm sage", () => {
-    const { h, s } = hslOf(warmColor("hsl(205, 56%, 73%)"));
-    expect(h).toBeGreaterThan(120);
-    expect(h).toBeLessThan(180);
-    expect(s).toBeLessThan(0.3);
-  });
-
-  test("calms greens instead of hue-shifting them", () => {
-    const src = hslOf("hsl(100, 60%, 80%)");
-    const out = hslOf(warmColor("hsl(100, 60%, 80%)"));
-    expect(out.h).toBeCloseTo(src.h, 0);
-    expect(out.s).toBeLessThan(src.s);
-  });
-
-  test("keeps alpha", () => {
-    expect(warmColor("hsla(0, 0%, 100%, 0.5)")).toMatch(/0\.5\)$/);
-    expect(warmColor("rgba(255, 255, 255, 0.25)")).toMatch(/0\.25\)$/);
-  });
-
-  test("returns unparseable strings unchanged", () => {
-    expect(warmColor("{name:latin}")).toBe("{name:latin}");
-    expect(warmColor("Noto Sans Regular")).toBe("Noto Sans Regular");
-  });
-});
-
-describe("warmSvikaStyle", () => {
-  const base = {
+// A slice of MapTiler basic-v2, with the layer names the transform keys on.
+function baseStyle() {
+  return {
     version: 8,
     name: "basic-v2",
     sources: {},
     layers: [
-      { id: "background", type: "background", paint: { "background-color": "#f8f4f0" } },
+      { id: "Background", type: "background", paint: { "background-color": "#f8f4f0" } },
+      { id: "Grass", type: "fill", paint: { "fill-color": "hsl(82, 46%, 72%)" } },
+      { id: "Water", type: "fill", paint: { "fill-color": "hsl(205, 56%, 73%)" } },
+      { id: "Building", type: "fill", paint: { "fill-color": "hsl(39, 41%, 86%)" } },
       {
-        id: "water",
-        type: "fill",
-        paint: { "fill-color": "hsl(205, 56%, 73%)" },
-      },
-      {
-        id: "road_major",
+        id: "Road network",
         type: "line",
         paint: {
-          "line-color": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            6,
-            "#ffffff",
-            10,
-            "hsl(0, 0%, 90%)",
-          ],
-          "line-width": 2,
+          "line-color": "#ffffff",
+          "line-width": ["interpolate", ["linear"], ["zoom"], 6, 1, 14, 8],
         },
       },
+      { id: "Path minor", type: "line", paint: { "line-color": "#fff", "line-width": 1 } },
+      { id: "Railway", type: "line", paint: { "line-color": "hsl(0, 0%, 73%)" } },
       {
-        id: "place_label",
+        id: "Road labels",
+        type: "symbol",
+        layout: { "text-field": "{name:latin}", "text-font": ["Noto Sans Regular"], "text-size": 12 },
+        paint: { "text-color": "#333333", "text-halo-color": "#ffffff" },
+      },
+      {
+        id: "City labels",
         type: "symbol",
         layout: { "text-field": "{name:latin}", "text-font": ["Noto Sans Regular"] },
         paint: { "text-color": "#333333", "text-halo-color": "#ffffff" },
       },
     ],
   };
+}
 
+function layerOf(out: ReturnType<typeof baseStyle>, id: string) {
+  const layer = out.layers.find((l) => l.id === id);
+  if (!layer) throw new Error(`missing layer ${id}`);
+  return layer as { paint: Record<string, unknown>; layout?: Record<string, unknown> };
+}
+
+describe("mbareSunStyle", () => {
   test("returns a new object and leaves the input untouched", () => {
+    const base = baseStyle();
     const before = JSON.stringify(base);
-    const out = warmSvikaStyle(base);
+    const out = mbareSunStyle(base, "day");
     expect(JSON.stringify(base)).toBe(before);
     expect(out).not.toBe(base);
   });
 
-  test("sets the background to bone", () => {
-    const out = warmSvikaStyle(base) as typeof base;
-    const bg = out.layers.find((l) => l.id === "background")!;
-    expect((bg.paint as Record<string, unknown>)["background-color"]).toBe("#FFFCEF");
+  test.each(["day", "night"] as const)(
+    "%s ground, parks, buildings and roads take the DESIGN.md palette",
+    (theme) => {
+      const c = MAP_COLORS[theme];
+      const out = mbareSunStyle(baseStyle(), theme);
+      expect(layerOf(out, "Background").paint["background-color"]).toBe(c.base);
+      expect(layerOf(out, "Grass").paint["fill-color"]).toBe(c.park);
+      expect(layerOf(out, "Building").paint["fill-color"]).toBe(c.building);
+      expect(layerOf(out, "Road network").paint["line-color"]).toBe(c.road);
+      expect(layerOf(out, "Path minor").paint["line-color"]).toBe(c.minorRoad);
+      expect(layerOf(out, "Railway").paint["line-color"]).toBe(c.roadCasing);
+    },
+  );
+
+  test("water joins the park family (no spec value of its own)", () => {
+    const out = mbareSunStyle(baseStyle(), "day");
+    expect(layerOf(out, "Water").paint["fill-color"]).toBe(MAP_COLORS.day.park);
   });
 
-  test("recolors colors nested inside expressions", () => {
-    const out = warmSvikaStyle(base) as typeof base;
-    const road = out.layers.find((l) => l.id === "road_major")!;
-    const expr = (road.paint as Record<string, unknown>)["line-color"] as unknown[];
-    expect(expr[4]).not.toBe("#ffffff");
-    expect(String(expr[4])).toMatch(/^hsl/);
-    // non-color members of the expression survive
-    expect(expr[0]).toBe("interpolate");
-    expect(expr[3]).toBe(6);
+  test("inserts a casing layer under the road network reusing its width curve", () => {
+    const base = baseStyle();
+    const out = mbareSunStyle(base, "day");
+    const ids = out.layers.map((l) => l.id);
+    const casingAt = ids.indexOf("Road network casing");
+    expect(casingAt).toBeGreaterThan(-1);
+    expect(casingAt).toBe(ids.indexOf("Road network") - 1);
+    const casing = layerOf(out, "Road network casing");
+    expect(casing.paint["line-color"]).toBe(MAP_COLORS.day.roadCasing);
+    expect(casing.paint["line-width"]).toBe(3);
+    expect(casing.paint["line-gap-width"]).toEqual(
+      layerOf(base, "Road network").paint["line-width"],
+    );
   });
 
-  test("leaves non-color layout values alone", () => {
-    const out = warmSvikaStyle(base) as typeof base;
-    const label = out.layers.find((l) => l.id === "place_label")!;
-    const layout = label.layout as Record<string, unknown>;
-    expect(layout["text-field"]).toBe("{name:latin}");
-    expect(layout["text-font"]).toEqual(["Noto Sans Regular"]);
+  test("street labels go IBM Plex Mono at 9px with the label colour", () => {
+    const out = mbareSunStyle(baseStyle(), "night");
+    const label = layerOf(out, "Road labels");
+    expect(label.layout?.["text-font"]).toEqual(["IBM Plex Mono SemiBold"]);
+    expect(label.layout?.["text-size"]).toBe(9);
+    expect(label.paint["text-color"]).toBe(MAP_COLORS.night.streetLabel);
+    expect(label.paint["text-halo-color"]).toBe(MAP_COLORS.night.base);
   });
 
-  test("gives labels warm ink and a bone halo", () => {
-    const out = warmSvikaStyle(base) as typeof base;
-    const label = out.layers.find((l) => l.id === "place_label")!;
-    const paint = label.paint as unknown as Record<string, string>;
-    const ink = hslOf(paint["text-color"]!);
-    expect(ink.l).toBeLessThan(0.4);
-    const halo = hslOf(paint["text-halo-color"]!);
-    expect(halo.h).toBeGreaterThan(35);
-    expect(halo.h).toBeLessThan(60);
+  test("non-road labels keep their font but take the label colour", () => {
+    const out = mbareSunStyle(baseStyle(), "day");
+    const label = layerOf(out, "City labels");
+    expect(label.layout?.["text-font"]).toEqual(["Noto Sans Regular"]);
+    expect(label.paint["text-color"]).toBe(MAP_COLORS.day.streetLabel);
+  });
+
+  test("night and day produce different grounds", () => {
+    const day = mbareSunStyle(baseStyle(), "day");
+    const night = mbareSunStyle(baseStyle(), "night");
+    expect(layerOf(day, "Background").paint["background-color"]).not.toBe(
+      layerOf(night, "Background").paint["background-color"],
+    );
   });
 });

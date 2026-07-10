@@ -82,6 +82,10 @@
   --pill-bg:      var(--color-paper);
   --border-nav:   1.5px solid var(--color-char);
 
+  /* Kombi map marker (§10): stroke and beam flip with the theme */
+  --marker-stroke:     2.5px solid var(--color-char);
+  --kombi-beam-display: none;
+
   /* --- Shadows (char/umber tinted, never grey — §2) ----------------------- */
   --shadow-card:      0 10px 28px rgba(22, 29, 24, 0.12);
   --shadow-card-dark: 0 14px 32px rgba(22, 29, 24, 0.25);
@@ -135,6 +139,9 @@
 
   --pill-bg:      var(--night-surface-dark);
   --border-nav:   1px solid rgba(255, 255, 255, 0.08);
+
+  --marker-stroke:     3px solid #FFFFFF;
+  --kombi-beam-display: block;
 
   --map-base:         var(--night-map-base);
   --map-road-casing:  var(--night-road-casing);
@@ -190,6 +197,9 @@
 
     --pill-bg:      var(--night-surface-dark);
     --border-nav:   1px solid rgba(255, 255, 255, 0.08);
+
+    --marker-stroke:     3px solid #FFFFFF;
+    --kombi-beam-display: block;
 
     --map-base:         var(--night-map-base);
     --map-road-casing:  var(--night-road-casing);

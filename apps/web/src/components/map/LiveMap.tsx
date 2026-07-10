@@ -1,31 +1,29 @@
 "use client";
 
-// The live map: the visual heart of the rider app. Warm bone cartography,
-// the real Heights <-> Rezende road in forest green, the 15 real stops, and
-// kombis gliding along the actual line. Movement comes from the VehicleFeed
-// adapter; today that is the simulated mock twin (declared in the disclosure
-// register), and a real GPS feed swaps in without touching this component.
+// The live map: the visual heart of the rider app. Mbare Sun cartography
+// (DESIGN.md §11), the real Heights <-> Rezende road as the dotted route, the
+// 15 real stops, and kombis gliding along the actual line. Movement comes
+// from the VehicleFeed adapter; today that is the simulated mock twin
+// (declared in the disclosure register), and a real GPS feed swaps in
+// without touching this component.
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
 import { corridorLine, corridorStops } from "@/lib/map/corridor-data";
 import type { LngLat } from "@/lib/map/geometry";
 import { SIM_EPOCH_MS, SIM_VEHICLES, simConfig } from "@/lib/map/sim-config";
-import { mapStyleUrl, warmSvikaStyle } from "@/lib/map/style";
+import { MAP_COLORS, mapStyleUrl, mbareSunStyle, type MapTheme } from "@/lib/map/style";
 import {
   SimulatedVehicleFeed,
   type VehicleFeed,
   type VehiclePosition,
 } from "@/lib/map/vehicle-feed";
 
-// Brand v2 literals for canvas layers; CSS variables cannot reach WebGL.
-// Values mirror packages/ui/tokens/colors.css exactly.
-const FOREST = "#1F4D2E";
-const BONE = "#FFFCEF";
-const MOSS = "#4D5C44";
-const SIGNAL = "#E84C30";
-
 const TICK_MS = 1000;
+
+// §11 route: stroke 5, dasharray 1 11 (in line-width units at width 5).
+const ROUTE_WIDTH = 5;
+const ROUTE_DASH = [0.2, 2.2];
 
 export interface LiveMapLabels {
   ariaLabel: string;
@@ -43,6 +41,16 @@ export interface LiveMapOverlay {
 interface LiveMapProps {
   labels: LiveMapLabels;
   overlay?: LiveMapOverlay;
+}
+
+/** The active Mbare Sun map theme, from the same signals the CSS tokens use. */
+function currentMapTheme(): MapTheme {
+  const forced = document.documentElement.dataset.theme;
+  if (forced === "dark") return "night";
+  if (forced === "light") return "day";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "night"
+    : "day";
 }
 
 function boundsOf(coords: LngLat[]): [LngLat, LngLat] {
@@ -71,24 +79,35 @@ function mapBounds(overlay?: LiveMapOverlay): [LngLat, LngLat] {
   ]);
 }
 
+// §10: the marigold box, bob and night beam are law; the glyph inside is the
+// client's kombi asset. Theme flips (stroke, glow, beam) ride on CSS tokens.
 function makeKombiElement(): HTMLDivElement {
   const el = document.createElement("div");
   el.className = "kombi-map-marker";
   el.dataset.testid = "kombi-marker";
-  const img = document.createElement("img");
-  img.src = "/map/kombi-marker.svg";
-  img.alt = "";
-  img.width = 44;
-  img.height = 44;
-  img.draggable = false;
-  el.appendChild(img);
+  el.innerHTML = `
+    <div class="kombi-map-bob svika-bob">
+      <svg class="kombi-beam" width="140" height="140" viewBox="-70 -70 140 140" aria-hidden="true">
+        <g transform="rotate(-90)">
+          <path d="M13 -5 L68 -28 L68 28 L13 5 Z" fill="#F5B301" opacity="0.12"></path>
+          <path d="M13 -4 L48 -16 L48 16 L13 4 Z" fill="#F5B301" opacity="0.15"></path>
+        </g>
+      </svg>
+      <span class="kombi-map-box">
+        <img src="/map/kombi-marker.svg" alt="" width="30" height="30" draggable="false" />
+      </span>
+    </div>`;
   return el;
 }
 
-// The planned trip over the corridor: ride legs ride the road in forest,
-// walking legs are dashed moss, and the two ends get bone dots (forest ring
-// for the start, the single coral accent for where you are going).
-function addOverlayLayers(map: maplibregl.Map, overlay: LiveMapOverlay) {
+// The planned trip over the corridor: ride legs take THE route treatment,
+// walking legs are dashed, and both ends get §11 stop pins.
+function addOverlayLayers(
+  map: maplibregl.Map,
+  overlay: LiveMapOverlay,
+  theme: MapTheme,
+) {
+  const c = MAP_COLORS[theme];
   const legFeatures = overlay.legs.map((l) => ({
     type: "Feature" as const,
     properties: { kind: l.kind },
@@ -118,20 +137,17 @@ function addOverlayLayers(map: maplibregl.Map, overlay: LiveMapOverlay) {
   });
 
   map.addLayer({
-    id: "plan-ride-casing",
-    type: "line",
-    source: "plan-legs",
-    filter: ["==", ["get", "kind"], "ride"],
-    layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": BONE, "line-width": 10, "line-opacity": 0.9 },
-  });
-  map.addLayer({
     id: "plan-ride-line",
     type: "line",
     source: "plan-legs",
     filter: ["==", ["get", "kind"], "ride"],
     layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": FOREST, "line-width": 5 },
+    paint: {
+      "line-color": c.route,
+      "line-width": ROUTE_WIDTH,
+      "line-dasharray": ROUTE_DASH,
+      "line-opacity": c.routeOpacity,
+    },
   });
   map.addLayer({
     id: "plan-walk-line",
@@ -140,7 +156,7 @@ function addOverlayLayers(map: maplibregl.Map, overlay: LiveMapOverlay) {
     filter: ["==", ["get", "kind"], "walk"],
     layout: { "line-cap": "round", "line-join": "round" },
     paint: {
-      "line-color": MOSS,
+      "line-color": c.walk,
       "line-width": 3.5,
       "line-dasharray": [0.1, 1.8],
     },
@@ -151,19 +167,19 @@ function addOverlayLayers(map: maplibregl.Map, overlay: LiveMapOverlay) {
     source: "plan-ends",
     paint: {
       "circle-radius": 7,
-      "circle-color": BONE,
-      "circle-stroke-width": 3.5,
-      "circle-stroke-color": [
-        "case",
-        ["==", ["get", "end"], "destination"],
-        SIGNAL,
-        FOREST,
-      ],
+      "circle-color": c.stop,
+      "circle-stroke-width": 3,
+      "circle-stroke-color": c.stopStroke,
     },
   });
 }
 
-function addCorridorLayers(map: maplibregl.Map, muted: boolean) {
+function addCorridorLayers(
+  map: maplibregl.Map,
+  theme: MapTheme,
+  muted: boolean,
+) {
+  const c = MAP_COLORS[theme];
   map.addSource("corridor-route", {
     type: "geojson",
     data: {
@@ -184,31 +200,29 @@ function addCorridorLayers(map: maplibregl.Map, muted: boolean) {
     },
   });
 
-  // Bone casing under the forest line lifts the route off the base map.
-  // Under a plan overlay the corridor fades to context so the trip reads.
-  map.addLayer({
-    id: "corridor-route-casing",
-    type: "line",
-    source: "corridor-route",
-    layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": BONE, "line-width": 8, "line-opacity": muted ? 0.4 : 0.9 },
-  });
+  // THE route: dotted char by day, dotted white by night (§11). Under a plan
+  // overlay the corridor fades to context so the trip reads.
   map.addLayer({
     id: "corridor-route-line",
     type: "line",
     source: "corridor-route",
     layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": FOREST, "line-width": 4, "line-opacity": muted ? 0.3 : 1 },
+    paint: {
+      "line-color": c.route,
+      "line-width": ROUTE_WIDTH,
+      "line-dasharray": ROUTE_DASH,
+      "line-opacity": muted ? c.routeOpacity * 0.35 : c.routeOpacity,
+    },
   });
   map.addLayer({
     id: "corridor-stop-dots",
     type: "circle",
     source: "corridor-stops",
     paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 3, 15, 6],
-      "circle-color": BONE,
-      "circle-stroke-color": FOREST,
-      "circle-stroke-width": 2,
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 4, 15, 7],
+      "circle-color": c.stop,
+      "circle-stroke-color": c.stopStroke,
+      "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 11, 2, 15, 3],
       "circle-opacity": muted ? 0.5 : 1,
       "circle-stroke-opacity": muted ? 0.5 : 1,
     },
@@ -220,15 +234,16 @@ function addCorridorLayers(map: maplibregl.Map, muted: boolean) {
     minzoom: 12,
     layout: {
       "text-field": ["get", "name"],
-      "text-font": ["Noto Sans Regular"],
-      "text-size": 11.5,
-      "text-offset": [0, 1.1],
+      "text-font": ["IBM Plex Mono SemiBold"],
+      "text-size": 9,
+      "text-letter-spacing": 0.07,
+      "text-offset": [0, 1.3],
       "text-anchor": "top",
       "text-max-width": 9,
     },
     paint: {
-      "text-color": MOSS,
-      "text-halo-color": BONE,
+      "text-color": c.streetLabel,
+      "text-halo-color": c.base,
       "text-halo-width": 1.4,
     },
   });
@@ -251,20 +266,33 @@ export function LiveMap({ labels, overlay }: LiveMapProps) {
     let map: maplibregl.Map | null = null;
     let unsubscribe: (() => void) | null = null;
     let raf = 0;
+    let theme = currentMapTheme();
+    let rawStyle: unknown = null;
     const markers = new Map<string, maplibregl.Marker>();
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const themeObserver = new MutationObserver(applyTheme);
+
+    // Repaints the whole canvas when the theme flips; style.load re-adds the
+    // corridor and plan layers, markers restyle through CSS tokens.
+    function applyTheme() {
+      const next = currentMapTheme();
+      if (disposed || !map || !rawStyle || next === theme) return;
+      theme = next;
+      map.setStyle(mbareSunStyle(rawStyle, theme) as maplibregl.StyleSpecification);
+    }
 
     async function start() {
       const res = await fetch(mapStyleUrl(key));
       if (!res.ok) throw new Error(`map style fetch failed: ${res.status}`);
-      const style = warmSvikaStyle(await res.json());
+      rawStyle = await res.json();
       if (disposed || !container) return;
 
       map = new maplibregl.Map({
         container,
-        style: style as maplibregl.StyleSpecification,
+        style: mbareSunStyle(rawStyle, theme) as maplibregl.StyleSpecification,
         bounds: mapBounds(overlay),
         // under a plan the bottom sheet peeks over the map; the trip must
         // fit in the visible band above it
@@ -277,10 +305,21 @@ export function LiveMap({ labels, overlay }: LiveMapProps) {
       });
       map.touchPitch.disable();
 
+      // Fires on the first style and again after every theme swap.
+      map.on("style.load", () => {
+        if (!map || disposed) return;
+        addCorridorLayers(map, theme, Boolean(overlay));
+        if (overlay) addOverlayLayers(map, overlay, theme);
+      });
+
+      themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
+      darkQuery.addEventListener("change", applyTheme);
+
       map.on("load", () => {
         if (!map || disposed) return;
-        addCorridorLayers(map, Boolean(overlay));
-        if (overlay) addOverlayLayers(map, overlay);
         setReady(true);
 
         // The fixed epoch keeps these markers in step with the server side
@@ -351,6 +390,8 @@ export function LiveMap({ labels, overlay }: LiveMapProps) {
     return () => {
       disposed = true;
       cancelAnimationFrame(raf);
+      themeObserver.disconnect();
+      darkQuery.removeEventListener("change", applyTheme);
       unsubscribe?.();
       map?.remove();
     };
@@ -373,7 +414,10 @@ export function LiveMap({ labels, overlay }: LiveMapProps) {
         aria-label={labels.ariaLabel}
       />
       <span className="live-map-chip svika-glass" data-testid="demo-chip">
-        <span className="svika-pulse-dot" aria-hidden />
+        <span className="svika-live-dot">
+          <span className="svika-ripple-ring" aria-hidden />
+          <span className="svika-pulse-dot" aria-hidden />
+        </span>
         {labels.demoChip}
       </span>
     </div>

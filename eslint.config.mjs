@@ -16,6 +16,9 @@ export default tseslint.config(
       "**/coverage/**",
       "**/*.d.ts",
       "Svika Design System/**",
+      // Mbare Sun reference bundle: the design spec's shipped screens and
+      // their runtime, committed as visual truth, never linted as source.
+      "Svika Mbare Sun/**",
       // Raw field data and vendor exports (ride logs, marker icon, design
       // system): inputs and third party code, never linted as source.
       "assets/**",

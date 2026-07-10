@@ -1150,12 +1150,40 @@ body {
   border-radius: var(--radius-full);
   pointer-events: none;
 }
+/* Kombi marker (DESIGN.md §10): 30px marigold box, char stroke by day,
+   white stroke + glow + headlight beam by night, idle bob. The glyph inside
+   is the client's kombi asset; the box is law. */
 .kombi-map-marker {
-  width: 44px;
-  height: 44px;
-  filter: drop-shadow(0 3px 6px rgba(14, 26, 18, 0.35));
+  position: relative;
+  width: 30px;
+  height: 30px;
 }
-.kombi-map-marker img {
+.kombi-map-bob {
+  position: absolute;
+  inset: 0;
+}
+.kombi-beam {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -70px 0 0 -70px;
+  display: var(--kombi-beam-display, none);
+  animation: svk-beam 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.kombi-map-box {
+  display: block;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--color-marigold);
+  border: var(--marker-stroke);
+  box-sizing: border-box;
+  overflow: hidden;
+  filter: var(--kombi-glow);
+}
+.kombi-map-box img {
   display: block;
   width: 100%;
   height: 100%;
@@ -1164,6 +1192,11 @@ body {
 .kombi-map-marker,
 .live-map .maplibregl-marker {
   cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kombi-beam {
+    animation: none;
+  }
 }
 .map-block {
   min-height: 340px;

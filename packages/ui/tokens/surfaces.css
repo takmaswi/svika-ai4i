@@ -46,6 +46,14 @@
   background: var(--color-live);
   animation: svk-pulse 1.6s ease-in-out infinite;
 }
+/* Live pill dot anchor: the 7px dot plus its expanding ripple (§7). */
+.svika-live-dot {
+  position: relative;
+  display: inline-flex;
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+}
 /* Expanding ripple ring behind the dot (wrap both in a relative span). */
 .svika-ripple-ring {
   position: absolute;

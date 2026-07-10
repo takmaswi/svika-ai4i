@@ -1515,6 +1515,50 @@ body:has(.home-screen) .demo-account-chip {
   justify-content: space-between;
   gap: var(--space-3);
 }
+
+/* --- profile (unreferenced screen, composed from numbered patterns) ------- */
+.profile-form {
+  display: grid;
+  gap: var(--space-2);
+}
+.profile-label {
+  margin-top: var(--space-1);
+}
+.profile-trip-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+.profile-trip {
+  display: grid;
+  gap: var(--space-2);
+}
+.pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.profile-ride-date {
+  white-space: nowrap;
+}
+/* No checkbox exists in the references (flagged spec gap): a native box
+   tinted with the day CTA colour, char track by night via the token. */
+.consent-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+.consent-check input {
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--color-action);
+  flex: none;
+}
 .delete-data-cta {
   border: 1.5px solid var(--color-signal);
   border-radius: var(--radius-full);
@@ -1741,7 +1785,10 @@ body:has(.home-screen) .demo-account-chip {
 }
 .home-sheet-footer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  column-gap: var(--space-3);
   padding-top: var(--space-2);
   padding-bottom: 76px;
 }

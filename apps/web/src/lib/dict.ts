@@ -534,6 +534,86 @@ export const dict = {
     en: "That did not work. Try again.",
     sn: "Hazvina kushanda. Edzazve.",
   },
+  "profile.open": { en: "Profile and settings", sn: "Profile nemarongero" },
+  "profile.title": { en: "Your Svika", sn: "Svika yako" },
+  "profile.youH": { en: "Your details", sn: "Ruzivo rwako" },
+  "profile.nameLabel": { en: "Your name", sn: "Zita rako" },
+  "profile.phoneLabel": { en: "Phone", sn: "Foni" },
+  "profile.saveCta": { en: "Save", sn: "Chengeta" },
+  "profile.savedNote": { en: "Saved.", sn: "Zvachengetwa." },
+  "profile.tripsH": { en: "Saved trips", sn: "Nzendo dzakachengetwa" },
+  "profile.tripsNone": {
+    en: "No saved trips yet. Plan a trip and give it a name.",
+    sn: "Hapana nzendo dzakachengetwa. Ronga rwendo urwupe zita.",
+  },
+  "profile.renameCta": { en: "Rename", sn: "Shandura zita" },
+  "profile.removeCta": { en: "Remove", sn: "Bvisa" },
+  "profile.historyH": { en: "Your rides", sn: "Nzendo dzako" },
+  "profile.historySummary": {
+    en: "{count} rides with Svika since {month}.",
+    sn: "Nzendo {count} neSvika kubva {month}.",
+  },
+  "profile.historyFirst": {
+    en: "Your first ride with Svika.",
+    sn: "Rwendo rwako rwekutanga neSvika.",
+  },
+  "profile.historyNone": {
+    en: "Your rides will appear here after your first trip.",
+    sn: "Nzendo dzako dzichaonekwa pano mushure merwendo rwekutanga.",
+  },
+  "profile.alertsH": { en: "Commute alerts", sn: "Yeuchidzo dzerwendo" },
+  "profile.alertsB": {
+    en: "When your usual kombi is getting close in your usual travel window, Svika tells you. Built only from your own ride history.",
+    sn: "Kana kombi yaunogara uchikwira yaswedera panguva yaunowanzofamba, Svika inokuudza. Zvinobva munhoroondo yenzendo dzako chete.",
+  },
+  "profile.voiceH": { en: "Voice guide", sn: "Inzwi rinotungamira" },
+  "profile.voiceB": {
+    en: "A voice that tells you when your stop is near and when to get off. Turn it on per language.",
+    sn: "Inzwi rinokuudza kana chiteshi chako chaswedera uye pekuburuka. Batidza pamutauro waunoda.",
+  },
+  "profile.voiceNote": {
+    en: "The current voice is a placeholder until recorded Zimbabwean voices land.",
+    sn: "Inzwi ririko nderekumbomira kusvika manzwi echiZimbabwe akarekodhwa asvika.",
+  },
+  "profile.voiceEn": { en: "English voice", sn: "Inzwi reChirungu" },
+  "profile.voiceSn": { en: "Shona voice", sn: "Inzwi reChiShona" },
+  "profile.on": { en: "On", sn: "Rakabatidzwa" },
+  "profile.off": { en: "Off", sn: "Rakadzimwa" },
+  "profile.emergencyH": { en: "Emergency details", sn: "Ruzivo rwepakaoma" },
+  "profile.emergencyWhy": {
+    en: "If something happens on the road, the person you name here is who gets called, and your medical aid details speed up help. Svika asks so that help is one tap away, never for marketing. This is optional, only you can see it, and you can remove it any time.",
+    sn: "Kana chimwe chikaitika murwendo, munhu waunonyora pano ndiye anofonerwa, uye ruzivo rwemedical aid rwako runokurumidzisa rubatsiro. Svika inokumbira kuti rubatsiro rive pedyo, kwete zvekushambadza. Izvi ndezvekuzvisarudzira, ndiwe wega unozviona, uye unogona kuzvibvisa chero nguva.",
+  },
+  "profile.kinName": { en: "Next of kin name", sn: "Zita rehama yepedyo" },
+  "profile.kinPhone": { en: "Next of kin phone", sn: "Foni yehama yepedyo" },
+  "profile.aidName": { en: "Medical aid name", sn: "Zita remedical aid" },
+  "profile.aidNumber": { en: "Medical aid number", sn: "Nhamba yemedical aid" },
+  "profile.emergencyConsent": {
+    en: "I agree that Svika stores these details for emergencies. I can remove them at any time.",
+    sn: "Ndinobvuma kuti Svika ichengete ruzivo urwu rwepakaoma. Ndinogona kuzvibvisa chero nguva.",
+  },
+  "profile.emergencySave": { en: "Save emergency details", sn: "Chengeta ruzivo rwepakaoma" },
+  "profile.emergencyRemove": { en: "Remove these details", sn: "Bvisa ruzivo urwu" },
+  "profile.emergencySaved": {
+    en: "Saved. Only you can see these details.",
+    sn: "Zvachengetwa. Ndiwe wega unoona ruzivo urwu.",
+  },
+  "profile.emergencyRemoved": {
+    en: "Removed, and the withdrawal is recorded.",
+    sn: "Zvabviswa, uye kubvisa kwacho kwanyorwa.",
+  },
+  "profile.errConsent": {
+    en: "Tick the consent box first.",
+    sn: "Tanga wabvuma mubhokisi remvumo.",
+  },
+  "profile.errEmpty": {
+    en: "Add at least one detail before saving.",
+    sn: "Isa ruzivo rumwe chete kana kupfuura usati wachengeta.",
+  },
+  "profile.errGeneric": {
+    en: "That did not save. Try again.",
+    sn: "Hazvina kuchengetedzwa. Edzazve.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

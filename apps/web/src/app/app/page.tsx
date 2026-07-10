@@ -356,6 +356,13 @@ export default async function RiderHome({
         </section>
 
         <footer className="home-sheet-footer">
+          <Link
+            className="auth-link touch-target"
+            href="/app/profile"
+            data-testid="profile-link"
+          >
+            {t(lang, "profile.open")}
+          </Link>
           <Link className="auth-link touch-target" href="/app/privacy">
             {t(lang, "privacy.yourDataLink")}
           </Link>

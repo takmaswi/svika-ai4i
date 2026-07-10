@@ -462,10 +462,25 @@ async function ensureFreshUser() {
   console.log("FRESH user reset to unconsented");
 }
 
+// profile e2e determinism: prefs and emergency details start empty each run
+async function resetProfilePersonal(uid) {
+  const { error: prefErr } = await admin
+    .from("rider_prefs")
+    .delete()
+    .eq("rider_id", uid);
+  if (prefErr) throw prefErr;
+  const { error: edErr } = await admin
+    .from("emergency_details")
+    .delete()
+    .eq("rider_id", uid);
+  if (edErr) throw edErr;
+}
+
 const ids = {};
 for (const p of people) ids[p.key] = await ensureUser(p);
 for (const key of Object.keys(ids)) await ensureConsent(ids[key]);
 await ensureFreshUser();
+await resetProfilePersonal(ids.RIDER);
 
 const ownerId = await ensureOwner(ids.OWNER, "Demo Fleet");
 const demoConductorId = await ensureConductor(ids.CONDUCTOR, ownerId);

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { fetchNetwork } from "@/lib/network";
 import { bookParcel } from "@/lib/actions";
 import { formatUsd } from "@svika/shared";
+import { BackIcon } from "@/components/icons";
 import { boardCodesOf } from "@/lib/tickets";
 
 interface ParcelRow {
@@ -59,15 +60,15 @@ export default async function ParcelPage({
 
   return (
     <main className="shell">
-      <header className="shell-top">
-        <Link href="/app" className="auth-link">
-          ← {t(lang, "common.back")}
+      <header className="screen-head">
+        <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
+        <h1 className="svika-headline">{t(lang, "parcel.title")}</h1>
       </header>
 
       <section className="svika-card wallet-panel svika-animate-fade-up">
-        <h1 className="svika-headline">{t(lang, "parcel.title")}</h1>
-        <form action={bookParcel} className="search-form">
+        <form action={bookParcel} className="auth-form">
           <label className="svika-meta" htmlFor="parcel-from">
             {t(lang, "parcel.from")}
           </label>
@@ -140,14 +141,12 @@ export default async function ParcelPage({
               const collectStage =
                 status === "issued" ? "waiting" : status === "loaded" ? "active" : "spent";
               return (
-                <li key={p.id} className="parcel-item boarding-card">
-                  <header className="boarding-strip">
-                    <span className="svika-meta boarding-strip-route">
-                      {p.from_stop?.name} → {p.to_stop?.name}
-                    </span>
-                    <span className="svika-mono-code boarding-strip-fare">
-                      {formatUsd(p.fare_cents)}
-                    </span>
+                <li key={p.id} className="parcel-item svika-card">
+                  <header className="parcel-head">
+                    <p className="parcel-endpoints">
+                      {p.from_stop?.name} {t(lang, "common.to")} {p.to_stop?.name}
+                    </p>
+                    <span className="plate-chip">{formatUsd(p.fare_cents)}</span>
                   </header>
                   <div className="parcel-codes">
                     <div
@@ -167,9 +166,6 @@ export default async function ParcelPage({
                         </p>
                       )}
                     </div>
-                    <span className="parcel-stage-arrow" aria-hidden>
-                      →
-                    </span>
                     <div
                       className={`parcel-code-panel parcel-stage-${collectStage}`}
                       data-testid="collect-panel"
@@ -188,7 +184,7 @@ export default async function ParcelPage({
                       )}
                     </div>
                   </div>
-                  <div className="boarding-perf" aria-hidden />
+                  <div className="parcel-perf" aria-hidden />
                   <p className="svika-meta parcel-foot">
                     {status === "issued"
                       ? t(lang, "parcel.loadHint")

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getLang, t } from "@/lib/i18n";
 import { CONSENT_VERSION } from "@svika/shared";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { BackIcon } from "@/components/icons";
 
 // The plain language privacy notice. Public: readable before signing in and
 // linked from the consent screen. Short sections, no legal wall.
@@ -20,8 +21,8 @@ export default async function PrivacyPage() {
   return (
     <main className="shell">
       <header className="shell-top">
-        <Link href="/" className="auth-link">
-          ← {t(lang, "common.back")}
+        <Link href="/" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
         <LanguageToggle lang={lang} />
       </header>

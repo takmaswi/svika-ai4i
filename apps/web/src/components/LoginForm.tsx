@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import type { AppLanguage } from "@svika/shared";
 import { createClient } from "@/lib/supabase/client";
 import { t } from "@/lib/dict";
+import { ArrowIcon } from "@/components/icons";
 
 type Phase = "phone" | "code";
 
@@ -75,8 +76,11 @@ export function LoginForm({ lang }: { lang: AppLanguage }) {
             value={phone}
             onChange={(e) => setPhone(e.target.value.trim())}
           />
-          <button className="auth-submit touch-target" disabled={busy}>
+          <button className="cta touch-target" disabled={busy}>
             {busy ? t(lang, "login.sending") : t(lang, "login.send")}
+            <span className="cta-chip" aria-hidden>
+              <ArrowIcon />
+            </span>
           </button>
         </form>
       ) : (
@@ -98,8 +102,11 @@ export function LoginForm({ lang }: { lang: AppLanguage }) {
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
           />
-          <button className="auth-submit touch-target" disabled={busy}>
+          <button className="cta touch-target" disabled={busy}>
             {busy ? t(lang, "login.verifying") : t(lang, "login.verify")}
+            <span className="cta-chip" aria-hidden>
+              <ArrowIcon />
+            </span>
           </button>
           <button
             type="button"

@@ -8,6 +8,7 @@ import type { AppLanguage } from "@svika/shared";
 import { storyAdvance } from "@/lib/demo-actions";
 import { STORIES, storyUrl } from "@/lib/stories";
 import { t } from "@/lib/i18n";
+import { ArrowIcon } from "@/components/icons";
 
 interface StoryBarProps {
   params: Record<string, string | string[] | undefined>;
@@ -42,21 +43,27 @@ export function StoryBar({ params, lang }: StoryBarProps) {
           <input type="hidden" name="story" value={slug} />
           <input type="hidden" name="step" value={step} />
           <button
-            className="story-bar-next touch-target"
+            className="cta touch-target story-bar-next"
             type="submit"
             data-testid="story-next"
           >
             {t(lang, "story.next")}
+            <span className="cta-chip" aria-hidden>
+              <ArrowIcon />
+            </span>
           </button>
         </form>
       ) : (
         <div className="story-bar-actions">
           <Link
-            className="story-bar-next touch-target"
+            className="cta touch-target story-bar-next"
             href={isLast ? "/app" : storyUrl(slug, step + 1)}
             data-testid="story-next"
           >
             {t(lang, isLast ? "story.done" : "story.next")}
+            <span className="cta-chip" aria-hidden>
+              <ArrowIcon />
+            </span>
           </Link>
         </div>
       )}

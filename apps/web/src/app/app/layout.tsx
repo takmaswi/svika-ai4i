@@ -32,8 +32,7 @@ export default async function ConsentGate({
   const lang = await getLang();
   return (
     <>
-      <span className="demo-account-chip svika-glass" data-testid="demo-account-chip">
-        <span className="svika-pulse-dot" aria-hidden />
+      <span className="demo-account-chip" data-testid="demo-account-chip">
         {t(lang, "demo.chip")}
       </span>
       {children}

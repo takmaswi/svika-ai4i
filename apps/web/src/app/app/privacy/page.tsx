@@ -4,6 +4,7 @@ import { getLang, t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { deleteMyData } from "@/lib/actions";
 import { DeleteMyDataButton } from "@/components/DeleteMyDataButton";
+import { BackIcon } from "@/components/icons";
 
 // "What Svika knows about you": the rider's own profile fields and history
 // counts, read under RLS, plus the delete action. Deletion anonymises
@@ -47,14 +48,14 @@ export default async function YourDataPage({
 
   return (
     <main className="shell">
-      <header className="shell-top">
-        <Link href="/app" className="auth-link">
-          ← {t(lang, "common.back")}
+      <header className="screen-head">
+        <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
+        <h1 className="svika-headline">{t(lang, "yourdata.title")}</h1>
       </header>
 
       <section className="svika-card wallet-panel svika-animate-fade-up" data-testid="your-data">
-        <h1 className="svika-headline">{t(lang, "yourdata.title")}</h1>
 
         <h2 className="svika-meta privacy-heading">{t(lang, "yourdata.profileH")}</h2>
         <dl className="yourdata-list">

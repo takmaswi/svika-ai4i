@@ -6,6 +6,7 @@ import { hasActiveConsent, type ConsentRecord } from "@svika/shared";
 import { acceptConsent } from "@/lib/actions";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { SignOutButton } from "@/components/SignOutButton";
+import { ArrowIcon } from "@/components/icons";
 
 // First use consent. The /app layout redirects here until the latest consent
 // record says accepted; accepting appends that record and opens the app.
@@ -52,7 +53,7 @@ export default async function ConsentPage({
             </li>
           ))}
         </ul>
-        <Link className="auth-link" href="/privacy">
+        <Link className="inline-link" href="/privacy">
           {t(lang, "consent.noticeLink")}
         </Link>
         {params.err === "1" && (
@@ -60,11 +61,14 @@ export default async function ConsentPage({
         )}
         <form action={acceptConsent}>
           <button
-            className="auth-submit touch-target"
+            className="cta touch-target"
             type="submit"
             data-testid="consent-accept"
           >
             {t(lang, "consent.accept")}
+            <span className="cta-chip" aria-hidden>
+              <ArrowIcon />
+            </span>
           </button>
         </form>
         <p className="svika-meta">{t(lang, "consent.declineHint")}</p>

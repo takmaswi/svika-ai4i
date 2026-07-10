@@ -1197,6 +1197,42 @@ body {
 .parcel-item {
   display: flex;
   flex-direction: column;
+  border-radius: var(--radius-card-lg);
+}
+.parcel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+}
+.parcel-endpoints {
+  font-size: 13.5px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+  margin: 0;
+}
+.parcel-perf {
+  position: relative;
+  height: 0;
+  border-top: 1.5px dashed var(--color-perf);
+  margin: 4px 6px;
+}
+.parcel-perf::before,
+.parcel-perf::after {
+  content: "";
+  position: absolute;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--color-bg);
+}
+.parcel-perf::before {
+  left: -15px;
+}
+.parcel-perf::after {
+  right: -15px;
 }
 .parcel-codes {
   display: flex;

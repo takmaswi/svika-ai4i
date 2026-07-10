@@ -1,58 +1,60 @@
 /* ============================================================================
-   Svika — Typography tokens
-   Three families, exact from the live app:
-     DM Sans       → display / wordmark voice (700, tight tracking)
-     IBM Plex Sans → body + UI (inherited on <body>)
-     IBM Plex Mono → codes, fares, plate numbers (the "receipt" voice)
+   Svika — Typography tokens (Mbare Sun system)
+   Ground truth: "Svika Mbare Sun/DESIGN.md" §2.
+     DM Sans 700       → display voice, tight tracking
+     IBM Plex Sans     → body + UI
+     IBM Plex Mono 600 → EVERY code, fare, plate, time, count, street label
+     Baloo 2 700       → wordmark lockup only
    ========================================================================= */
 :root {
   --font-display: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans:    "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
-  /* Wordmark only — rounded, warm; matches the round-capped route-S mark. */
   --font-wordmark: "Baloo 2", ui-rounded, "DM Sans", sans-serif;
 
   /* Weights */
-  --weight-regular: 400;
-  --weight-medium:  500;
+  --weight-regular:  400;
+  --weight-medium:   500;
   --weight-semibold: 600;
-  --weight-bold:    700;
+  --weight-bold:     700;
 
-  /* Type ramp — px sizes lifted verbatim from globals.css */
-  --text-display: 32px;   /* .svika-display  — DM Sans 700, -0.02em         */
-  --text-hero:    72px;   /* landing wordmark — DM Sans 700, -0.035em       */
-  --text-headline: 18px;  /* .svika-headline — DM Sans 700, -0.01em         */
-  --text-title:   22px;   /* sheet headings  — IBM Plex 600, -0.4px         */
-  --text-body:    15px;   /* .svika-body     — IBM Plex 400                  */
-  --text-code:    16px;   /* .svika-mono-code — IBM Plex Mono 600           */
-  --text-meta:    11px;   /* .svika-meta     — IBM Plex 500, 0.5px          */
+  /* Type ramp — px sizes verbatim from DESIGN.md §2 */
+  --text-display:   38px;    /* landing H1 — DM Sans 700, -0.025em          */
+  --text-title:     22px;    /* screen titles 22–24px — DM Sans 700         */
+  --text-sheet-title: 20px;  /* sheet heading — Plex Sans 600, -0.3px       */
+  --text-body:      14.5px;  /* body — Plex Sans, 1.55                      */
+  --text-sub:       12.5px;  /* secondary 11–12.5px                         */
+  --text-meta:      10px;    /* labels 9–10.5px, 600–700, ls .5–.8, upper   */
+  --text-code:      19px;    /* boarding code on cards — Plex Mono 600      */
+  --text-code-hero: 58px;    /* boarding code on the ticket — Plex Mono 600 */
+  --text-mono:      17px;    /* fares, times on stat rows — Plex Mono 600   */
 
-  --leading-tight: 1.15;
+  --leading-tight: 1.1;
   --leading-snug:  1.3;
-  --leading-body:  1.5;
+  --leading-body:  1.55;
 }
 
-/* --- Type ramp utility classes (portable copies of the app's) ----------- */
+/* --- Type ramp utility classes ------------------------------------------- */
 .svika-display {
   font-family: var(--font-display);
   font-size: var(--text-display);
   line-height: var(--leading-tight);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 .svika-headline {
   font-family: var(--font-display);
-  font-size: var(--text-headline);
+  font-size: var(--text-title);
   line-height: var(--leading-snug);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 .svika-title {
   font-family: var(--font-sans);
-  font-size: var(--text-title);
+  font-size: var(--text-sheet-title);
   line-height: var(--leading-tight);
   font-weight: 600;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.3px;
 }
 .svika-body {
   font-family: var(--font-sans);
@@ -60,9 +62,16 @@
   line-height: var(--leading-body);
   font-weight: 400;
 }
+.svika-sub {
+  font-family: var(--font-sans);
+  font-size: var(--text-sub);
+  line-height: var(--leading-snug);
+  font-weight: 500;
+}
+/* Every code, fare, plate, time and count wears this voice (§2, hard rule 9). */
 .svika-mono-code {
   font-family: var(--font-mono);
-  font-size: var(--text-code);
+  font-size: var(--text-mono);
   line-height: 1;
   font-weight: 600;
 }
@@ -70,6 +79,6 @@
   font-family: var(--font-sans);
   font-size: var(--text-meta);
   line-height: 1.4;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.5px;
 }

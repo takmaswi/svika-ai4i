@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Owner dashboard, day + night. Fleet takings at a glance, per-kombi rows with live status, ZIMRA statement as the one action. Plates in mono, takings derived from $1.50 fares. -->
+<helmet>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+    body{margin:0;background:#ECEDE8;font-family:'IBM Plex Sans',ui-sans-serif,sans-serif;padding:28px;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;justify-content:center}
+    a{color:#1F4D2E}a:hover{color:#143D22}
+    .dv-card{flex:none;border-radius:28px;box-shadow:0 2px 12px rgba(30,30,20,.16);overflow:hidden;border:1px solid rgba(0,0,0,.1)}
+    @keyframes svk-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+    @keyframes svk-ripple{0%{transform:scale(.5);opacity:.5}100%{transform:scale(2.8);opacity:0}}
+    @keyframes svk-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  </style>
+</helmet>
+
+<div class="dv-card" style="width:360px" data-screen-label="owner dashboard day">
+    <div style="position:relative;width:360px;height:760px;background:#FFFFFF;overflow:hidden;display:flex;flex-direction:column;padding:16px 22px 18px;box-sizing:border-box;font-family:'IBM Plex Sans',sans-serif">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:16px;margin:0 0 12px;color:#161D18">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600">11:00</span>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="2.6" height="4" rx="1"></rect><rect x="4" y="4.6" width="2.6" height="6.4" rx="1"></rect><rect x="8" y="2.2" width="2.6" height="8.8" rx="1"></rect><rect x="12" y="0" width="2.6" height="11" rx="1" opacity="0.35"></rect></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" aria-hidden="true"><rect x="0.75" y="0.75" width="18" height="9.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="2.75" y="2.75" width="10" height="5.5" rx="1.5" fill="currentColor"></rect><rect x="20.5" y="3.5" width="1.5" height="4" rx="0.75" fill="currentColor"></rect></svg>
+        </span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h1 style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:#161D18;margin:0">Good morning, Mai Moyo</h1>
+          <p style="font-size:12px;font-weight:500;color:#575F53;margin:3px 0 0">Fleet of 3 · Heights 4B</p>
+        </div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#FFFFFF;border:1.5px solid #161D18">
+          <span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30;animation:svk-pulse 1.6s ease-in-out infinite"></span></span>
+          <span style="font-size:11px;font-weight:600;color:#161D18">2 live</span>
+        </span>
+      </div>
+      <div style="margin:18px 0 0;border-radius:20px;background:#161D18;padding:20px;box-shadow:0 14px 32px rgba(22,29,24,.25);animation:svk-rise .6s ease-out .05s both">
+        <p style="font-size:10.5px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Today's takings</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:40px;line-height:1.1;color:#F5B301;margin:6px 0 0">$184.50</p>
+        <p style="font-size:12px;font-weight:500;color:rgba(255,255,255,.6);margin:8px 0 0">123 trips · every fare settled to your wallet</p>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 0;animation:svk-rise .6s ease-out .2s both">
+        <h2 style="font-size:14px;font-weight:600;color:#161D18;margin:0">Your kombis</h2>
+        <a href="#ownerday" style="font-size:12px;font-weight:600;color:#1F4D2E">Manage</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;animation:svk-rise .6s ease-out .3s both">
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:#FFFFFF;border:1.5px solid #161D18;cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#F5B301;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#161D18;flex-shrink:0">AEH 6647</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:#161D18">On route · near Avondale</span><span style="display:block;font-size:11px;font-weight:500;color:#575F53;margin-top:1px">41 trips today</span></span>
+          <span style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30"></span></span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#161D18">$61.50</span></span>
+        </button>
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:#FFFFFF;border:1.5px solid #161D18;cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#F5B301;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#161D18;flex-shrink:0">AFK 3310</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:#161D18">On route · at Copacabana</span><span style="display:block;font-size:11px;font-weight:500;color:#575F53;margin-top:1px">48 trips today</span></span>
+          <span style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30"></span></span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#161D18">$72.00</span></span>
+        </button>
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:#FFFFFF;border:1.5px solid rgba(22,29,24,.25);cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#F4F5F1;border:1px solid rgba(22,29,24,.2);font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#575F53;flex-shrink:0">ADT 8892</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:#575F53">Parked · service due</span><span style="display:block;font-size:11px;font-weight:500;color:#575F53;margin-top:1px">34 trips today</span></span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#575F53">$51.00</span>
+        </button>
+      </div>
+      <button type="button" style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:58px;padding:9px 10px 9px 22px;border:none;border-radius:999px;background:#1F4D2E;cursor:pointer;box-shadow:0 10px 26px rgba(31,77,46,.30);animation:svk-rise .6s ease-out .4s both" style-hover="background:#143D22" style-active="transform:scale(0.99)">
+        <span style="font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:600;color:#FFFFFF">Download ZIMRA statement</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;background:#F5B301;color:#161D18"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M6 10l6 6 6-6M5 20h14"></path></svg></span>
+      </button>
+      <p style="font-size:11.5px;color:#575F53;text-align:center;margin:10px 0 0">Every trip receipted, ready for the taxman.</p>
+    </div>
+  </div>
+
+<div class="dv-card" style="width:360px" data-screen-label="owner dashboard night">
+    <div style="position:relative;width:360px;height:760px;background:#161D18;overflow:hidden;display:flex;flex-direction:column;padding:16px 22px 18px;box-sizing:border-box;font-family:'IBM Plex Sans',sans-serif">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:16px;margin:0 0 12px;color:#FFFFFF">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600">22:00</span>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="2.6" height="4" rx="1"></rect><rect x="4" y="4.6" width="2.6" height="6.4" rx="1"></rect><rect x="8" y="2.2" width="2.6" height="8.8" rx="1"></rect><rect x="12" y="0" width="2.6" height="11" rx="1" opacity="0.35"></rect></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" aria-hidden="true"><rect x="0.75" y="0.75" width="18" height="9.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="2.75" y="2.75" width="10" height="5.5" rx="1.5" fill="currentColor"></rect><rect x="20.5" y="3.5" width="1.5" height="4" rx="0.75" fill="currentColor"></rect></svg>
+        </span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h1 style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.02em;color:#FFFFFF;margin:0">Good evening, Mai Moyo</h1>
+          <p style="font-size:12px;font-weight:500;color:rgba(255,255,255,.55);margin:3px 0 0">Fleet of 3 · Heights 4B</p>
+        </div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;background:#10150F;border:1px solid rgba(255,255,255,.12)">
+          <span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30;animation:svk-pulse 1.6s ease-in-out infinite"></span></span>
+          <span style="font-size:11px;font-weight:600;color:#FFFFFF">2 live</span>
+        </span>
+      </div>
+      <div style="margin:18px 0 0;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:20px;animation:svk-rise .6s ease-out .05s both">
+        <p style="font-size:10.5px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Today's takings</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:40px;line-height:1.1;color:#F5B301;margin:6px 0 0">$184.50</p>
+        <p style="font-size:12px;font-weight:500;color:rgba(255,255,255,.6);margin:8px 0 0">123 trips · every fare settled to your wallet</p>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 0;animation:svk-rise .6s ease-out .2s both">
+        <h2 style="font-size:14px;font-weight:600;color:#FFFFFF;margin:0">Your kombis</h2>
+        <a href="#ownernight" style="font-size:12px;font-weight:600;color:#F5B301">Manage</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;animation:svk-rise .6s ease-out .3s both">
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(245,179,1,.4);cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#F5B301;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#161D18;flex-shrink:0">AEH 6647</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:#FFFFFF">On route · near Avondale</span><span style="display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.5);margin-top:1px">41 trips today</span></span>
+          <span style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30"></span></span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#F5B301">$61.50</span></span>
+        </button>
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(245,179,1,.4);cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:#F5B301;font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:#161D18;flex-shrink:0">AFK 3310</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:#FFFFFF">On route · at Copacabana</span><span style="display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.5);margin-top:1px">48 trips today</span></span>
+          <span style="display:flex;flex-direction:column;align-items:flex-end;gap:3px"><span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30"></span></span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:#F5B301">$72.00</span></span>
+        </button>
+        <button type="button" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);cursor:pointer;text-align:left" style-active="transform:scale(0.99)">
+          <span style="display:inline-flex;align-items:center;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.6);flex-shrink:0">ADT 8892</span>
+          <span style="flex:1;min-width:0"><span style="display:block;font-size:13px;font-weight:600;color:rgba(255,255,255,.6)">Parked · service due</span><span style="display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,.4);margin-top:1px">34 trips today</span></span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:rgba(255,255,255,.6)">$51.00</span>
+        </button>
+      </div>
+      <button type="button" style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:58px;padding:9px 10px 9px 22px;border:none;border-radius:999px;background:#F5B301;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.4);animation:svk-rise .6s ease-out .4s both" style-hover="background:#E3A600" style-active="transform:scale(0.99)">
+        <span style="font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;color:#161D18">Download ZIMRA statement</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;background:#161D18;color:#F5B301"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M6 10l6 6 6-6M5 20h14"></path></svg></span>
+      </button>
+      <p style="font-size:11.5px;color:rgba(255,255,255,.5);text-align:center;margin:10px 0 0">Every trip receipted, ready for the taxman.</p>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:830,&quot;height&quot;:820}}"></script>
+</body>
+</html>

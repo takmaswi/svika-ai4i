@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Night theme, elevated: entrance motion, route draw-in, Harare street labels, headlight beams on kombis, ticket-style code card, status bars, arrival countdown. Char #161D18 canvas, marigold #F5B301 CTA, signal #E84C30 live only. Map kombi glyph is a placeholder for the client's asset. -->
+<helmet>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
+    body{margin:0;background:#20241E;font-family:'IBM Plex Sans',ui-sans-serif,sans-serif;padding:28px;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;justify-content:center}
+    a{color:#F5B301}a:hover{color:#E3A600}
+    .dv-card{flex:none;background:#161D18;border:1px solid rgba(255,255,255,.08);border-radius:28px;box-shadow:0 2px 14px rgba(0,0,0,.4);overflow:hidden}
+    @keyframes svk-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+    @keyframes svk-ripple{0%{transform:scale(.5);opacity:.5}100%{transform:scale(2.8);opacity:0}}
+    @keyframes svk-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+    @keyframes svk-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    @keyframes svk-drive{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+    @keyframes svk-draw{to{stroke-dashoffset:0}}
+    @keyframes svk-fadein{from{opacity:0}to{opacity:1}}
+    @keyframes svk-fadeout{from{opacity:1}to{opacity:0}}
+    @keyframes svk-beam{0%,100%{opacity:.6}50%{opacity:1}}
+  </style>
+</helmet>
+
+<div class="dv-card" style="width:360px" data-screen-label="night landing">
+    <div style="position:relative;width:360px;height:760px;background:#161D18;overflow:hidden;display:flex;flex-direction:column;padding:16px 22px 18px;box-sizing:border-box;font-family:'IBM Plex Sans',sans-serif">
+      <div style="display:flex;align-items:center;justify-content:space-between;height:16px;margin:0 0 12px;color:#FFFFFF">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600">22:00</span>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="2.6" height="4" rx="1"></rect><rect x="4" y="4.6" width="2.6" height="6.4" rx="1"></rect><rect x="8" y="2.2" width="2.6" height="8.8" rx="1"></rect><rect x="12" y="0" width="2.6" height="11" rx="1" opacity="0.35"></rect></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" aria-hidden="true"><rect x="0.75" y="0.75" width="18" height="9.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="2.75" y="2.75" width="10" height="5.5" rx="1.5" fill="currentColor"></rect><rect x="20.5" y="3.5" width="1.5" height="4" rx="0.75" fill="currentColor"></rect></svg>
+        </span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="display:inline-flex;align-items:center;padding:6px 12px;border-radius:999px;background:#FFFFFF">
+          <span style="display:inline-flex;align-items:center;font-family:'Baloo 2',sans-serif;font-weight:700;letter-spacing:-0.02em;line-height:1;color:#1F4D2E">
+            <svg height="22" viewBox="13 5 76 92" style="display:block;margin-right:-2px;overflow:visible" aria-label="Svika"><path d="M76 26C76 18 68 14 56 14C38 14 28 22 28 32C28 44 42 48 56 50C70 52 76 58 76 68C76 80 64 86 50 86C36 86 26 80 24 70" fill="none" stroke="#1F4D2E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="76" cy="26" r="7.5" fill="#E84C30"></circle><circle cx="24" cy="70" r="7.5" fill="#E84C30"></circle></svg>
+            <span style="font-size:18px;margin-top:1px">vika</span>
+          </span>
+        </span>
+        <button type="button" aria-label="Change language" style="border:1px solid rgba(255,255,255,.18);background:transparent;border-radius:999px;padding:7px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,.8);cursor:pointer" style-active="transform:scale(0.99)">English</button>
+      </div>
+      <h1 style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:38px;line-height:1.1;letter-spacing:-0.025em;color:#FFFFFF;margin:26px 0 0">
+        <span style="display:block;animation:svk-rise .6s cubic-bezier(.2,.7,.3,1) both">Beyond the</span>
+        <span style="position:relative;display:inline-flex;align-items:center;margin-top:10px;padding:8px 44px 12px 22px;animation:svk-drive .7s cubic-bezier(.2,.8,.3,1) .25s both">
+          <svg viewBox="0 0 200 62" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">
+            <path d="M6 62 L6 20 Q6 5 22 5 L130 5 Q145 5 154 14 L186 40 Q200 48 200 56 L200 62 Z" fill="#F5B301"></path>
+            <path d="M156 14 L161 14 Q167 15 171 20 L182 33 L156 33 Q153 33 153 27 L153 17 Q153 14 156 14 Z" fill="#161D18" opacity="0.8"></path>
+          </svg>
+          <span style="position:relative;font-size:34px;letter-spacing:-0.02em;color:#161D18">Kombi</span>
+          <span style="position:absolute;bottom:-8px;left:26px;width:18px;height:18px;border-radius:999px;background:#161D18;border:3px solid #FFFFFF;box-sizing:border-box"></span>
+          <span style="position:absolute;bottom:-8px;right:38px;width:18px;height:18px;border-radius:999px;background:#161D18;border:3px solid #FFFFFF;box-sizing:border-box"></span>
+        </span>
+      </h1>
+      <p style="font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.62);margin:16px 0 0;text-wrap:pretty;animation:svk-rise .6s ease-out .4s both">Plan every trip, get smart suggestions before you leave, and ride with your safety looked after.</p>
+      <div style="position:relative;margin:18px 0 0;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 14px 34px rgba(0,0,0,.45);animation:svk-rise .6s ease-out .55s both">
+        <svg viewBox="0 0 320 218" style="display:block;width:100%" aria-hidden="true">
+          <defs>
+            <mask id="svkNightMini" maskUnits="userSpaceOnUse"><path d="M40 192 C 90 150, 118 148, 158 116 C 198 88, 224 66, 248 38" pathLength="1" fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" style="animation:svk-draw 1.3s ease-out .7s forwards"></path></mask>
+          </defs>
+          <rect width="320" height="218" fill="#121710"></rect>
+          <path d="M226 10 C286 0 316 28 318 76 L318 126 C276 130 246 116 236 86 C228 60 222 34 226 10 Z" fill="#1B3423"></path>
+          <g fill="#1B211A"><rect x="16" y="14" width="64" height="48" rx="5"></rect><rect x="118" y="10" width="76" height="52" rx="5"></rect><rect x="16" y="100" width="62" height="46" rx="5"></rect><rect x="120" y="98" width="60" height="50" rx="5"></rect><rect x="16" y="172" width="70" height="40" rx="5"></rect><rect x="122" y="174" width="60" height="40" rx="5"></rect><rect x="228" y="152" width="76" height="56" rx="5"></rect></g>
+          <g stroke="#222B22" stroke-width="15" stroke-linecap="round" fill="none"><path d="M-10 80 L330 74"></path><path d="M100 -10 L104 228"></path><path d="M212 -10 L208 228"></path></g>
+          <g stroke="#333E33" stroke-width="10" stroke-linecap="round" fill="none"><path d="M-10 80 L330 74"></path><path d="M100 -10 L104 228"></path><path d="M212 -10 L208 228"></path></g>
+          <g stroke="#2A342B" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9"><path d="M-10 160 L330 156"></path><path d="M160 -10 L162 228"></path></g>
+          <path d="M40 192 C 90 150, 118 148, 158 116 C 198 88, 224 66, 248 38" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="1 10" opacity="0.75" mask="url(#svkNightMini)"></path>
+          <circle cx="40" cy="192" r="6.5" fill="#E84C30" stroke="#FFFFFF" stroke-width="3"></circle>
+          <circle cx="248" cy="38" r="6.5" fill="#E84C30" stroke="#FFFFFF" stroke-width="3" style="opacity:0;animation:svk-fadein .4s ease-out 1.8s forwards"></circle>
+          <g style="animation:svk-fadein .5s ease-out 1.5s backwards,svk-bob 2.4s ease-in-out 2s infinite;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 10px rgba(245,179,1,.45))"><g transform="translate(158,116)"><g transform="rotate(-41)" style="animation:svk-beam 2.8s ease-in-out infinite"><path d="M12 -5 L58 -24 L58 24 L12 5 Z" fill="#F5B301" opacity="0.12"></path><path d="M12 -4 L42 -14 L42 14 L12 4 Z" fill="#F5B301" opacity="0.15"></path></g><rect x="-14" y="-14" width="28" height="28" rx="9" fill="#F5B301" stroke="#FFFFFF" stroke-width="3"></rect><g transform="translate(-9.6,-10) scale(0.8)"><path fill="#161D18" fill-rule="evenodd" d="M2.4 15V9.6C2.4 8.4 3.2 7.5 4.4 7.3H15.4C16.8 7.3 18.1 7.9 19 8.9L20.9 10.9C21.4 11.4 21.7 12.1 21.7 12.8V15C21.7 15.6 21.3 16 20.7 16H3.4C2.8 16 2.4 15.6 2.4 15ZM4.8 9.1C4.4 9.1 4.2 9.4 4.2 9.7V11.6C4.2 12 4.5 12.2 4.8 12.2H13.3C13.7 12.2 13.9 12 13.9 11.6V9.7C13.9 9.4 13.7 9.1 13.3 9.1ZM15.7 9.2V11.6C15.7 12 15.9 12.2 16.3 12.2H19.9C20.3 12.2 20.5 11.8 20.2 11.5L18.8 10C18.1 9.3 17.2 9.2 16.3 9.2Z"></path><circle cx="7" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="17" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="7" cy="16.4" r="1" fill="#F5B301"></circle><circle cx="17" cy="16.4" r="1" fill="#F5B301"></circle></g></g></g>
+        </svg>
+        <span style="position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:#10150F;border:1px solid rgba(255,255,255,.12)">
+          <span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30;animation:svk-pulse 1.6s ease-in-out infinite"></span></span>
+          <span style="font-size:10.5px;font-weight:600;color:#FFFFFF">12 on the road</span>
+        </span>
+        <span style="position:absolute;bottom:10px;left:10px;display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#10150F;border:1px solid rgba(255,255,255,.12)">
+          <span style="font-size:11px;font-weight:600;color:#FFFFFF">Next Heights kombi</span>
+          <span style="position:relative;display:inline-block;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;color:#F5B301"><span style="display:inline-block;animation:svk-fadeout .35s ease 2.4s forwards">5 min</span><span style="position:absolute;left:0;top:0;opacity:0;animation:svk-fadein .35s ease 2.4s forwards">4 min</span></span>
+        </span>
+      </div>
+      <div style="display:flex;gap:10px;margin:12px 0 0;animation:svk-rise .6s ease-out .7s both">
+        <div style="flex:1;border-radius:14px;padding:10px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)">
+          <p style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Change kept</p>
+          <p style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:17px;color:#F5B301;margin:4px 0 0">$1.50<span style="font-size:10px;color:rgba(255,255,255,.5);font-weight:500"> this week</span></p>
+        </div>
+        <div style="flex:1;display:flex;align-items:stretch;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);overflow:hidden">
+          <div style="width:11px;flex-shrink:0;background:#F5B301;border-right:1.5px dashed #161D18"></div>
+          <div style="flex:1;padding:10px 12px">
+            <p style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Boarding code</p>
+            <p style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:19px;letter-spacing:1px;color:#FFFFFF;margin:2px 0 0">7K 42</p>
+          </div>
+        </div>
+      </div>
+      <button type="button" style="margin-top:auto;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:58px;padding:9px 10px 9px 22px;border:none;border-radius:999px;background:#F5B301;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.4);animation:svk-rise .6s ease-out .85s both" style-hover="background:#E3A600" style-active="transform:scale(0.99)">
+        <span style="font-family:'IBM Plex Sans',sans-serif;font-size:16px;font-weight:700;color:#161D18">Find your kombi</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;background:#161D18;color:#F5B301"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 10.1c0-.72.58-1.3 1.3-1.3H12V6.1c0-1.28 1.5-1.94 2.42-1.05l6.28 6.05c.6.58.6 1.54 0 2.12l-6.28 6.05C13.5 20.16 12 19.5 12 18.22V15.5H5.3A1.3 1.3 0 0 1 4 14.2z"></path></svg></span>
+      </button>
+      <p style="font-size:12px;color:rgba(255,255,255,.55);text-align:center;margin:12px 0 0;animation:svk-rise .6s ease-out .95s both">Hwindi or fleet owner? <a href="#night" style="color:#F5B301;font-weight:600">Sign in here</a></p>
+    </div>
+  </div>
+
+<div class="dv-card" style="width:360px" data-screen-label="night map home">
+    <div style="position:relative;width:360px;height:760px;background:#161D18;overflow:hidden;font-family:'IBM Plex Sans',sans-serif">
+      <svg viewBox="0 0 360 760" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">
+        <defs>
+          <mask id="svkNightHome" maskUnits="userSpaceOnUse"><path d="M84 500 C 120 452, 100 400, 176 356 C 236 322, 244 258, 250 178" pathLength="1" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1" style="animation:svk-draw 1.5s ease-out .5s forwards"></path></mask>
+        </defs>
+        <rect width="360" height="760" fill="#121710"></rect>
+        <path d="M252 40 C316 26 352 58 358 114 L360 196 C312 200 276 188 262 152 C250 120 246 74 252 40 Z" fill="#1B3423"></path>
+        <rect x="14" y="316" width="92" height="78" rx="16" fill="#1B3423"></rect>
+        <g fill="#1B211A"><rect x="24" y="34" width="74" height="56" rx="5"></rect><rect x="132" y="24" width="88" height="64" rx="5"></rect><rect x="26" y="132" width="70" height="62" rx="5"></rect><rect x="130" y="126" width="66" height="68" rx="5"></rect><rect x="24" y="240" width="72" height="52" rx="5"></rect><rect x="132" y="240" width="64" height="56" rx="5"></rect><rect x="254" y="240" width="82" height="56" rx="5"></rect><rect x="130" y="336" width="72" height="64" rx="5"></rect><rect x="252" y="330" width="84" height="68" rx="5"></rect><rect x="26" y="428" width="80" height="58" rx="5"></rect><rect x="150" y="434" width="66" height="56" rx="5"></rect><rect x="256" y="432" width="76" height="56" rx="5"></rect></g>
+        <g stroke="#222B22" stroke-width="17" stroke-linecap="round" fill="none"><path d="M-10 110 L370 102"></path><path d="M-10 216 L370 222"></path><path d="M112 -10 L118 770"></path><path d="M240 -10 L232 770"></path><path d="M-10 412 L370 420"></path></g>
+        <g stroke="#333E33" stroke-width="11" stroke-linecap="round" fill="none"><path d="M-10 110 L370 102"></path><path d="M-10 216 L370 222"></path><path d="M112 -10 L118 770"></path><path d="M240 -10 L232 770"></path><path d="M-10 412 L370 420"></path></g>
+        <g stroke="#2A342B" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"><path d="M-10 316 L370 322"></path><path d="M180 -10 L184 770"></path><path d="M300 -10 L296 770"></path></g>
+        <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#7E877E" letter-spacing="0.6">
+          <text x="126" y="93">Samora Machel Ave</text>
+          <text x="126" y="206">Jason Moyo Ave</text>
+          <text transform="translate(105,562) rotate(-90)">Julius Nyerere Way</text>
+          <text transform="translate(226,336) rotate(-90)">Chinhoyi St</text>
+          <text x="60" y="358" text-anchor="middle" font-size="8.5" fill="#6F8F74">Harare Gardens</text>
+        </g>
+        <path d="M84 500 C 120 452, 100 400, 176 356 C 236 322, 244 258, 250 178" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 11" opacity="0.75" mask="url(#svkNightHome)"></path>
+        <circle cx="84" cy="500" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3"></circle>
+        <circle cx="250" cy="178" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3" style="opacity:0;animation:svk-fadein .4s ease-out 1.9s forwards"></circle>
+        <g style="opacity:0;animation:svk-fadein .4s ease-out 2s forwards">
+          <rect x="219" y="146" width="62" height="20" rx="10" fill="#10150F" stroke="rgba(255,255,255,.18)" stroke-width="1"></rect>
+          <text x="250" y="159.5" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#FFFFFF">Avondale</text>
+        </g>
+        <g style="animation:svk-fadein .5s ease-out 1.7s backwards,svk-bob 2.4s ease-in-out 2.2s infinite;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 12px rgba(245,179,1,.45))"><g transform="translate(176,356)"><g transform="rotate(-55)" style="animation:svk-beam 2.8s ease-in-out infinite"><path d="M13 -5 L68 -28 L68 28 L13 5 Z" fill="#F5B301" opacity="0.12"></path><path d="M13 -4 L48 -16 L48 16 L13 4 Z" fill="#F5B301" opacity="0.15"></path></g><rect x="-15" y="-15" width="30" height="30" rx="10" fill="#F5B301" stroke="#FFFFFF" stroke-width="3"></rect><g transform="translate(-9.6,-10) scale(0.8)"><path fill="#161D18" fill-rule="evenodd" d="M2.4 15V9.6C2.4 8.4 3.2 7.5 4.4 7.3H15.4C16.8 7.3 18.1 7.9 19 8.9L20.9 10.9C21.4 11.4 21.7 12.1 21.7 12.8V15C21.7 15.6 21.3 16 20.7 16H3.4C2.8 16 2.4 15.6 2.4 15ZM4.8 9.1C4.4 9.1 4.2 9.4 4.2 9.7V11.6C4.2 12 4.5 12.2 4.8 12.2H13.3C13.7 12.2 13.9 12 13.9 11.6V9.7C13.9 9.4 13.7 9.1 13.3 9.1ZM15.7 9.2V11.6C15.7 12 15.9 12.2 16.3 12.2H19.9C20.3 12.2 20.5 11.8 20.2 11.5L18.8 10C18.1 9.3 17.2 9.2 16.3 9.2Z"></path><circle cx="7" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="17" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="7" cy="16.4" r="1" fill="#F5B301"></circle><circle cx="17" cy="16.4" r="1" fill="#F5B301"></circle></g></g></g>
+        <g style="animation:svk-fadein .5s ease-out 1.9s backwards,svk-bob 2.4s ease-in-out 2.6s infinite;transform-box:fill-box;transform-origin:center;filter:drop-shadow(0 0 10px rgba(245,179,1,.4))"><g transform="translate(118,236)"><g transform="rotate(-90)" style="animation:svk-beam 2.8s ease-in-out .9s infinite"><path d="M11 -5 L56 -23 L56 23 L11 5 Z" fill="#F5B301" opacity="0.12"></path><path d="M11 -4 L40 -13 L40 13 L11 4 Z" fill="#F5B301" opacity="0.15"></path></g><rect x="-13" y="-13" width="26" height="26" rx="9" fill="#F5B301" stroke="#FFFFFF" stroke-width="3"></rect><g transform="translate(-8.4,-8.8) scale(0.7)"><path fill="#161D18" fill-rule="evenodd" d="M2.4 15V9.6C2.4 8.4 3.2 7.5 4.4 7.3H15.4C16.8 7.3 18.1 7.9 19 8.9L20.9 10.9C21.4 11.4 21.7 12.1 21.7 12.8V15C21.7 15.6 21.3 16 20.7 16H3.4C2.8 16 2.4 15.6 2.4 15ZM4.8 9.1C4.4 9.1 4.2 9.4 4.2 9.7V11.6C4.2 12 4.5 12.2 4.8 12.2H13.3C13.7 12.2 13.9 12 13.9 11.6V9.7C13.9 9.4 13.7 9.1 13.3 9.1ZM15.7 9.2V11.6C15.7 12 15.9 12.2 16.3 12.2H19.9C20.3 12.2 20.5 11.8 20.2 11.5L18.8 10C18.1 9.3 17.2 9.2 16.3 9.2Z"></path><circle cx="7" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="17" cy="16.4" r="2.5" fill="#161D18"></circle></g></g></g>
+      </svg>
+      <div style="position:absolute;top:10px;left:20px;right:20px;z-index:25;display:flex;align-items:center;justify-content:space-between;color:#FFFFFF">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:600">22:00</span>
+        <span style="display:inline-flex;align-items:center;gap:6px">
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor" aria-hidden="true"><rect x="0" y="7" width="2.6" height="4" rx="1"></rect><rect x="4" y="4.6" width="2.6" height="6.4" rx="1"></rect><rect x="8" y="2.2" width="2.6" height="8.8" rx="1"></rect><rect x="12" y="0" width="2.6" height="11" rx="1" opacity="0.35"></rect></svg>
+          <svg width="22" height="11" viewBox="0 0 22 11" aria-hidden="true"><rect x="0.75" y="0.75" width="18" height="9.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"></rect><rect x="2.75" y="2.75" width="10" height="5.5" rx="1.5" fill="currentColor"></rect><rect x="20.5" y="3.5" width="1.5" height="4" rx="0.75" fill="currentColor"></rect></svg>
+        </span>
+      </div>
+      <div style="position:absolute;top:32px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:20">
+        <span style="display:inline-flex;align-items:center;padding:7px 14px;border-radius:999px;background:#FFFFFF;box-shadow:0 4px 16px rgba(0,0,0,.4)">
+          <span style="display:inline-flex;align-items:center;font-family:'Baloo 2',sans-serif;font-weight:700;letter-spacing:-0.02em;line-height:1;color:#1F4D2E"><svg height="20" viewBox="13 5 76 92" style="display:block;margin-right:-2px;overflow:visible" aria-label="Svika"><path d="M76 26C76 18 68 14 56 14C38 14 28 22 28 32C28 44 42 48 56 50C70 52 76 58 76 68C76 80 64 86 50 86C36 86 26 80 24 70" fill="none" stroke="#1F4D2E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="76" cy="26" r="7.5" fill="#E84C30"></circle><circle cx="24" cy="70" r="7.5" fill="#E84C30"></circle></svg><span style="font-size:16px;margin-top:1px">vika</span></span>
+        </span>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#10150F;border:1px solid rgba(255,255,255,.12);box-shadow:0 4px 16px rgba(0,0,0,.35)">
+          <span style="position:relative;display:inline-flex;width:7px;height:7px"><span style="position:absolute;inset:0;border-radius:999px;background:#E84C30;animation:svk-ripple 1.8s ease-out infinite"></span><span style="position:relative;width:7px;height:7px;border-radius:999px;background:#E84C30;animation:svk-pulse 1.6s ease-in-out infinite"></span></span>
+          <span style="font-size:11px;font-weight:600;color:#FFFFFF">12 on the road</span>
+        </span>
+      </div>
+      <span style="position:absolute;left:198px;top:338px;z-index:15;display:inline-flex;align-items:center;padding:6px 11px;border-radius:999px;background:#F5B301;box-shadow:0 4px 14px rgba(0,0,0,.45);animation:svk-fadein .5s ease-out 2.1s backwards,svk-bob 2.4s ease-in-out 2.7s infinite"><span style="position:relative;display:inline-block;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12.5px;color:#161D18"><span style="display:inline-block;animation:svk-fadeout .35s ease 2.9s forwards">5 min</span><span style="position:absolute;left:0;top:0;opacity:0;animation:svk-fadein .35s ease 2.9s forwards">4 min</span></span></span>
+      <section aria-label="Trip planner" style="position:absolute;left:0;right:0;bottom:0;z-index:30;height:330px;background:#161D18;border-top:1px solid rgba(255,255,255,.12);border-top-left-radius:24px;border-top-right-radius:24px;box-shadow:0 -14px 36px rgba(0,0,0,.5);box-sizing:border-box;padding:0 18px">
+        <div style="height:26px;display:flex;align-items:center;justify-content:center"><span style="width:38px;height:4px;border-radius:999px;background:rgba(255,255,255,.25)"></span></div>
+        <h2 style="font-size:20px;font-weight:600;letter-spacing:-0.3px;color:#FFFFFF;margin:0">Where to, Takunda?</h2>
+        <p style="font-size:11.5px;font-weight:500;color:rgba(255,255,255,.55);margin:3px 0 0">Try Avondale, Rezende Rank or UZ</p>
+        <div style="display:flex;align-items:center;gap:8px;height:52px;margin-top:12px;padding:0 6px 0 16px;border-radius:999px;background:#FFFFFF">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#575F53" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.4-3.4"></path></svg>
+          <input type="text" placeholder="Avondale, Rezende, UZ…" aria-label="Search destination" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:#161D18"></input>
+          <button type="button" aria-label="Plan trip" style="flex-shrink:0;width:40px;height:40px;border-radius:999px;border:none;background:#F5B301;color:#161D18;cursor:pointer;display:inline-flex;align-items:center;justify-content:center" style-active="transform:scale(0.97)"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 10.1c0-.72.58-1.3 1.3-1.3H12V6.1c0-1.28 1.5-1.94 2.42-1.05l6.28 6.05c.6.58.6 1.54 0 2.12l-6.28 6.05C13.5 20.16 12 19.5 12 18.22V15.5H5.3A1.3 1.3 0 0 1 4 14.2z"></path></svg></button>
+        </div>
+        <div style="display:grid;grid-template-columns:1.5fr 1fr 0.9fr;gap:8px;margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid rgba(245,179,1,.4)">
+          <div><p style="font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Route</p><p style="font-size:13.5px;font-weight:600;color:#FFFFFF;margin:4px 0 0">Heights 4B<span style="display:block;font-size:10.5px;font-weight:500;color:rgba(255,255,255,.5)">from Copacabana</span></p></div>
+          <div><p style="font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Arrives</p><p style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#F5B301;margin:3px 0 0">4 min</p></div>
+          <div><p style="font-size:9px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0">Fare</p><p style="font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:#F5B301;margin:3px 0 0">$1.50</p></div>
+        </div>
+      </section>
+      <nav aria-label="Primary" style="position:absolute;bottom:14px;left:14px;right:14px;z-index:60;display:flex;height:62px;align-items:center;background:#10150F;border:1px solid rgba(255,255,255,.08);border-radius:22px;box-shadow:0 10px 28px rgba(0,0,0,.45)">
+        <button type="button" style="display:flex;flex:1;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:#F5B301" style-active="transform:scale(0.99)"><svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"></path></svg><span style="font-size:10px;font-weight:700;letter-spacing:.3px">Home</span></button>
+        <button type="button" style="display:flex;flex:1;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.55)" style-active="transform:scale(0.99)"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span style="font-size:10px;font-weight:500;letter-spacing:.3px">Rides</span></button>
+        <button type="button" style="display:flex;flex:1;height:100%;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:rgba(255,255,255,.55)" style-active="transform:scale(0.99)"><svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"></rect><path d="M15 12.5h3"></path></svg><span style="font-size:10px;font-weight:500;letter-spacing:.3px">Wallet</span></button>
+      </nav>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:830,&quot;height&quot;:820}}"></script>
+</body>
+</html>

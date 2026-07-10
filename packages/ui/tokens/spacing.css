@@ -1,13 +1,19 @@
 /* ============================================================================
-   Svika — Spacing, radii, elevation, motion tokens
+   Svika — Spacing, radii, motion tokens (Mbare Sun system)
+   Ground truth: "Svika Mbare Sun/DESIGN.md". Radii and hit targets are the
+   spec's values verbatim. Theme-tinted shadows live in colors.css because
+   they flip with the theme.
    ========================================================================= */
 :root {
-  /* --- Radii (from globals.css) ----------------------------------------- */
-  --radius-sm:   0.5rem;    /* 8px  — small controls, inputs                */
-  --radius:      0.875rem;  /* 14px — cards, tickets                        */
-  --radius-lg:   1.375rem;  /* 22px — glass surfaces, sheets, modals        */
-  --radius-tab:  24px;      /* floating tab bar                            */
-  --radius-full: 999px;     /* pills, dots, CTAs                           */
+  /* --- Radii (DESIGN.md §6–§9) ------------------------------------------ */
+  --radius-sm:      8px;    /* plate chips, small controls                  */
+  --radius:         14px;   /* cards (§8: 14–16px)                          */
+  --radius-card-lg: 16px;   /* larger cards                                 */
+  --radius-key:     18px;   /* keypad keys, mini map                        */
+  --radius-feature: 20px;   /* dark feature card (wallet, takings, ticket)  */
+  --radius-nav:     22px;   /* bottom nav                                   */
+  --radius-lg:      24px;   /* peek sheet top corners                       */
+  --radius-full:    999px;  /* pills, dots, CTAs                            */
 
   /* --- Spacing scale (4px base) ----------------------------------------- */
   --space-1: 4px;
@@ -19,35 +25,27 @@
   --space-8: 32px;
   --space-10: 40px;
 
-  /* --- Touch — conductor "fat finger" minimum -------------------------- */
-  --touch-min: 56px;
+  /* --- Hit targets (§6): 44px+ rider, 56–72px conductor ------------------ */
+  --touch-min: 44px;
+  --touch-conductor: 56px;
+  --key-min: 72px;
 
-  /* --- Bottom-sheet snap points ---------------------------------------- */
+  /* --- CTA anatomy (§5) --------------------------------------------------- */
+  --cta-height: 58px;
+  --cta-chip: 40px;
+  --cta-confirm-height: 64px;
+
+  /* --- Bottom-sheet snap points ------------------------------------------ */
   --sheet-peek: 200px;
   --sheet-half: 48vh;
   --sheet-full: 92vh;
 
-  /* --- Elevation (warm green-black shadows, never neutral grey) --------- */
-  --shadow-sm:   0 1px 4px rgba(14, 26, 18, 0.08);
-  --shadow-card: 0 4px 18px rgba(14, 26, 18, 0.08);
-  --shadow-tab:  0 8px 24px rgba(14, 26, 18, 0.10);
-  --shadow-cta:  0 8px 24px rgba(31, 77, 46, 0.28);   /* forest-tinted glow */
-  --shadow-modal: 0 24px 64px rgba(14, 26, 18, 0.25);
-  --shadow-sheet: 0 -8px 24px rgba(14, 26, 18, 0.10);
-  --shadow-drawer: -12px 0 32px rgba(14, 26, 18, 0.18);
-
-  /* --- Glass (frosted bone) -------------------------------------------- */
-  --glass-bg:        rgba(255, 252, 239, 0.85);
-  --glass-bg-strong: rgba(255, 252, 239, 0.94);
-  --glass-bg-tab:    rgba(255, 252, 239, 0.96);
-  --glass-blur:      blur(20px) saturate(1.4);        /* @kind other */
-  --glass-blur-strong: blur(24px) saturate(1.5);      /* @kind other */
-
-  /* --- Motion ---------------------------------------------------------- */
-  --ease-standard: ease-out;                    /* @kind other */
-  --ease-sheet:    cubic-bezier(0.32, 0.72, 0, 1); /* @kind other */
-  --dur-fast:   220ms;   /* @kind other */
-  --dur:        280ms;   /* @kind other */
-  --dur-sheet:  320ms;   /* @kind other */
-  --dur-rise:   600ms;   /* @kind other */
+  /* --- Motion (§12) ------------------------------------------------------ */
+  --ease-standard: ease-out;                       /* @kind other */
+  --ease-drive: cubic-bezier(0.2, 0.8, 0.3, 1);    /* @kind other */
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);    /* @kind other */
+  --dur-fast:  160ms;   /* @kind other */
+  --dur:       280ms;   /* @kind other */
+  --dur-sheet: 320ms;   /* @kind other */
+  --dur-rise:  600ms;   /* @kind other */
 }

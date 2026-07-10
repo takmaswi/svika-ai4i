@@ -1,83 +1,211 @@
 /* ============================================================================
-   Svika — Colour tokens (v2 "Forest / Bone / Signal" brand pass)
-   Ground truth: takmaswi/Svika app/globals.css @theme block.
-   Warm, earthy, Zimbabwean. Deep forest green does the heavy lifting;
-   bone cream is the canvas; signal coral is the single accent.
+   Svika — Colour tokens (Mbare Sun system)
+   Ground truth: "Svika Mbare Sun/DESIGN.md" §2. Every value below is lifted
+   verbatim from that spec. Day canvas is pure white, warmth comes from
+   marigold and layer depth; night canvas is char. The old Forest/Bone/Signal
+   palette (bone, linen, pine, moss, amber) is retired — never reintroduce it.
    ========================================================================= */
 :root {
-  /* --- Brand base palette ------------------------------------------------ */
-  --color-forest: #1F4D2E;   /* primary — CTAs, headers, wordmark            */
-  --color-pine:   #0E3A1E;   /* forest pressed / hover-dark                  */
-  --color-char:   #0E1A12;   /* near-black ink, warm green-black             */
-  --color-bone:   #FFFCEF;   /* app background — warm cream, not white       */
-  --color-linen:  #E9E2C8;   /* raised surface / muted panel                 */
-  --color-signal: #E84C30;   /* coral-red accent — live, alerts, one accent  */
-  --color-moss:   #4D5C44;   /* soft ink, secondary text, olive              */
-  --color-amber:  #F59E0B;   /* reserved — cash badge only                   */
+  /* --- Day palette (DESIGN.md §2) ---------------------------------------- */
+  --color-paper:          #FFFFFF;  /* day canvas — never cream/bone         */
+  --color-marigold:       #F5B301;  /* kombis, highlights, night CTA, chips  */
+  --color-marigold-hover: #E3A600;  /* marigold CTA hover                    */
+  --color-char:           #161D18;  /* ink, drawn borders, night canvas      */
+  --color-forest:         #1F4D2E;  /* day CTA, wordmark, day links          */
+  --color-forest-hover:   #143D22;  /* forest CTA hover                      */
+  --color-signal:         #E84C30;  /* live dots and route stops ONLY        */
+  --color-park:           #D9E8CC;  /* day map parks, positive icon chips    */
+  --color-soft-ink:       #575F53;  /* day secondary text                    */
 
-  /* --- Semantic aliases (what product code actually references) ---------- */
-  --color-bg:            var(--color-bone);
-  --color-surface:       var(--color-linen);
-  --color-surface-dark:  var(--color-forest);   /* inverse headers          */
+  /* --- Day map (DESIGN.md §2, §11) --------------------------------------- */
+  --map-base:         #F4F5F1;
+  --map-road-casing:  #E1E3DA;
+  --map-road:         #FFFFFF;
+  --map-building:     #EAECE5;
+  --map-park:         var(--color-park);
+  --map-street-label: #6E766A;
+  --map-park-label:   var(--color-soft-ink);
+  --map-route:        rgba(22, 29, 24, 0.85);
+
+  /* --- Night palette (referenced by the dark blocks and the map) --------- */
+  --night-canvas:       #161D18;
+  --night-surface-dark: #10150F;   /* night nav, pills, chips on map        */
+  --night-overlay-card: rgba(255, 255, 255, 0.06);
+  --night-map-base:     #121710;
+  --night-building:     #1B211A;
+  --night-road-casing:  #222B22;
+  --night-road:         #333E33;
+  --night-minor-road:   #2A342B;
+  --night-park:         #1B3423;
+  --night-street-label: #7E877E;
+  --night-park-label:   #6F8F74;
+
+  /* --- Semantic aliases (what product code references) ------------------- */
+  --color-bg:            var(--color-paper);
+  --color-surface:       var(--color-paper);   /* cards are white + border   */
+  --color-surface-dark:  var(--color-char);    /* dark feature card (§8)     */
+  --color-surface-dark-ink: #FFFFFF;
   --color-ink:           var(--color-char);
-  --color-ink-soft:      var(--color-moss);
-  --color-ink-mute:      rgba(14, 26, 18, 0.55);
-  --color-hairline:      rgba(14, 26, 18, 0.10);
+  --color-ink-soft:      var(--color-soft-ink);
+  --color-ink-mute:      var(--color-soft-ink);
+  --color-hairline:      rgba(22, 29, 24, 0.25);  /* de-emphasized border    */
+  --color-perf:          rgba(22, 29, 24, 0.35);  /* ticket perforation      */
 
+  /* Drawn borders: 1.5px char by day (§8), 1px white-alpha by night */
+  --border-card:  1.5px solid var(--color-char);
+  --border-soft:  1.5px solid rgba(22, 29, 24, 0.25);
+  --border-pill:  1.5px solid var(--color-char);
+  --border-key:   1.5px solid var(--color-char);
+  --key-bg:          var(--color-paper);
+  --key-bg-active:   var(--map-base);
+
+  /* Primary action (§5): forest by day with white label, marigold chip */
   --color-action:          var(--color-forest);
-  --color-action-hover:    var(--color-pine);
+  --color-action-hover:    var(--color-forest-hover);
+  --color-action-ink:      #FFFFFF;
+  --weight-action:         600;      /* night marigold needs the heavier cut */
+  --color-action-chip:     var(--color-marigold);
+  --color-action-chip-ink: var(--color-char);
   --color-action-disabled: rgba(31, 77, 46, 0.32);
-  --color-action-soft:     rgba(31, 77, 46, 0.10);
+  --color-action-soft:     var(--color-park);
+  --color-action-soft-ink: var(--color-char);
 
+  --color-link:   var(--color-forest);
   --color-accent: var(--color-signal);
   --color-live:   var(--color-signal);
 
-  /* WhatsApp companion bubble — brand-agnostic utility */
-  --color-wa-bubble: #DCF8C6;
+  --sheet-bg:     var(--color-paper);
+  --sheet-border: 1.5px solid var(--color-char);
+  --sheet-handle: rgba(22, 29, 24, 0.16);
+
+  /* Map overlay pills and the bottom nav (§7, §9) */
+  --pill-bg:      var(--color-paper);
+  --border-nav:   1.5px solid var(--color-char);
+
+  /* --- Shadows (char/umber tinted, never grey — §2) ----------------------- */
+  --shadow-card:      0 10px 28px rgba(22, 29, 24, 0.12);
+  --shadow-card-dark: 0 14px 32px rgba(22, 29, 24, 0.25);
+  --shadow-cta:       0 10px 26px rgba(31, 77, 46, 0.30);
+  --shadow-sheet:     0 -14px 36px rgba(22, 29, 24, 0.12);
+  --shadow-sm:        0 1px 4px rgba(22, 29, 24, 0.08);
+  --shadow-modal:     0 24px 64px rgba(22, 29, 24, 0.25);
+  --kombi-glow:       none;
 }
 
 /* ============================================================================
-   Night theme — warm dark: char canvas, forest surfaces, bone ink.
-   Never cold grey. Applies when the app stamps data-theme="dark" on <html>,
-   or when the device prefers dark and the app has not forced light.
-   The block is duplicated for the media query on purpose: CSS has no way to
-   reuse a declaration block, and these two selectors must stay identical.
+   Night theme (DESIGN.md §2) — char canvas, overlay cards, marigold CTA.
+   Applies when the app stamps data-theme="dark" on <html>, or when the device
+   prefers dark and the app has not forced light. The block is duplicated for
+   the media query on purpose: CSS cannot reuse a declaration block, and these
+   two selectors must stay identical.
    ========================================================================= */
 :root[data-theme="dark"] {
-  --color-bg:            #0E1A12;
-  --color-surface:       #16281C;
-  --color-surface-dark:  #16281C;
-  --color-ink:           #FFFCEF;
-  --color-ink-soft:      #A9B8A0;
-  --color-ink-mute:      rgba(255, 252, 239, 0.55);
-  --color-hairline:      rgba(255, 252, 239, 0.12);
+  --color-bg:            var(--night-canvas);
+  --color-surface:       var(--night-overlay-card);
+  --color-surface-dark:  var(--night-surface-dark);
+  --color-surface-dark-ink: #FFFFFF;
+  --color-ink:           #FFFFFF;
+  --color-ink-soft:      rgba(255, 255, 255, 0.62);
+  --color-ink-mute:      rgba(255, 255, 255, 0.55);
+  --color-hairline:      rgba(255, 255, 255, 0.10);
+  --color-perf:          rgba(255, 255, 255, 0.30);
 
-  --color-action:          #2E6B42;   /* forest, lifted to read on char     */
-  --color-action-hover:    #1F4D2E;
-  --color-action-disabled: rgba(46, 107, 66, 0.4);
-  --color-action-soft:     rgba(255, 252, 239, 0.08);
+  --border-card:  1px solid rgba(255, 255, 255, 0.10);
+  --border-soft:  1px solid rgba(255, 255, 255, 0.10);
+  --border-pill:  1px solid rgba(255, 255, 255, 0.15);
+  --border-key:   1px solid rgba(255, 255, 255, 0.16);
+  --key-bg:          rgba(255, 255, 255, 0.06);
+  --key-bg-active:   rgba(255, 255, 255, 0.12);
 
-  --glass-bg:        rgba(14, 26, 18, 0.78);
-  --glass-bg-strong: rgba(14, 26, 18, 0.92);
-  --glass-bg-tab:    rgba(14, 26, 18, 0.94);
+  --color-action:          var(--color-marigold);
+  --color-action-hover:    var(--color-marigold-hover);
+  --color-action-ink:      var(--color-char);
+  --weight-action:         700;
+  --color-action-chip:     var(--color-char);
+  --color-action-chip-ink: var(--color-marigold);
+  --color-action-disabled: rgba(245, 179, 1, 0.32);
+  --color-action-soft:     var(--night-park);
+  --color-action-soft-ink: #FFFFFF;
+
+  --color-link: var(--color-marigold);
+
+  --sheet-bg:     var(--night-canvas);
+  --sheet-border: 1px solid rgba(255, 255, 255, 0.12);
+  --sheet-handle: rgba(255, 255, 255, 0.25);
+
+  --pill-bg:      var(--night-surface-dark);
+  --border-nav:   1px solid rgba(255, 255, 255, 0.08);
+
+  --map-base:         var(--night-map-base);
+  --map-road-casing:  var(--night-road-casing);
+  --map-road:         var(--night-road);
+  --map-building:     var(--night-building);
+  --map-park:         var(--night-park);
+  --map-street-label: var(--night-street-label);
+  --map-park-label:   var(--night-park-label);
+  --map-route:        rgba(255, 255, 255, 0.75);
+
+  --shadow-card:      0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-card-dark: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-cta:       0 10px 26px rgba(0, 0, 0, 0.4);
+  --shadow-sheet:     0 -14px 36px rgba(0, 0, 0, 0.5);
+  --shadow-sm:        0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-modal:     0 24px 64px rgba(0, 0, 0, 0.55);
+  --kombi-glow:       drop-shadow(0 0 10px rgba(245, 179, 1, 0.45));
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg:            #0E1A12;
-    --color-surface:       #16281C;
-    --color-surface-dark:  #16281C;
-    --color-ink:           #FFFCEF;
-    --color-ink-soft:      #A9B8A0;
-    --color-ink-mute:      rgba(255, 252, 239, 0.55);
-    --color-hairline:      rgba(255, 252, 239, 0.12);
+    --color-bg:            var(--night-canvas);
+    --color-surface:       var(--night-overlay-card);
+    --color-surface-dark:  var(--night-surface-dark);
+    --color-surface-dark-ink: #FFFFFF;
+    --color-ink:           #FFFFFF;
+    --color-ink-soft:      rgba(255, 255, 255, 0.62);
+    --color-ink-mute:      rgba(255, 255, 255, 0.55);
+    --color-hairline:      rgba(255, 255, 255, 0.10);
+    --color-perf:          rgba(255, 255, 255, 0.30);
 
-    --color-action:          #2E6B42;
-    --color-action-hover:    #1F4D2E;
-    --color-action-disabled: rgba(46, 107, 66, 0.4);
-    --color-action-soft:     rgba(255, 252, 239, 0.08);
+    --border-card:  1px solid rgba(255, 255, 255, 0.10);
+    --border-soft:  1px solid rgba(255, 255, 255, 0.10);
+    --border-pill:  1px solid rgba(255, 255, 255, 0.15);
+    --border-key:   1px solid rgba(255, 255, 255, 0.16);
+    --key-bg:          rgba(255, 255, 255, 0.06);
+    --key-bg-active:   rgba(255, 255, 255, 0.12);
 
-    --glass-bg:        rgba(14, 26, 18, 0.78);
-    --glass-bg-strong: rgba(14, 26, 18, 0.92);
-    --glass-bg-tab:    rgba(14, 26, 18, 0.94);
+    --color-action:          var(--color-marigold);
+    --color-action-hover:    var(--color-marigold-hover);
+    --color-action-ink:      var(--color-char);
+    --weight-action:         700;
+    --color-action-chip:     var(--color-char);
+    --color-action-chip-ink: var(--color-marigold);
+    --color-action-disabled: rgba(245, 179, 1, 0.32);
+    --color-action-soft:     var(--night-park);
+    --color-action-soft-ink: #FFFFFF;
+
+    --color-link: var(--color-marigold);
+
+    --sheet-bg:     var(--night-canvas);
+    --sheet-border: 1px solid rgba(255, 255, 255, 0.12);
+    --sheet-handle: rgba(255, 255, 255, 0.25);
+
+    --pill-bg:      var(--night-surface-dark);
+    --border-nav:   1px solid rgba(255, 255, 255, 0.08);
+
+    --map-base:         var(--night-map-base);
+    --map-road-casing:  var(--night-road-casing);
+    --map-road:         var(--night-road);
+    --map-building:     var(--night-building);
+    --map-park:         var(--night-park);
+    --map-street-label: var(--night-street-label);
+    --map-park-label:   var(--night-park-label);
+    --map-route:        rgba(255, 255, 255, 0.75);
+
+    --shadow-card:      0 14px 34px rgba(0, 0, 0, 0.45);
+    --shadow-card-dark: 0 14px 34px rgba(0, 0, 0, 0.45);
+    --shadow-cta:       0 10px 26px rgba(0, 0, 0, 0.4);
+    --shadow-sheet:     0 -14px 36px rgba(0, 0, 0, 0.5);
+    --shadow-sm:        0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-modal:     0 24px 64px rgba(0, 0, 0, 0.55);
+    --kombi-glow:       drop-shadow(0 0 10px rgba(245, 179, 1, 0.45));
   }
 }

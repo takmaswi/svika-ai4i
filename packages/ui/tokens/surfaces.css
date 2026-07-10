@@ -1,6 +1,7 @@
 /* ============================================================================
-   Svika — Surfaces, glass, animations, base reset
-   Portable copies of the reusable classes from the live app's globals.css.
+   Svika — Surfaces, pills, motion, base reset (Mbare Sun system)
+   Ground truth: "Svika Mbare Sun/DESIGN.md" §7–§9 (surfaces) and §12 (motion).
+   Nothing here blurs or tints: overlays are opaque pills with drawn borders.
    ========================================================================= */
 
 /* --- Base -------------------------------------------------------------- */
@@ -11,139 +12,111 @@
   -webkit-font-smoothing: antialiased;
 }
 
-/* --- Glass surfaces (frosted bone) ------------------------------------- */
+/* --- Map overlay pill (§7): opaque, drawn border, never frosted --------- */
 .svika-glass {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-lg);
+  background: var(--pill-bg);
+  border: var(--border-pill);
+  border-radius: var(--radius-full);
   position: relative;
   isolation: isolate;
 }
+/* --- Sheet surface (§9): peek sheets, the landing panel, floating bars -- */
 .svika-glass-strong {
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur-strong);
-  -webkit-backdrop-filter: var(--glass-blur-strong);
-  border: 1px solid var(--color-hairline);
+  background: var(--sheet-bg);
+  border: var(--sheet-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   position: relative;
   isolation: isolate;
 }
-.svika-glass-tab {
-  background: var(--glass-bg-tab);
-  backdrop-filter: blur(28px) saturate(1.6);
-  -webkit-backdrop-filter: blur(28px) saturate(1.6);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-tab);
-  box-shadow: var(--shadow-tab);
-  position: relative;
-  isolation: isolate;
-}
 
-/* --- Card (opaque, hairline, warm shadow) ------------------------------ */
+/* --- Card (§8): white + 1.5px char by day, overlay + light border night - */
 .svika-card {
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--color-surface);
+  border: var(--border-card);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
 }
 
-/* --- Live pulsing dot -------------------------------------------------- */
+/* --- Live pulsing dot (§7): signal, live only ---------------------------- */
 .svika-pulse-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: var(--radius-full);
   background: var(--color-live);
-  animation: svika-pulse-dot 1.6s ease-in-out infinite;
+  animation: svk-pulse 1.6s ease-in-out infinite;
+}
+/* Expanding ripple ring behind the dot (wrap both in a relative span). */
+.svika-ripple-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-live);
+  animation: svk-ripple 1.8s ease-out infinite;
 }
 
-/* --- Touch target ------------------------------------------------------ */
+/* --- Touch targets (§6) -------------------------------------------------- */
 .touch-target { min-height: var(--touch-min); min-width: var(--touch-min); }
 
-/* --- Map marker (kombi) ------------------------------------------------ */
-.kombi-marker {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--color-action);
-  border: 2px solid var(--color-bone);
-  box-shadow: 0 1px 4px rgba(14, 26, 18, 0.35);
-}
-
-/* --- Animations -------------------------------------------------------- */
-@keyframes svika-pulse-dot {
+/* --- Motion (§12) --------------------------------------------------------- */
+@keyframes svk-pulse {
   0%, 100% { transform: scale(1);   opacity: 1;   }
   50%      { transform: scale(1.4); opacity: 0.5; }
 }
-@keyframes svika-fade-up {
-  from { opacity: 0; transform: translateY(8px);  }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-@keyframes svika-glass-rise {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-@keyframes svika-sheet-rise {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-.svika-animate-fade-up   { animation: svika-fade-up   500ms ease-out both; }
-.svika-animate-glass-rise{ animation: svika-glass-rise 600ms ease-out both; }
-.svika-animate-sheet-rise{ animation: svika-sheet-rise 280ms ease-out both; }
-
-/* --- Warm signature motion --------------------------------------------- */
-/* Kombi bob — markers gently breathe as if idling on the road. */
-@keyframes svika-bob {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2.5px); }
-}
-.svika-bob { animation: svika-bob 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-
-/* Live ripple — an expanding coral ring behind the pulse dot. */
-@keyframes svika-ripple {
+@keyframes svk-ripple {
   0%   { transform: scale(0.5); opacity: 0.5; }
   100% { transform: scale(2.8); opacity: 0; }
 }
-.svika-ripple-ring {
-  position: absolute; inset: 0; border-radius: var(--radius-full);
-  background: var(--color-live); animation: svika-ripple 1.8s ease-out infinite;
+@keyframes svk-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes svk-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2.5px); }
+}
+@keyframes svk-beam {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+@keyframes svk-fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* Ticket stamp — a wallet ticket lands like an inked stamp. */
+/* Entrance: content rises 14px over .6s, staggered by delay classes. */
+.svika-animate-fade-up { animation: svk-rise var(--dur-rise) var(--ease-standard) both; }
+.svika-rise-1 { animation-delay: 0.05s; }
+.svika-rise-2 { animation-delay: 0.25s; }
+.svika-rise-3 { animation-delay: 0.4s; }
+.svika-rise-4 { animation-delay: 0.55s; }
+.svika-rise-5 { animation-delay: 0.7s; }
+.svika-rise-6 { animation-delay: 0.85s; }
+.svika-rise-7 { animation-delay: 0.95s; }
+
+/* Kombi markers idle like a van at the rank. */
+.svika-bob { animation: svk-bob 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+/* Ticket stamp — a cleared fare lands like an inked stamp (Phase A moment). */
 @keyframes svika-stamp {
   0%   { transform: scale(0.92) rotate(-2.5deg); opacity: 0; }
   60%  { transform: scale(1.02) rotate(0.6deg);  opacity: 1; }
   100% { transform: scale(1) rotate(0);          opacity: 1; }
 }
-.svika-animate-stamp { animation: svika-stamp 460ms cubic-bezier(0.32, 0.72, 0, 1) both; }
-
-/* Stagger — children fade-up in warm sequence (sheets, quick-picks). */
-.svika-stagger > * { animation: svika-fade-up 460ms ease-out both; }
-.svika-stagger > *:nth-child(1) { animation-delay: 40ms; }
-.svika-stagger > *:nth-child(2) { animation-delay: 90ms; }
-.svika-stagger > *:nth-child(3) { animation-delay: 140ms; }
-.svika-stagger > *:nth-child(4) { animation-delay: 190ms; }
-.svika-stagger > *:nth-child(5) { animation-delay: 240ms; }
-.svika-stagger > *:nth-child(6) { animation-delay: 290ms; }
-
-/* Nudge — the warm "come this way" push on arrows (JS toggles transform;
-   this is the eased transition it rides on). */
-.svika-nudge { transition: transform 160ms ease-out; }
+.svika-animate-stamp { animation: svika-stamp 460ms var(--ease-sheet) both; }
 
 @media (prefers-reduced-motion: reduce) {
   .svika-animate-fade-up,
-  .svika-animate-glass-rise,
-  .svika-animate-sheet-rise,
   .svika-animate-stamp,
   .svika-bob,
   .svika-ripple-ring,
-  .svika-stagger > *,
   .svika-pulse-dot { animation: none; }
 }
 
-/* --- Bottom-sheet handle (rider surface) ------------------------------- */
+/* --- Sheet handle (§9): 38×4 pill in a 26px row -------------------------- */
 .svika-sheet-handle {
-  width: 40px; height: 4px; border-radius: var(--radius-full);
-  background: rgba(14, 26, 18, 0.18);
+  width: 38px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--sheet-handle);
 }

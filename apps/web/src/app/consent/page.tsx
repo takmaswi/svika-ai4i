@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getLang, t } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
-import { hasActiveConsent, type ConsentRecord } from "@svika/shared";
+import { CONSENT_VERSION, hasActiveConsent, type ConsentRecord } from "@svika/shared";
 import { acceptConsent } from "@/lib/actions";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { SignOutButton } from "@/components/SignOutButton";
@@ -26,7 +26,8 @@ export default async function ConsentPage({
 
   const { data } = await supabase
     .from("consent_records")
-    .select("action, created_at");
+    .select("action, created_at")
+    .eq("version", CONSENT_VERSION);
   if (hasActiveConsent((data ?? []) as ConsentRecord[])) redirect("/app");
 
   const points = [

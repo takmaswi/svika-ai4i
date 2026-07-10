@@ -5,6 +5,13 @@
 /** Bumped when the privacy notice changes enough to need a fresh accept. */
 export const CONSENT_VERSION = "v1";
 
+/**
+ * The emergency details consent stream (profile page). Its accepted and
+ * withdrawn records live in the same table but must never move the app
+ * gate, so every gate query filters on CONSENT_VERSION.
+ */
+export const EMERGENCY_CONSENT_VERSION = "emergency-v1";
+
 export interface ConsentRecord {
   action: "accepted" | "withdrawn";
   created_at: string;

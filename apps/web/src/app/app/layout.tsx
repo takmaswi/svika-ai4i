@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getLang, t } from "@/lib/i18n";
-import { hasActiveConsent, type ConsentRecord } from "@svika/shared";
+import { CONSENT_VERSION, hasActiveConsent, type ConsentRecord } from "@svika/shared";
 
 // The consent gate. Every surface under /app sits behind it: a user whose
 // latest consent record is not an accept (or who has none) is sent to the
@@ -20,7 +20,12 @@ export default async function ConsentGate({
   if (!user) redirect("/login");
 
   const [consentRes, profileRes] = await Promise.all([
-    supabase.from("consent_records").select("action, created_at"),
+    // scoped to the app consent stream: the profile's emergency details
+    // stream lives in the same table and must never move this gate
+    supabase
+      .from("consent_records")
+      .select("action, created_at")
+      .eq("version", CONSENT_VERSION),
     supabase.from("profiles").select("demo_sim").eq("id", user.id).maybeSingle(),
   ]);
   if (!hasActiveConsent((consentRes.data ?? []) as ConsentRecord[])) {

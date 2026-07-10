@@ -117,9 +117,12 @@ export default function App() {
       return;
     }
     void (async () => {
+      // scoped to the app consent stream: other consent streams (e.g. the
+      // rider profile's emergency details) must never move this gate
       const { data, error } = await supabase
         .from("consent_records")
-        .select("action, created_at");
+        .select("action, created_at")
+        .eq("version", CONSENT_VERSION);
       if (error) {
         setConsented((await getMeta<boolean>("consented")) ?? false);
         return;

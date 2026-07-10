@@ -23,6 +23,79 @@ export const dict = {
     sn: "Ronga rwendo, kwira nekodhi, urege kurasikirwa nechenji yako.",
   },
   "landing.cta": { en: "Get started", sn: "Tanga" },
+  "landing.story1": {
+    en: "Pay a $1.50 fare with a $2 note and the change often stays on the kombi.",
+    sn: "Bhadhara mari ye$1.50 ne$2 uye chenji inowanzosara mukombi.",
+  },
+  "landing.story2": {
+    en: "Svika turns that change into wallet credit that is still yours tomorrow.",
+    sn: "Svika inoshandura chenji iyoyo kuita mari muchikwama, ichiri yako mangwana.",
+  },
+  "landing.demoLead": {
+    en: "Walk straight in as Tariro, a demo rider on the live system. No sign up.",
+    sn: "Pinda pakarepo saTariro, mufambi wekuratidzira pane system chaiyo. Hapana kunyoresa.",
+  },
+  "landing.demoEnter": { en: "Enter the demo", sn: "Pinda mudemo" },
+  "landing.demoOwner": { en: "Owner dashboard", sn: "Dashboard yemuridzi" },
+  "landing.demoStories": { en: "Or watch a guided story", sn: "Kana kuona nyaya inotungamirwa" },
+  "landing.demoStory1": {
+    en: "Change becomes credit",
+    sn: "Chenji inova mari",
+  },
+  "landing.demoStory2": {
+    en: "Two kombis and a walk",
+    sn: "Makombi maviri nekufamba",
+  },
+  "landing.demoErr": {
+    en: "The demo door is busy. Try again in a minute.",
+    sn: "Mukova wedemo wakabatikana. Edzazve munguva pfupi.",
+  },
+
+  "demo.chip": { en: "Demo account", sn: "Akaunti yekuratidzira" },
+
+  "story.next": { en: "Next", sn: "Enderera" },
+  "story.done": { en: "Explore freely", sn: "Zvionere wega" },
+  "story.exit": { en: "Exit story", sn: "Buda munyaya" },
+  "story.err": {
+    en: "That step could not run. Try next again, or exit the story.",
+    sn: "Danho iri harina kushanda. Edzazve, kana kubuda munyaya.",
+  },
+  "story.town.0": {
+    en: "Meet Tariro. She rides this corridor into town most mornings. Watch one normal trip.",
+    sn: "Uyu ndiTariro. Anokwira nzira iyi achienda kutown mangwanani mazhinji. Ona rwendo rumwe chete.",
+  },
+  "story.town.1": {
+    en: "She types where she is going. The planner quotes the real corridor fare: $1.50, one kombi.",
+    sn: "Anonyora kwaari kuenda. Planner inomupa mutengo chaiwo: $1.50, kombi imwe.",
+  },
+  "story.town.2": {
+    en: "She reserves her seat now and will pay cash on board. Next books it through the real engine.",
+    sn: "Anochengetedza nzvimbo yake, obhadhara cash mukombi. Enderera inobhuka nesystem chaiyo.",
+  },
+  "story.town.3": {
+    en: "Her boarding card is ready. On the kombi she shows the 4 digit code and hands over a $2 note.",
+    sn: "Kadhi rake rekukwira ragadzirira. Mukombi anoratidza kodhi ye4 obva apa $2.",
+  },
+  "story.town.4": {
+    en: "The hwindi clears her code and keys in the $2 note. The hwindi here is simulated; the money moves through the real ledger.",
+    sn: "Hwindi anobvisa kodhi yake onyora $2. Hwindi pano ndeyekuratidzira; mari inofamba nebhuku remari chairo.",
+  },
+  "story.town.5": {
+    en: "Her 50 cents of change is wallet credit now, not a promise on a moving kombi. Story over.",
+    sn: "Chenji yake yemasendi 50 yava mari muchikwama, kwete vimbiso mukombi inofamba. Nyaya yapera.",
+  },
+  "story.transfer.0": {
+    en: "Not every trip is one kombi. Heights to Avondale takes two, with a short walk between them.",
+    sn: "Haisi nzendo dzese dzine kombi imwe. Heights kusvika Avondale inoda mbiri, nekufamba kupfupi pakati.",
+  },
+  "story.transfer.1": {
+    en: "The walking leg is drawn dashed on the real map, and one quote covers both kombis: $3.00.",
+    sn: "Chikamu chekufamba chakadhirowewa nemadota pamepu chaiyo, uye mutengo mumwe unobata makombi ese: $3.00.",
+  },
+  "story.transfer.2": {
+    en: "One tap bought both legs from her wallet. Two boarding codes, one per kombi. Story over.",
+    sn: "Kubaya kamwe kwatenga zvikamu zvese kubva muchikwama. Makodhi maviri, imwe pakombi imwe neimwe. Nyaya yapera.",
+  },
 
   "login.title": { en: "Sign in to Svika", sn: "Pinda muSvika" },
   "login.phoneLabel": { en: "Phone number", sn: "Nhamba yefoni" },

@@ -4,6 +4,7 @@ import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { sendCredit, claimCredit, cancelTransfer } from "@/lib/actions";
 import { formatUsd } from "@svika/shared";
+import { StoryBar } from "@/components/story/StoryBar";
 
 interface PostingRow {
   amount_cents: number;
@@ -90,6 +91,7 @@ export default async function WalletPage({
 
   return (
     <main className="shell">
+      <StoryBar params={params} lang={lang} />
       <header className="shell-top">
         <Link href="/app" className="auth-link">
           ← {t(lang, "common.back")}

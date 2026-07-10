@@ -474,6 +474,57 @@ await topUpRider(ids.RIDER);
 await refillTestRiders();
 await seedNetwork();
 
+// --- demo door personas (migration 0022) -----------------------------------
+// Judges enter through the landing page door as pooled personas (all named
+// Tariro), claimed least recently used so concurrent visitors never share a
+// session. demo_sim on the profile flags every row they own as demo data;
+// per visit state (float, saved trip, consent) is rebuilt by demo_reset_mine.
+const JUDGE_POOL_SIZE = 6;
+async function ensureDemoPool() {
+  const password = process.env.DEMO_JUDGE_PASSWORD;
+  if (!password) {
+    console.log("DEMO_JUDGE_PASSWORD not set; skipping demo persona pool");
+    return;
+  }
+  for (let i = 1; i <= JUDGE_POOL_SIZE; i++) {
+    const email = `demo.tariro.${String(i).padStart(2, "0")}@svika.app`;
+    let user = await findUserByEmail(email);
+    if (!user) {
+      const { data, error } = await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { full_name: "Tariro" },
+      });
+      if (error) throw error;
+      user = data.user;
+      console.log(`created demo persona ${email}`);
+    } else {
+      await admin.auth.admin.updateUserById(user.id, { password });
+    }
+    const { error: pErr } = await admin
+      .from("profiles")
+      .update({ full_name: "Tariro", preferred_language: "en", demo_sim: true })
+      .eq("id", user.id);
+    if (pErr) throw pErr;
+    const { error: poolErr } = await admin
+      .from("demo_pool")
+      .upsert(
+        { profile_id: user.id, persona: "Tariro", email },
+        { onConflict: "profile_id" },
+      );
+    if (poolErr) throw poolErr;
+  }
+  // the owner door reuses the rehearsal owner; flag its rows as demo data too
+  const { error: oErr } = await admin
+    .from("profiles")
+    .update({ demo_sim: true })
+    .eq("id", ids.OWNER);
+  if (oErr) throw oErr;
+  console.log(`demo pool ready (${JUDGE_POOL_SIZE} personas)`);
+}
+await ensureDemoPool();
+
 // route assignments: the demo hwindi works every corridor the rehearsal
 // and e2e flows drive (owner.spec clears a MARKETSQ-AVONDALE fare); the RLS
 // test conductor covers the synthetic TEST-01 route plus the corridor the

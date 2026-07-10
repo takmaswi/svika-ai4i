@@ -7,6 +7,7 @@ import { bookTrip, saveTrip } from "@/lib/actions";
 import { buildPlanOverlay } from "@/lib/map/plan-overlay";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { StoryBar } from "@/components/story/StoryBar";
 import {
   formatUsd,
   planTrip,
@@ -124,6 +125,8 @@ export default async function PlanPage({
           overlay={overlay ?? undefined}
         />
       </div>
+
+      <StoryBar params={params} lang={lang} />
 
       <header className="home-chips">
         <Link className="home-chip svika-glass plan-back touch-target" href="/app">

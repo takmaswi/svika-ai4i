@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { StoryBar } from "@/components/story/StoryBar";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 import { CORRIDOR_ROUTE_CODE } from "@/lib/map/corridor-data";
@@ -133,6 +134,8 @@ export default async function RiderHome({
           }}
         />
       </div>
+
+      <StoryBar params={params} lang={lang} />
 
       <header className="home-chips">
         <span className="home-chip home-chip-brand svika-glass">

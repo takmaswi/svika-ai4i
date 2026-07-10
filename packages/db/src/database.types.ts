@@ -394,6 +394,53 @@ export type Database = {
           },
         ]
       }
+      demo_door_attempts: {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+        }
+        Update: {
+          created_at?: string
+          id?: never
+        }
+        Relationships: []
+      }
+      demo_pool: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          email: string
+          persona: string
+          profile_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          email: string
+          persona: string
+          profile_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          email?: string
+          persona?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demo_pool_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fare_segments: {
         Row: {
           created_at: string
@@ -781,6 +828,7 @@ export type Database = {
         Row: {
           anonymised_at: string | null
           created_at: string
+          demo_sim: boolean
           full_name: string
           id: string
           phone: string | null
@@ -789,6 +837,7 @@ export type Database = {
         Insert: {
           anonymised_at?: string | null
           created_at?: string
+          demo_sim?: boolean
           full_name?: string
           id: string
           phone?: string | null
@@ -797,6 +846,7 @@ export type Database = {
         Update: {
           anonymised_at?: string | null
           created_at?: string
+          demo_sim?: boolean
           full_name?: string
           id?: string
           phone?: string | null
@@ -1547,7 +1597,12 @@ export type Database = {
           outcome: string
         }[]
       }
+      claim_demo_persona: { Args: never; Returns: string }
       current_fare_cents: { Args: { p_route: string }; Returns: number }
+      demo_reset_mine: {
+        Args: { p_consent_version: string }
+        Returns: undefined
+      }
       log_offline_attempts: { Args: { p_attempts: Json }; Returns: number }
       owner_revenue_summary: {
         Args: never

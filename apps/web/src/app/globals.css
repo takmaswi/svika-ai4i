@@ -59,21 +59,187 @@ body {
   color: var(--color-bone);
 }
 
-/* --- landing ------------------------------------------------------------ */
-.landing-hero {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-4);
+/* --- landing: the story over the live map --------------------------------- */
+.landing-screen {
+  position: relative;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
 }
 .landing-eyebrow {
   color: var(--color-accent);
   text-transform: uppercase;
+  margin: 0;
 }
-.landing-sub {
+.landing-panel {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  max-height: 78dvh;
+  overflow-y: auto;
+  z-index: 30;
+  padding: var(--space-6) var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: none;
+}
+.landing-headline {
+  margin: 0;
+}
+.landing-story {
+  margin: 0;
   color: var(--color-ink-soft);
-  max-width: 34ch;
+  max-width: 40ch;
+}
+.landing-cta {
+  margin-top: var(--space-2);
+}
+.landing-demo {
+  margin-top: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.landing-demo-lead,
+.landing-demo-stories-lead {
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--color-ink-mute);
+}
+.landing-demo-doors {
+  display: flex;
+  gap: var(--space-2);
+}
+.landing-demo-doors form {
+  flex: 1;
+  display: flex;
+}
+.landing-demo-btn,
+.landing-story-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.landing-demo-btn {
+  border: 1px solid var(--color-action);
+  background: transparent;
+  color: var(--color-action);
+}
+.landing-story-btn {
+  border: 1px dashed var(--color-hairline);
+  background: transparent;
+  color: var(--color-ink-soft);
+  font-weight: var(--weight-medium);
+}
+.landing-demo-btn:active,
+.landing-story-btn:active {
+  transform: scale(0.99);
+}
+.landing-demo-btn:hover {
+  background: var(--color-action-soft);
+}
+.landing-story-btn:hover {
+  border-color: var(--color-action);
+  color: var(--color-action);
+}
+
+/* --- demo account chip ------------------------------------------------------ */
+.demo-account-chip {
+  position: fixed;
+  top: var(--space-3);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+}
+
+/* --- story mode chrome ------------------------------------------------------ */
+.story-bar {
+  position: fixed;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 448px);
+  z-index: 50;
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.story-bar-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.story-bar-count {
+  color: var(--color-ink-mute);
+  font-size: var(--text-meta);
+}
+.story-bar-exit {
+  color: var(--color-signal);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: var(--weight-semibold);
+}
+.story-bar-caption {
+  margin: 0;
+}
+.story-bar-err {
+  margin: 0;
+}
+.story-bar-actions {
+  display: flex;
+}
+.story-bar-next {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-action);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  box-shadow: var(--shadow-cta);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.story-bar-next:active {
+  transform: scale(0.99);
+}
+.story-bar-next:hover {
+  background: var(--color-action-hover);
 }
 
 /* --- primary CTA -------------------------------------------------------- */

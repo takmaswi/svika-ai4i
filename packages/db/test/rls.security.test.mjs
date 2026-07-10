@@ -671,5 +671,43 @@ check(
     .insert({ user_id: A.uid, action: "accepted", version: "v1" });
 }
 
+// --- demo door (migration 0022) -------------------------------------------
+// The pool tables are invisible to clients; the claim function is public by
+// design (rate limited, returns only an email); the reset function refuses
+// anyone who is not a pooled demo persona.
+{
+  const A = await signIn("RIDER_A");
+
+  const poolAnon = await anon.from("demo_pool").select("email");
+  check("DM-1 anon cannot read the demo pool", deniedOrEmpty(poolAnon));
+
+  const poolAuthed = await A.c.from("demo_pool").select("email");
+  check("DM-2 a signed in rider cannot read the demo pool", deniedOrEmpty(poolAuthed));
+
+  const poolWrite = await A.c
+    .from("demo_pool")
+    .insert({ profile_id: A.uid, persona: "Mallory", email: "mallory@example.com" });
+  check("DM-3 clients cannot write the demo pool", !!poolWrite.error);
+
+  const attempts = await A.c.from("demo_door_attempts").select("id");
+  check("DM-4 clients cannot read the door attempt log", deniedOrEmpty(attempts));
+
+  const claim = await anon.rpc("claim_demo_persona");
+  check(
+    "DM-5 the public door hands out a persona email and nothing else",
+    (!claim.error && typeof claim.data === "string" && claim.data.includes("@")) ||
+      // a busy door is also a valid answer: the rate limit is the guard
+      (claim.error?.message ?? "").includes("busy"),
+    claim.error?.message,
+  );
+
+  const reset = await A.c.rpc("demo_reset_mine", { p_consent_version: "v1" });
+  check(
+    "DM-6 a real account cannot run the demo reset",
+    (reset.error?.message ?? "").includes("not a demo persona"),
+    reset.error?.message,
+  );
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

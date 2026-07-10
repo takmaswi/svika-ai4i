@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { formatUsd } from "@svika/shared";
+import { BackIcon } from "@/components/icons";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 
 interface TicketDetail {
@@ -16,10 +17,10 @@ interface TicketDetail {
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
 }
 
-// The ticket as a boarding card: forest route strip, one big mono code the
-// hwindi can read from across the kombi, a perforated fold, and the stamp
-// moment when the fare clears. RLS means a rider can only ever open their
-// own ticket here.
+// The ticket (reference screen 4): a char card on white by day, a white card
+// on char by night. One big mono code the hwindi can read from across the
+// kombi, a perforated fold, and the stamp moment when the fare clears. RLS
+// means a rider can only ever open their own ticket here.
 export default async function TicketPage({
   params,
 }: {
@@ -57,42 +58,69 @@ export default async function TicketPage({
         minute: "2-digit",
       })
     : "";
-  const routeLine =
+  const endpointsLine =
     ticket.from_stop && ticket.to_stop
-      ? `${ticket.from_stop.name} → ${ticket.to_stop.name}`
-      : (ticket.routes?.name ?? "");
+      ? `${ticket.from_stop.name} ${t(lang, "common.to")} ${ticket.to_stop.name}`
+      : "";
   const isLive = status === "issued";
   const isStamped = status === "redeemed";
 
   return (
     <main className="shell">
-      <header className="shell-top">
-        <Link href="/app" className="auth-link">
-          ← {t(lang, "common.back")}
+      <header className="screen-head">
+        <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
+          <BackIcon />
         </Link>
+        <h1 className="svika-headline">{t(lang, "ticket.title")}</h1>
       </header>
 
       <article
         className={`boarding-card svika-animate-fade-up${isLive ? "" : " boarding-card-done"}`}
         data-status={status}
       >
-        <header className="boarding-strip">
-          <span className="svika-meta boarding-strip-route">{routeLine}</span>
-          <span className="svika-mono-code boarding-strip-fare">
-            {formatUsd(ticket.fare_cents)}
-          </span>
-        </header>
+        <div className="boarding-head">
+          <div>
+            <p className="boarding-route">{ticket.routes?.name ?? ""}</p>
+            {endpointsLine && <p className="boarding-endpoints">{endpointsLine}</p>}
+          </div>
+          <span className="ticket-chip">{formatUsd(ticket.fare_cents)}</span>
+        </div>
+        {!isLive && !isStamped && (
+          <div className="boarding-head">
+            <span className="boarding-status">{t(lang, statusKey)}</span>
+          </div>
+        )}
+
+        <div className="boarding-perf" aria-hidden />
 
         <div className="boarding-body">
-          <p className="svika-meta boarding-label">{t(lang, "ticket.title")}</p>
+          <p className="boarding-label">{t(lang, "ticket.title")}</p>
           <p className="ticket-code" data-testid="board-code">
             {boardCode?.code ?? "····"}
           </p>
           {isLive && (
-            <p className="svika-body ticket-hint">{t(lang, "ticket.showHwindi")}</p>
+            <p className="ticket-hint">{t(lang, "ticket.showHwindi")}</p>
           )}
-          {!isLive && !isStamped && (
-            <p className="ticket-status svika-meta">{t(lang, statusKey)}</p>
+          <div className="boarding-pay-row">
+            <span className="boarding-fare">{formatUsd(ticket.fare_cents)}</span>
+            <span
+              className={`pay-chip${
+                ticket.payment_method === "cash" ? " pay-chip-cash" : ""
+              }`}
+            >
+              {t(
+                lang,
+                ticket.payment_method === "cash"
+                  ? "ticket.payCash"
+                  : "ticket.paidWallet",
+              )}
+            </span>
+          </div>
+          {isLive && validUntil && (
+            <p className="boarding-valid">
+              {t(lang, "ticket.validUntil")}{" "}
+              <span className="svika-mono-code">{validUntil}</span>
+            </p>
           )}
           {isStamped && (
             // outer span owns the centring transform; the stamp animation
@@ -104,38 +132,6 @@ export default async function TicketPage({
             </span>
           )}
         </div>
-
-        <div className="boarding-perf" aria-hidden />
-
-        <dl className="boarding-facts">
-          <div>
-            <dt className="svika-meta">{t(lang, "ticket.fare")}</dt>
-            <dd className="svika-mono-code">{formatUsd(ticket.fare_cents)}</dd>
-          </div>
-          <div>
-            <dt className="svika-meta">{t(lang, "ticket.payment")}</dt>
-            <dd>
-              <span
-                className={`svika-body boarding-pay${
-                  ticket.payment_method === "cash" && isLive ? " boarding-cash" : ""
-                }`}
-              >
-                {t(
-                  lang,
-                  ticket.payment_method === "cash"
-                    ? "ticket.payCash"
-                    : "ticket.paidWallet",
-                )}
-              </span>
-            </dd>
-          </div>
-          {isLive && validUntil && (
-            <div>
-              <dt className="svika-meta">{t(lang, "ticket.validUntil")}</dt>
-              <dd className="svika-mono-code">{validUntil}</dd>
-            </div>
-          )}
-        </dl>
       </article>
     </main>
   );

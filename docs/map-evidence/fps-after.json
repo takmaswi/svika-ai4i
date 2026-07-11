@@ -1,0 +1,61 @@
+{
+  "label": "after",
+  "at": "2026-07-11T08:11:24.025Z",
+  "cpuThrottle": 4,
+  "viewport": "360x740",
+  "sampleMs": 20000,
+  "frames": 1201,
+  "seconds": 20.020099999904634,
+  "fps": 59.98971034139295,
+  "frameMsP50": 16.600000143051147,
+  "frameMsP95": 19,
+  "frameMsMax": 24.299999952316284,
+  "markers": 4,
+  "busiestMarker": {
+    "markerSamples": 1202,
+    "fractionalPositions": 1202,
+    "travelledPx": 21.986010780606538,
+    "positionMoves": 1201,
+    "medianMovePx": 0.020223748416140823,
+    "maxMovePx": 0.030413812651463434,
+    "maxHeadingStepDeg": 0
+  },
+  "perMarker": [
+    {
+      "markerSamples": 1202,
+      "fractionalPositions": 1202,
+      "travelledPx": 19.960296482143832,
+      "positionMoves": 1201,
+      "medianMovePx": 0.016999999999985877,
+      "maxMovePx": 0.02789265136200622,
+      "maxHeadingStepDeg": 0.13599999999999568
+    },
+    {
+      "markerSamples": 1202,
+      "fractionalPositions": 1202,
+      "travelledPx": 0,
+      "positionMoves": 0,
+      "medianMovePx": 0,
+      "maxMovePx": 0,
+      "maxHeadingStepDeg": 0
+    },
+    {
+      "markerSamples": 1202,
+      "fractionalPositions": 1202,
+      "travelledPx": 21.986010780606538,
+      "positionMoves": 1201,
+      "medianMovePx": 0.020223748416140823,
+      "maxMovePx": 0.030413812651463434,
+      "maxHeadingStepDeg": 0
+    },
+    {
+      "markerSamples": 1202,
+      "fractionalPositions": 1202,
+      "travelledPx": 10.841496660825054,
+      "positionMoves": 1013,
+      "medianMovePx": 0.012999999999998669,
+      "maxMovePx": 0.017464249196592903,
+      "maxHeadingStepDeg": 0.04690000000000083
+    }
+  ]
+}

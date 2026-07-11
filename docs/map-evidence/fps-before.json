@@ -1,0 +1,19 @@
+{
+  "label": "before",
+  "at": "2026-07-11T07:57:32.146Z",
+  "cpuThrottle": 4,
+  "viewport": "360x740",
+  "sampleMs": 20000,
+  "frames": 1200,
+  "seconds": 19.999700000047685,
+  "fps": 60.000900013357146,
+  "frameMsP50": 16.699999809265137,
+  "frameMsP95": 19.700000047683716,
+  "frameMsMax": 25,
+  "markerSamples": 1201,
+  "fractionalPositions": 0,
+  "positionMoves": 12,
+  "medianMovePx": 1,
+  "maxMovePx": 1,
+  "maxHeadingStepDeg": 16.259
+}

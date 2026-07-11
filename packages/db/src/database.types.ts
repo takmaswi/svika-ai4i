@@ -1536,6 +1536,7 @@ export type Database = {
           peak_share: number
           route_id: string
           score: number
+          threshold_flagged: boolean
           tickets: number
           tickets_ratio: number
           worst_vehicle_ratio: number
@@ -1555,6 +1556,7 @@ export type Database = {
           peak_share: number
           route_id: string
           score: number
+          threshold_flagged?: boolean
           tickets: number
           tickets_ratio: number
           worst_vehicle_ratio: number
@@ -1574,6 +1576,7 @@ export type Database = {
           peak_share?: number
           route_id?: string
           score?: number
+          threshold_flagged?: boolean
           tickets?: number
           tickets_ratio?: number
           worst_vehicle_ratio?: number
@@ -1588,6 +1591,144 @@ export type Database = {
           },
           {
             foreignKeyName: "watchdog_day_flags_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watchdog_staged_day_flags: {
+        Row: {
+          created_at: string
+          day: string
+          digital_share: number
+          engine: string
+          explanation_en: string | null
+          explanation_sn: string | null
+          flagged: boolean
+          id: string
+          injected_leakage: string | null
+          owner_id: string
+          peak_share: number
+          route_id: string
+          score: number
+          threshold_flagged: boolean
+          tickets: number
+          tickets_ratio: number
+          variant: string
+          worst_vehicle_ratio: number
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          digital_share: number
+          engine: string
+          explanation_en?: string | null
+          explanation_sn?: string | null
+          flagged: boolean
+          id?: string
+          injected_leakage?: string | null
+          owner_id: string
+          peak_share: number
+          route_id: string
+          score: number
+          threshold_flagged?: boolean
+          tickets: number
+          tickets_ratio: number
+          variant: string
+          worst_vehicle_ratio: number
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          digital_share?: number
+          engine?: string
+          explanation_en?: string | null
+          explanation_sn?: string | null
+          flagged?: boolean
+          id?: string
+          injected_leakage?: string | null
+          owner_id?: string
+          peak_share?: number
+          route_id?: string
+          score?: number
+          threshold_flagged?: boolean
+          tickets?: number
+          tickets_ratio?: number
+          variant?: string
+          worst_vehicle_ratio?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watchdog_staged_day_flags_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "watchdog_staged_day_flags_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "routes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      watchdog_staged_vehicle_days: {
+        Row: {
+          created_at: string
+          day: string
+          digital_tickets: number
+          gross_cents: number
+          id: string
+          injected_leakage: string | null
+          owner_id: string
+          peak_tickets: number
+          route_id: string
+          tickets: number
+          variant: string
+          vehicle_label: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          digital_tickets: number
+          gross_cents: number
+          id?: string
+          injected_leakage?: string | null
+          owner_id: string
+          peak_tickets: number
+          route_id: string
+          tickets: number
+          variant: string
+          vehicle_label: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          digital_tickets?: number
+          gross_cents?: number
+          id?: string
+          injected_leakage?: string | null
+          owner_id?: string
+          peak_tickets?: number
+          route_id?: string
+          tickets?: number
+          variant?: string
+          vehicle_label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "watchdog_staged_vehicle_days_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "watchdog_staged_vehicle_days_route_id_fkey"
             columns: ["route_id"]
             isOneToOne: false
             referencedRelation: "routes"
@@ -1730,6 +1871,10 @@ export type Database = {
       demo_reset_mine: {
         Args: { p_consent_version: string }
         Returns: undefined
+      }
+      demo_watchdog_set_day: {
+        Args: { p_variant: string }
+        Returns: string
       }
       log_offline_attempts: { Args: { p_attempts: Json }; Returns: number }
       owner_revenue_summary: {

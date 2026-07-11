@@ -10,6 +10,11 @@
 //   pnpm watchdog:run                # 90 days ending yesterday, Harare time
 //   pnpm watchdog:bad-day            # same, plus a heavy skim on the last day
 //   pnpm watchdog:run -- --route CODE --owner email --end 2026-07-09
+//
+// Both variants of the end day (normal and bad_day) are always simulated,
+// scored and staged into watchdog_staged_* so the demo owner's story can
+// swap the visible end day live through demo_watchdog_set_day without any
+// scoring or service key leaving this pipeline.
 
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "node:fs";
@@ -103,19 +108,32 @@ const engine = servedEngine();
 const ownerId = await ownerIdFor(args.ownerEmail);
 const routeId = await routeIdFor(args.routeCode);
 
-const history = simulateHistory({
-  config,
-  seed: hashSeed(args.routeCode),
-  endDay: args.endDay,
-  forceLeakOnEndDay: args.badDay,
-});
-const scored = scoreHistory(history, {
+const scoreOptions = {
   routeCode: args.routeCode,
   engine,
   narrator: getNarrator(),
   seed: hashSeed(args.routeCode),
   contamination: config.leakRate,
-});
+};
+const variants = {
+  normal: simulateHistory({
+    config,
+    seed: hashSeed(args.routeCode),
+    endDay: args.endDay,
+  }),
+  bad_day: simulateHistory({
+    config,
+    seed: hashSeed(args.routeCode),
+    endDay: args.endDay,
+    forceLeakOnEndDay: true,
+  }),
+};
+const scoredVariants = {
+  normal: scoreHistory(variants.normal, scoreOptions),
+  bad_day: scoreHistory(variants.bad_day, scoreOptions),
+};
+const history = args.badDay ? variants.bad_day : variants.normal;
+const scored = args.badDay ? scoredVariants.bad_day : scoredVariants.normal;
 
 // wipe and rewrite only this owner and route's synthetic rows
 for (const table of ["watchdog_day_flags", "watchdog_vehicle_days"]) {
@@ -146,7 +164,7 @@ for (let i = 0; i < vehicleRows.length; i += BATCH) {
   if (error) throw error;
 }
 
-const flagRows = scored.map((s) => ({
+const flagRow = (s: (typeof scored)[number]) => ({
   owner_id: ownerId,
   route_id: routeId,
   day: s.features.day,
@@ -157,13 +175,53 @@ const flagRows = scored.map((s) => ({
   worst_vehicle_ratio: s.features.worstVehicleRatio,
   score: s.score,
   flagged: s.flagged,
+  threshold_flagged: s.thresholdFlagged,
   engine: s.engine,
   explanation_en: s.explanation?.en ?? null,
   explanation_sn: s.explanation?.sn ?? null,
   injected_leakage: s.features.injectedLeakage,
-}));
-const { error: flagErr } = await admin.from("watchdog_day_flags").insert(flagRows);
+});
+const { error: flagErr } = await admin
+  .from("watchdog_day_flags")
+  .insert(scored.map(flagRow));
 if (flagErr) throw flagErr;
+
+// stage both variants of the end day for the demo swap RPC
+for (const table of ["watchdog_staged_vehicle_days", "watchdog_staged_day_flags"]) {
+  const { error } = await admin
+    .from(table)
+    .delete()
+    .eq("owner_id", ownerId)
+    .eq("route_id", routeId);
+  if (error) throw error;
+}
+for (const variant of ["normal", "bad_day"] as const) {
+  const endVehicles = variants[variant]
+    .filter((r) => r.day === args.endDay)
+    .map((r) => ({
+      owner_id: ownerId,
+      route_id: routeId,
+      variant,
+      vehicle_label: r.vehicleLabel,
+      day: r.day,
+      tickets: r.tickets,
+      digital_tickets: r.digitalTickets,
+      peak_tickets: r.peakTickets,
+      gross_cents: r.grossCents,
+      injected_leakage: r.injectedLeakage,
+    }));
+  const { error: stagedVehErr } = await admin
+    .from("watchdog_staged_vehicle_days")
+    .insert(endVehicles);
+  if (stagedVehErr) throw stagedVehErr;
+
+  const endFlag = scoredVariants[variant].find((s) => s.features.day === args.endDay);
+  if (!endFlag) throw new Error(`no scored end day for variant ${variant}`);
+  const { error: stagedFlagErr } = await admin
+    .from("watchdog_staged_day_flags")
+    .insert([{ ...flagRow(endFlag), variant }]);
+  if (stagedFlagErr) throw stagedFlagErr;
+}
 
 const flagged = scored.filter((s) => s.flagged);
 console.log(

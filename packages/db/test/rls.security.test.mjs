@@ -557,6 +557,20 @@ check(
   });
   check("WD-5 a rider cannot insert watchdog history", !!riderForge.error);
 
+  const riderStaged = await A.c.from("watchdog_staged_day_flags").select("id");
+  check(
+    "WD-11 a rider sees zero staged watchdog rows",
+    deniedOrEmpty(riderStaged),
+  );
+  const riderSwap = await A.c.rpc("demo_watchdog_set_day", {
+    p_variant: "bad_day",
+  });
+  check(
+    "WD-12 a rider cannot drive the staged day swap",
+    !!riderSwap.error,
+    riderSwap.error?.message,
+  );
+
   const ownerCreds = {
     email: process.env.DEMO_OWNER_EMAIL,
     password: process.env.DEMO_OWNER_PASSWORD,
@@ -597,6 +611,30 @@ check(
         engine: "threshold:v1",
       });
       check("WD-7 even the owner cannot insert watchdog rows", !!ownerForge.error);
+
+      // the staged bad day (migration 0029): staging is service role only,
+      // and the swap RPC answers only a demo flagged owner touching their
+      // own rows
+      const ownerStaged = await oc.from("watchdog_staged_day_flags").select("id");
+      check(
+        "WD-8 even the owner cannot read the staged watchdog flags",
+        deniedOrEmpty(ownerStaged),
+      );
+      const ownerStagedVeh = await oc
+        .from("watchdog_staged_vehicle_days")
+        .select("id");
+      check(
+        "WD-9 even the owner cannot read the staged vehicle rows",
+        deniedOrEmpty(ownerStagedVeh),
+      );
+      const ownerSwap = await oc.rpc("demo_watchdog_set_day", {
+        p_variant: "normal",
+      });
+      check(
+        "WD-10 the demo owner can swap their own staged end day",
+        !ownerSwap.error && typeof ownerSwap.data === "string",
+        ownerSwap.error?.message,
+      );
       await oc.auth.signOut();
     }
   }

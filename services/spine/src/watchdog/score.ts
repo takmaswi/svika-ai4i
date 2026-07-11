@@ -16,6 +16,9 @@ export interface ScoredDay {
   features: DayFeatures;
   score: number;
   flagged: boolean;
+  /** The named fixed threshold's verdict on the same day, always computed,
+   *  so the owner card can hold the baseline against the served detector. */
+  thresholdFlagged: boolean;
   engine: WatchdogEngine;
   /** Present only on flagged days. */
   explanation: Bilingual | null;
@@ -57,6 +60,7 @@ export function scoreHistory(rows: VehicleDay[], options: ScoreOptions): ScoredD
       features: f,
       score: Math.round(verdict.score * 1000) / 1000,
       flagged: verdict.flagged,
+      thresholdFlagged: baselineVerdict(f).flagged,
       engine: options.engine,
       explanation: verdict.flagged
         ? options.narrator.explain(explanationInput(options.routeCode, f, usualPeakShare))

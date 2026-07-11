@@ -55,6 +55,24 @@ describe("scoreHistory", () => {
     expect(endDay.explanation?.en.length).toBeGreaterThan(20);
   });
 
+  test("the demo bad day holds the two verdicts apart: forest flags, threshold silent", () => {
+    // the story's whole argument on one row: a heavy skim on one kombi of
+    // four dilutes to a few percent at route level, so the named fixed
+    // threshold stays silent while the forest flags the day
+    const endDay = scored("forest:v1", true).at(-1)!;
+    expect(endDay.flagged).toBe(true);
+    expect(endDay.thresholdFlagged).toBe(false);
+  });
+
+  test("every scored day carries the named baseline's verdict beside its own", () => {
+    const days = scored("forest:v1");
+    for (const d of days) {
+      expect(typeof d.thresholdFlagged).toBe("boolean");
+      // the threshold verdict is exactly the 60 percent drop rule
+      expect(d.thresholdFlagged).toBe(d.features.ticketsRatio < 0.6);
+    }
+  });
+
   test("the threshold engine stays available as the fallback scorer", () => {
     const days = scored("threshold:v1");
     expect(days.every((d) => d.engine === "threshold:v1")).toBe(true);

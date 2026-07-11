@@ -10,6 +10,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef, useState } from "react";
+import { clampFitPadding } from "@/lib/map/camera-fit";
 import { corridorLine, corridorMetrics, corridorStops } from "@/lib/map/corridor-data";
 import {
   measurePolyline,
@@ -470,13 +471,23 @@ export function LiveMap({
         : camera === "boarding"
           ? boardingBounds(feed)
           : boundsOf(corridorLine.coordinates);
-      const fitBoundsOptions = overlay
+      const rawFit = overlay
         ? // under a plan the bottom sheet peeks over the map; the trip must
           // fit in the visible band above it
           { padding: { top: 72, left: 48, right: 48, bottom: 356 } }
         : camera === "boarding"
           ? BOARDING_FIT
           : { padding: 48 };
+      // the story stage renders the map in a shorter box; paddings that meet
+      // the container strand fitBounds on the world view, so clamp them
+      const fitBoundsOptions = {
+        ...rawFit,
+        padding: clampFitPadding(
+          container.clientWidth,
+          container.clientHeight,
+          rawFit.padding ?? 0,
+        ),
+      };
 
       entrancePending = !reducedMotion;
       map = new maplibregl.Map({
@@ -621,11 +632,19 @@ export function LiveMap({
     if (!map || !feed) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const duration = reduced ? 0 : 900;
+    const box = map.getContainer();
+    const clamp = (padding: maplibregl.PaddingOptions | number) =>
+      clampFitPadding(box.clientWidth, box.clientHeight, padding);
     if (wide) {
-      map.fitBounds(boardingBounds(feed), { ...BOARDING_FIT, duration });
+      map.fitBounds(boardingBounds(feed), {
+        ...BOARDING_FIT,
+        padding: clamp(BOARDING_FIT.padding ?? 0),
+        duration,
+      });
     } else {
       map.fitBounds(boundsOf(corridorLine.coordinates), {
         ...CORRIDOR_HOME_FIT,
+        padding: clamp(CORRIDOR_HOME_FIT.padding ?? 0),
         duration,
       });
     }

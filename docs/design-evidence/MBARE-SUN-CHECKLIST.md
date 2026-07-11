@@ -170,3 +170,54 @@ Phase D spec gaps flagged (extract-only, proposals not improvisations):
 9. **Warning card.** The staged alert reuses the marigold + char pair (the
    keypad's offline pill grammar) as a warning card at card scale. Proposal:
    adopt marigold + char as the sanctioned warning surface at any scale.
+
+## Stage addendum (2026-07-11): the presentation stage and the intelligence shelf
+
+New surfaces, verified at 360px and desktop width, both themes, both
+languages; packs in `stage/`, `intelligence/`, `eta-provenance/`,
+`owner-watchdog/` and the reshot `shelf/` beside this file.
+
+| # | Check | stage band | stage frame | intelligence page | provenance card | shelf intel row |
+|---|-------|------------|-------------|-------------------|-----------------|-----------------|
+| 1 | Status bar correct | yes* | yes* | yes* | yes* | yes* |
+| 2 | THE arrow only (§3) | yes | yes | yes | yes | yes |
+| 3 | CTA matches §5 anatomy | yes | yes | n/a | n/a | n/a |
+| 4 | Day and night from §2 tokens only | yes | yes | yes | yes | yes |
+| 5 | Numbers/codes/times Plex Mono 600 | yes | yes | yes | yes | yes |
+| 6 | Hit targets 44px+ | yes | yes | yes | yes** | yes |
+| 7 | Press state on every button | yes | yes | yes | yes | yes |
+| 8 | Copy: sentence case, real Harare names, $1.50 | yes | yes | yes | yes | yes |
+| 9 | Tinted shadows, no gradients | yes | yes | yes | yes | yes |
+| 10 | Kombi marker box + bob + glow kept | n/a | n/a | n/a | n/a | n/a |
+
+Stage item notes:
+
+- **One primary action.** While a story runs the story bar's next pill is
+  the screen's one primary action, and the lock under it is inert so nothing
+  competes. The final step's two doors keep the §5 pill as the primary (stay
+  and explore) with the shelf door as a §6 text button.
+- **The caption band.** The story bar keeps its Phase A glass card grammar;
+  it now sits in a reserved band below the screen box instead of floating,
+  so it can never cover cards, codes or the map focus.
+- **The back a step control** is the §6 back button (44px circle, the
+  mirrored §3 arrow) inside the story bar head.
+- \* No fake status bar per agreed deviation 1.
+- \** The basis label keeps its 11px meta type; its hit area is expanded to
+  44px+ with an invisible pseudo element so the peek card layout holds.
+
+Stage spec gaps flagged (extract-only, proposals not improvisations):
+
+10. **Desktop stage frame.** No reference screen is wider than 360px. At
+    desktop widths the story stage renders the app in a 360px phone sized
+    frame composed from the §8 card grammar (`--border-card`, `--radius-lg`,
+    the dark card shadow), centred beside the caption card. Proposal: bless
+    this frame as the sanctioned way to stage the phone app on a wide
+    screen.
+11. **Scrim dialog.** No reference has a modal. The provenance card floats a
+    §8 bordered card over a char tinted scrim (rgba(22,29,24,.45), tinted
+    per the shadow rule). Proposal: bless the pair as the sanctioned small
+    dialog.
+12. **Verdict pair line.** The watchdog card states two detector verdicts on
+    one meta line per flagged day (forest flagged, threshold silent). It is
+    §2 meta type with the mono day above it; flagged in case verdict
+    comparisons recur elsewhere.

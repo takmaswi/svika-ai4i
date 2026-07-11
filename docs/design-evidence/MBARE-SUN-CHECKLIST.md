@@ -115,3 +115,58 @@ Phase C spec gaps flagged (extract-only, proposals not improvisations):
 5. **On/off toggle.** No reference has a boolean control; the profile reuses
    the EN|SN segmented pill with On/Off labels. Proposal: adopt it as the
    sanctioned boolean control.
+
+## Phase D addendum (2026-07-11): the vision scenes
+
+New surfaces, verified at 360px, both themes, both languages; packs in
+`shelf/`, `vision-tinashe*/`, `vision-gogo/` and `vision-capacity/` beside
+this file. Every scene carries the permanent Simulation stamp.
+
+| # | Check | shelf | tinashe | gogo | capacity |
+|---|-------|-------|---------|------|----------|
+| 1 | Status bar correct | yes* | yes* | yes* | yes* |
+| 2 | THE arrow only (§3) | yes | yes | yes | yes |
+| 3 | CTA matches §5 anatomy | yes | yes | yes | yes |
+| 4 | Day and night from §2 tokens only | yes | yes | yes | yes |
+| 5 | Numbers/codes/times Plex Mono 600 | yes | yes | yes | yes |
+| 6 | Hit targets 44px+ | yes | yes | yes | yes |
+| 7 | Press state on every button | yes | yes | yes | yes |
+| 8 | Copy: sentence case, real Harare names, $1.50 | yes | yes | yes | yes |
+| 9 | Tinted shadows, no gradients | yes | yes | yes | yes |
+| 10 | Kombi marker box + bob + glow kept | n/a | yes | n/a | yes |
+
+Phase D item notes:
+
+- **One primary action.** On every scene the story bar's next pill (the §5
+  CTA from Phase A) is the primary action. The mbudzi's OK key is a control
+  on a rendered object, not a screen CTA, and wears the marigold + char key
+  pair.
+- **The Simulation stamp.** The demo movement chip's pill family (§7,
+  `svika-glass`, 11px 600) without the signal dot, because signal marks live
+  truth only (hard rule 3) and nothing on a vision scene is live.
+- **The mbudzi is an object, not a surface.** Char body, park LCD with char
+  mono text (a lit screen reads the same at night), §6 key anatomy at 46px
+  with mono digits and press states. All values are §2 tokens; the object
+  keeps them in both themes on purpose.
+- **Capacity badges.** The §7 map place chip grammar (20px rect, mono 9px,
+  char by day, night surface + light stroke via `--border-pill`), riding as
+  its own unrotated marker so the kombi marker itself stays untouched.
+- **Plates.** Three plates come from reference screen 6 (AEH 6647, AFK 3310,
+  ADT 8892); the fourth kombi wears AFK 3311, synthetic in the same format,
+  declared in the disclosure register as fixture data.
+
+Phase D spec gaps flagged (extract-only, proposals not improvisations):
+
+6. **Simulation stamp.** No reference has a staged-content marker. Proposal:
+   bless the dot-less §7 pill with the word Simulation as the sanctioned
+   stamp for any staged surface.
+7. **Message bubble.** No reference shows a phone-to-phone message. The
+   mother's view composes the §8 dark feature card with the night overlay
+   card as the bubble and mono for the link. Proposal: bless this pair for
+   framed device views.
+8. **Feature phone shell.** No reference has a rendered handset. Composed
+   from §2 tokens and the §6 key anatomy; flagged for the design system if
+   feature phone surfaces recur.
+9. **Warning card.** The staged alert reuses the marigold + char pair (the
+   keypad's offline pill grammar) as a warning card at card scale. Proposal:
+   adopt marigold + char as the sanctioned warning surface at any scale.

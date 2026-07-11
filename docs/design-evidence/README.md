@@ -21,7 +21,11 @@ The pre-ship answers per DESIGN.md section 14 live in
 | `profile/` | Profile (Phase C) | composed | Identity form, saved trips with rename, warm ride history in mono, alert and voice toggles on the language chip grammar, emergency details behind the consent tick. Full page shots; regenerate with `node scripts/phase-c-evidence.mjs`. |
 | `share/` | Share viewer (Phase C) | composed from 2 and 3 | The mother's view: full bleed map with the trip leg, peek sheet with route, on board status and mono arrival with its basis label, no account behind it. |
 | `marker/` | Kombi marker proof (Phase C task 0) | 2 | Close ups proving the glyph inside the §10 box is the client's kombi asset, day and night; see `marker/README.md` for the verification chain. |
-| `recordings/` | Story runs (Phase C) | - | `takunda-morning.webm` and `rudo-night.webm`, each from a fresh landing visit through the live engine. |
+| `recordings/` | Story runs (Phase C) | - | `takunda-morning.webm` and `rudo-night.webm`, each from a fresh landing visit through the live engine; `vision-scenes.webm` (Phase D) plays the three vision scenes back to back. |
+| `shelf/` | Sandbox shelf (Phase D) | 1 | The landing's honesty split: real stories under the real money heading, vision scenes under the simulations heading, solid against dashed doors. Regenerate with `node scripts/phase-d-evidence.mjs`. |
+| `vision-tinashe/`, `vision-tinashe-kin/`, `vision-tinashe-responder/` | Crash flow scene (Phase D) | composed | The staged alert over the live map (marigold + char warning card), Amai Moyo's phone with the auto message, the responder view with the Phase C emergency fields. Simulation stamp on every view. |
+| `vision-gogo/` | Gogo's mbudzi (Phase D) | composed | The rendered feature phone mid session, menu answered on the park LCD, §6 key anatomy, honesty card under the phone. |
+| `vision-capacity/` | Kombi capacity (Phase D) | composed from 2 and 6 | Declared occupancy badges riding the simulated fleet (place chip grammar), the declared against proven card with the drift line. |
 
 All figures on these screens are live values from the seeded demo database at
 capture time; nothing is mocked into the DOM for the shot. The only staged

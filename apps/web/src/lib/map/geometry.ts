@@ -108,11 +108,7 @@ export function lerpHeading(fromDeg: number, toDeg: number, t: number): number {
   return (fromDeg + delta * t + 360) % 360;
 }
 
-/** Initial bearing of the segment under the distance, degrees clockwise from north. */
-export function headingAtDistance(metrics: PolylineMetrics, meters: number): number {
-  const i = segmentAt(metrics, meters);
-  const a = metrics.coordinates[i]!;
-  const b = metrics.coordinates[i + 1]!;
+function bearingDeg(a: LngLat, b: LngLat): number {
   const dLng = toRad(b[0] - a[0]);
   const latA = toRad(a[1]);
   const latB = toRad(b[1]);
@@ -122,4 +118,29 @@ export function headingAtDistance(metrics: PolylineMetrics, meters: number): num
     Math.sin(latA) * Math.cos(latB) * Math.cos(dLng);
   const deg = (Math.atan2(y, x) * 180) / Math.PI;
   return (deg + 360) % 360;
+}
+
+/** Initial bearing of the segment under the distance, degrees clockwise from north. */
+export function headingAtDistance(metrics: PolylineMetrics, meters: number): number {
+  const i = segmentAt(metrics, meters);
+  return bearingDeg(metrics.coordinates[i]!, metrics.coordinates[i + 1]!);
+}
+
+/**
+ * Bearing of the short chord around the distance instead of the raw segment
+ * bearing. The raw heading is piecewise constant and snaps at every vertex;
+ * the chord rotates continuously as it slides through a corner, so a marker
+ * driven by this sweeps through turns. Window is metres of road either side.
+ */
+export function smoothedHeadingAtDistance(
+  metrics: PolylineMetrics,
+  meters: number,
+  halfWindowMeters = 8,
+): number {
+  const w = Math.max(halfWindowMeters, 0.5);
+  const a = pointAtDistance(metrics, meters - w);
+  const b = pointAtDistance(metrics, meters + w);
+  // both ends clamped onto the same endpoint: fall back to the segment bearing
+  if (a[0] === b[0] && a[1] === b[1]) return headingAtDistance(metrics, meters);
+  return bearingDeg(a, b);
 }

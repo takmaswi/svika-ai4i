@@ -3,6 +3,7 @@ import {
   headingAtDistance,
   measurePolyline,
   pointAtDistance,
+  smoothedHeadingAtDistance,
   type LngLat,
 } from "../src/lib/map/geometry";
 
@@ -90,6 +91,52 @@ describe("headingAtDistance", () => {
   test("uses the last segment's heading at and beyond the end", () => {
     expect(headingAtDistance(m, m.totalMeters)).toBeCloseTo(270, 0);
     expect(headingAtDistance(m, m.totalMeters + 100)).toBeCloseTo(270, 0);
+  });
+});
+
+describe("smoothedHeadingAtDistance", () => {
+  // north ~111 m, then a right angle east ~106 m: the marker rotation must
+  // sweep through this corner instead of snapping 90 degrees at the vertex
+  const line: LngLat[] = [
+    [31.05, -17.72],
+    [31.05, -17.719],
+    [31.051, -17.719],
+  ];
+  const m = measurePolyline(line);
+  const corner = m.cumulative[1]!;
+
+  test("matches the raw segment bearing on a straight stretch", () => {
+    expect(smoothedHeadingAtDistance(m, corner / 2)).toBeCloseTo(0, 0);
+    expect(
+      smoothedHeadingAtDistance(m, corner + (m.totalMeters - corner) / 2),
+    ).toBeCloseTo(90, 0);
+  });
+
+  test("reads the corner as the diagonal midway through the turn", () => {
+    const atCorner = smoothedHeadingAtDistance(m, corner, 8);
+    expect(atCorner).toBeGreaterThan(35);
+    expect(atCorner).toBeLessThan(55);
+  });
+
+  test("sweeps continuously through the corner instead of snapping", () => {
+    let last = smoothedHeadingAtDistance(m, corner - 16, 8);
+    let maxStep = 0;
+    for (let d = corner - 15; d <= corner + 16; d += 1) {
+      const h = smoothedHeadingAtDistance(m, d, 8);
+      let delta = Math.abs(h - last) % 360;
+      if (delta > 180) delta = 360 - delta;
+      maxStep = Math.max(maxStep, delta);
+      last = h;
+    }
+    // the raw per segment heading jumps the full 90 at the vertex; the
+    // smoothed one must never move more than a few degrees per metre
+    expect(maxStep).toBeLessThan(12);
+  });
+
+  test("clamps at the ends to the first and last bearings", () => {
+    expect(smoothedHeadingAtDistance(m, 0)).toBeCloseTo(0, 0);
+    expect(smoothedHeadingAtDistance(m, m.totalMeters)).toBeCloseTo(90, 0);
+    expect(smoothedHeadingAtDistance(m, m.totalMeters + 50)).toBeCloseTo(90, 0);
   });
 });
 

@@ -9,8 +9,8 @@
 // here may be presented as live tracking.
 import type { CorridorDirectionName } from "./corridor";
 import {
-  headingAtDistance,
   pointAtDistance,
+  smoothedHeadingAtDistance,
   type LngLat,
   type PolylineMetrics,
 } from "./geometry";
@@ -223,7 +223,9 @@ export function simulatedPositionAt(
   elapsedMs: number,
 ): VehiclePosition {
   const travel = simulatedTravelAt(config, vehicle, elapsedMs);
-  const heading = headingAtDistance(config.metrics, travel.meters);
+  // chord bearing, not raw segment bearing: the marker sweeps through
+  // corners instead of snapping at every vertex of the road line
+  const heading = smoothedHeadingAtDistance(config.metrics, travel.meters);
   return {
     id: vehicle.id,
     routeCode: config.routeCode,

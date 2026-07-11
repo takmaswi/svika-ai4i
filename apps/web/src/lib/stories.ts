@@ -107,6 +107,15 @@ export const STORIES: Record<string, Story> = {
       { path: "/vision/gogo", captionKey: "story.gogo.1" },
     ],
   },
+  "kombi-capacity": {
+    slug: "kombi-capacity",
+    persona: "none",
+    exitPath: "/",
+    steps: [
+      { path: "/vision/capacity", captionKey: "story.cap.0" },
+      { path: "/vision/capacity", captionKey: "story.cap.1" },
+    ],
+  },
   "rudo-night": {
     slug: "rudo-night",
     persona: "rudo",

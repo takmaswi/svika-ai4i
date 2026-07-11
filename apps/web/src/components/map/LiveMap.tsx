@@ -64,6 +64,12 @@ interface LiveMapProps {
    * the camera frames the planned trip above the sheet.
    */
   camera?: "corridor" | "boarding";
+  /**
+   * Per vehicle badge text (the capacity vision scene): a §7 place chip
+   * riding above each kombi, keyed by vehicle id. The marker itself is
+   * untouched; the badge is its own unrotated marker at the same point.
+   */
+  vehicleBadges?: Record<string, string>;
 }
 
 /** The active Mbare Sun map theme, from the same signals the CSS tokens use. */
@@ -316,7 +322,12 @@ function addCorridorLayers(
   });
 }
 
-export function LiveMap({ labels, overlay, camera = "corridor" }: LiveMapProps) {
+export function LiveMap({
+  labels,
+  overlay,
+  camera = "corridor",
+  vehicleBadges,
+}: LiveMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const feedRef = useRef<VehicleFeed | null>(null);
@@ -342,6 +353,7 @@ export function LiveMap({ labels, overlay, camera = "corridor" }: LiveMapProps) 
     let rawStyle: unknown = null;
     let entrancePending = false;
     const markers = new Map<string, maplibregl.Marker>();
+    const badges = new Map<string, maplibregl.Marker>();
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -523,6 +535,22 @@ export function LiveMap({ labels, overlay, camera = "corridor" }: LiveMapProps) 
               markers.set(pos.id, marker);
             } else {
               marker.setLngLat(pos.lngLat).setRotation(pos.headingDeg);
+            }
+            const badgeText = vehicleBadges?.[pos.id];
+            if (badgeText && map) {
+              let badge = badges.get(pos.id);
+              if (!badge) {
+                const el = document.createElement("span");
+                el.className = "kombi-capacity-chip";
+                el.dataset.testid = "capacity-badge";
+                el.textContent = badgeText;
+                badge = new maplibregl.Marker({ element: el, offset: [0, -34] })
+                  .setLngLat(pos.lngLat)
+                  .addTo(map);
+                badges.set(pos.id, badge);
+              } else {
+                badge.setLngLat(pos.lngLat);
+              }
             }
             if (stampData) {
               // e2e reads these to prove movement in coordinates, not pixels

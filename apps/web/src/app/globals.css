@@ -505,6 +505,44 @@ body:has(.home-screen) .demo-account-chip {
 .mbudzi-ok:active {
   background: var(--color-marigold-hover);
 }
+/* Capacity badge over each kombi: the §7 map place chip grammar. The pill
+   border is char on char by day (reads borderless) and the light stroke by
+   night, exactly the reference chip's theme pair. */
+.kombi-capacity-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 10px;
+  background: var(--color-surface-dark);
+  color: var(--color-surface-dark-ink);
+  border: var(--border-pill);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.6px;
+  pointer-events: none;
+}
+/* Declared against proven: plate chip left, two mono counts. */
+.vision-cap-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.vision-cap-row {
+  display: grid;
+  grid-template-columns: 1fr 76px 76px;
+  align-items: center;
+  gap: var(--space-2);
+}
+.vision-cap-row .svika-mono-code {
+  text-align: right;
+  font-size: 15px;
+}
+.vision-cap-head .svika-meta {
+  text-align: right;
+  text-transform: uppercase;
+}
 
 /* --- landing (screen 1) ------------------------------------------------------ */
 .landing-h1 {

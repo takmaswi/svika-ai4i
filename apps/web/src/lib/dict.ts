@@ -822,6 +822,26 @@ export const dict = {
   "vision.gogo.waiting": { en: "Please wait", sn: "Mirira zvishoma" },
   "vision.gogo.keyOk": { en: "OK", sn: "OK" },
   "vision.gogo.keyClear": { en: "C", sn: "C" },
+  // Kombi capacity
+  "story.cap.0": {
+    en: "Every kombi on the corridor wears how full its conductor declares it. The card holds that number against what redeemed tickets and check ins prove.",
+    sn: "Kombi imwe neimwe munzira inoratidza kuzara kwainotaurwa nahwindi wayo. Kadhi rinoenzanisa nhamba iyoyo nezvinoratidzwa nematikiti akashandiswa nekupinda kwakanyorwa.",
+  },
+  "story.cap.1": {
+    en: "When declared and proven drift apart, that is flagged as a pattern to review, never a person to accuse. This ships when real vehicles stream data.",
+    sn: "Kana zvakataurwa nezvakaratidzwa zvikasiyana, zvinongoratidzwa semaitiro ekuongorora, kwete munhu wekupomera. Izvi zvinouya kana mota chaidzo dzotumira ruzivo.",
+  },
+  "vision.cap.heading": {
+    en: "How full, honestly",
+    sn: "Kuzara chaiko, pachokwadi",
+  },
+  "vision.cap.colDeclared": { en: "Declares", sn: "Zvinotaurwa" },
+  "vision.cap.colProven": { en: "Proven", sn: "Zvakaratidzwa" },
+  "vision.cap.drift": {
+    en: "drifts today. A pattern to review, never an accusation.",
+    sn: "iri kusiyana nhasi. Maitiro ekuongorora, kwete mhosva.",
+  },
+
   "vision.gogo.note": {
     en: "The menus on this phone are real code with unit tests beside them, and the how far answer calls the live arrival engine. Reaching real handsets waits on a telco aggregator agreement, which is a contract, not a build. The money menus here move nothing.",
     sn: "Menyu dziri pafoni iyi icode chaiyo ine miedzo padyo payo, uye mhinduro yekure kwekombi inodana injini chaiyo yekusvika. Kusvika pamafoni chaiwo kwakamirira chibvumirano nemakambani emafoni, kondirakiti kwete kuvaka. Menyu dzemari pano hadzifambisi chinhu.",

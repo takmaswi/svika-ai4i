@@ -203,8 +203,16 @@ check(
 // ---------------------------------------------------------------------------
 // O2: offline redemption syncs and settles once
 // ---------------------------------------------------------------------------
+// A redemption always happens after its purchase, but this suite syncs
+// milliseconds after buying, and a client clock trailing the database by a
+// few hundred ms then claims a moment before the code existed, which the
+// RPC rightly refuses as invalid. Claim a beat later, well inside the five
+// minute skew tolerance, the way any real ride would.
+const CLAIM_LAG_MS = 2000;
+const claimMoment = () => new Date(Date.now() + CLAIM_LAG_MS).toISOString();
+
 const e1 = randomUUID();
-const claimedAt = new Date().toISOString();
+const claimedAt = claimMoment();
 
 const { data: s1, error: s1err } = await deviceA.rpc("sync_offline_redemption", {
   p_client_event_id: e1,
@@ -326,7 +334,7 @@ const t3 = await buyTicket("cash");
     p_route: routeId,
     p_direction: "outbound",
     p_code: t3.board_code,
-    p_redeemed_at: new Date().toISOString(),
+    p_redeemed_at: claimMoment(),
   });
   check(
     "O7 cash ticket redeems offline (no wallet settlement)",
@@ -353,7 +361,7 @@ const t3 = await buyTicket("cash");
     p_ticket: t3.ticket_id,
     p_note_cents: noteCents,
     p_covered_fares: 1,
-    p_recorded_at: new Date().toISOString(),
+    p_recorded_at: claimMoment(),
   });
   check(
     "O7 offline change credit settles after the fact",
@@ -367,7 +375,7 @@ const t3 = await buyTicket("cash");
     p_ticket: t3.ticket_id,
     p_note_cents: noteCents,
     p_covered_fares: 1,
-    p_recorded_at: new Date().toISOString(),
+    p_recorded_at: claimMoment(),
   });
   check(
     "O7 replayed change event returns the receipt, credits nothing",
@@ -380,7 +388,7 @@ const t3 = await buyTicket("cash");
     p_ticket: t3.ticket_id,
     p_note_cents: noteCents,
     p_covered_fares: 1,
-    p_recorded_at: new Date().toISOString(),
+    p_recorded_at: claimMoment(),
   });
   check("O7 duplicate change from a second device is rejected", c3?.[0]?.outcome === "rejected");
 

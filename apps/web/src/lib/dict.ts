@@ -34,7 +34,17 @@ export const dict = {
   },
   "landing.demoEnter": { en: "Enter the demo", sn: "Pinda mudemo" },
   "landing.demoOwner": { en: "Owner dashboard", sn: "Dashboard yemuridzi" },
-  "landing.demoStories": { en: "Or watch a guided story", sn: "Kana kuona nyaya inotungamirwa" },
+  "landing.shelfReal": {
+    en: "Real stories, real money on the live system",
+    sn: "Nyaya chaidzo, mari chaiyo pasisitimu mhenyu",
+  },
+  "landing.shelfVision": {
+    en: "Vision scenes, simulations of what ships next",
+    sn: "Zviratidzo zveramangwana, kufananidzira kwezvinotevera",
+  },
+  "landing.visionTinashe": { en: "The crash flow, Tinashe", sn: "Tsaona, Tinashe" },
+  "landing.visionGogo": { en: "Gogo's mbudzi", sn: "Mbudzi yaGogo" },
+  "landing.visionCapacity": { en: "Kombi capacity", sn: "Kuzara kwekombi" },
   "landing.demoStory1": {
     en: "Change becomes credit",
     sn: "Chenji inova mari",

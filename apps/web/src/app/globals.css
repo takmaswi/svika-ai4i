@@ -735,17 +735,39 @@ body:has(.home-screen) .demo-account-chip {
   color: var(--color-ink);
 }
 .landing-story-btn {
-  border: 1.5px dashed var(--color-hairline);
+  border: var(--border-soft);
   background: transparent;
   color: var(--color-ink-soft);
   font-weight: var(--weight-medium);
 }
+/* Vision doors: same shelf anatomy, dashed and quieter, so the split
+   between real money stories and stamped simulations reads in one glance. */
+.landing-vision-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1.5px dashed var(--color-hairline);
+  background: transparent;
+  color: var(--color-ink-soft);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
 .landing-demo-btn:active,
-.landing-story-btn:active {
+.landing-story-btn:active,
+.landing-vision-btn:active {
   transform: scale(0.99);
 }
 .landing-demo-btn:hover,
-.landing-story-btn:hover {
+.landing-story-btn:hover,
+.landing-vision-btn:hover {
   border-color: var(--color-ink);
   color: var(--color-ink);
 }

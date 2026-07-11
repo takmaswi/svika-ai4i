@@ -118,8 +118,12 @@ export default async function LandingPage({
             </button>
           </form>
         </div>
+        {/* The sandbox shelf: the honesty split is the design feature. Real
+            stories run real money on the live system; vision scenes are
+            stamped simulations of what ships next, entered by plain links
+            that sign nobody in. */}
         <p className="svika-meta landing-demo-stories-lead">
-          {t(lang, "landing.demoStories")}
+          {t(lang, "landing.shelfReal")}
         </p>
         <div className="landing-demo-doors">
           <form action={enterDemo}>
@@ -166,6 +170,32 @@ export default async function LandingPage({
               {t(lang, "landing.demoStory4")}
             </button>
           </form>
+        </div>
+        <p className="svika-meta landing-demo-stories-lead">
+          {t(lang, "landing.shelfVision")}
+        </p>
+        <div className="landing-demo-doors">
+          <Link
+            className="landing-vision-btn touch-target"
+            href="/vision/tinashe?view=alert&story=tinashe-crash&step=0"
+            data-testid="vision-door-tinashe"
+          >
+            {t(lang, "landing.visionTinashe")}
+          </Link>
+          <Link
+            className="landing-vision-btn touch-target"
+            href="/vision/gogo?story=gogo-ussd&step=0"
+            data-testid="vision-door-gogo"
+          >
+            {t(lang, "landing.visionGogo")}
+          </Link>
+          <Link
+            className="landing-vision-btn touch-target"
+            href="/vision/capacity?story=kombi-capacity&step=0"
+            data-testid="vision-door-capacity"
+          >
+            {t(lang, "landing.visionCapacity")}
+          </Link>
         </div>
       </div>
     </main>

@@ -43,6 +43,14 @@ export const dict = {
     en: "Two kombis and a walk",
     sn: "Makombi maviri nekufamba",
   },
+  "landing.demoStory3": {
+    en: "Takunda's morning",
+    sn: "Mangwanani aTakunda",
+  },
+  "landing.demoStory4": {
+    en: "Rudo's night ride",
+    sn: "Rwendo rwehusiku rwaRudo",
+  },
   "landing.demoErr": {
     en: "The demo door is busy. Try again in a minute.",
     sn: "Mukova wedemo wakabatikana. Edzazve munguva pfupi.",
@@ -92,6 +100,52 @@ export const dict = {
   "story.transfer.2": {
     en: "One tap bought both legs from her wallet. Two boarding codes, one per kombi. Story over.",
     sn: "Kubaya kamwe kwatenga zvikamu zvese kubva muchikwama. Makodhi maviri, imwe pakombi imwe neimwe. Nyaya yapera.",
+  },
+
+  "story.tk.0": {
+    en: "Meet Takunda. He rides this corridor to work every morning, and his alert is live: the usual kombi is close, with today's real minutes from the live feed. A fixed alarm cannot know that.",
+    sn: "Uyu ndiTakunda. Anokwira nzira iyi kubasa mangwanani ega ega, uye yeuchidzo yake iri kushanda: kombi yaanogara achikwira yaswedera, nemaminitsi echokwadi anhasi. Alarm yakagadzikwa haigone kuzviziva.",
+  },
+  "story.tk.1": {
+    en: "His trip lives as a quick pick. Next books it from his wallet through the real engine.",
+    sn: "Rwendo rwake rwakachengetwa. Enderera inorubhuka kubva muchikwama chake nesystem chaiyo.",
+  },
+  "story.tk.2": {
+    en: "His boarding card is ready. The hwindi here is simulated; the clearing and the money move through the real ledger.",
+    sn: "Kadhi rake rekukwira ragadzirira. Hwindi pano ndeyekuratidzira; kubvisa nemari zvinofamba nebhuku remari chairo.",
+  },
+  "story.tk.3": {
+    en: "He is on board. Watch: the voice speaks as his stop nears. The last stretch of the ride is fast forwarded; the triggers are the real engine.",
+    sn: "Ava mukombi. Tarisa: inzwi rinotaura chiteshi chake chava pedyo. Chikamu chekupedzisira cherwendo chakakurumidziswa; zvinomutsa inzwi ndezvechokwadi.",
+  },
+
+  "story.ru.0": {
+    en: "It is late and Rudo's wallet was stolen in town. Her Svika balance reads zero. Watch what her people can do about it.",
+    sn: "Kwadoka uye chikwama chaRudo chakabiwa mutown. Mari yake muSvika iri pazero. Ona zvinogona kuitwa nevanhu vake.",
+  },
+  "story.ru.1": {
+    en: "A friend sends her credit from their own wallet. The friend is simulated; the escrow is the real ledger.",
+    sn: "Shamwari inomutumira mari kubva muchikwama chayo. Shamwari ndeyekuratidzira; mari inochengetwa mubhuku remari chairo.",
+  },
+  "story.ru.2": {
+    en: "A claim code reaches her phone (simulated SMS). Next types it in for her.",
+    sn: "Kodhi yekutora inosvika pafoni yake (SMS yekuratidzira). Enderera inoinyora.",
+  },
+  "story.ru.3": {
+    en: "The credit landed in her wallet. She books the kombi home with it.",
+    sn: "Mari yapinda muchikwama chake. Anobhuka kombi yekuenda kumba nayo.",
+  },
+  "story.ru.4": {
+    en: "Her boarding card is ready and the simulated hwindi clears her code. She is on her way.",
+    sn: "Kadhi rake ragadzirira uye hwindi yekuratidzira yabvisa kodhi yake. Ava munzira.",
+  },
+  "story.ru.5": {
+    en: "Her mother worries. Next creates a live share link, straight from her ticket.",
+    sn: "Amai vake vanofunganya. Enderera inogadzira link yekuona rwendo, kubva patikiti rake.",
+  },
+  "story.ru.6": {
+    en: "This is exactly what her mother sees, no account needed: the trip, the arrival estimate, never the code or the wallet. The link dies when the trip ends.",
+    sn: "Izvi ndizvo chaizvo zvinoonekwa naamai vake, pasina akaunti: rwendo, fungidziro yekusvika, kwete kodhi kana chikwama. Link inofa kana rwendo rwapera.",
   },
 
   "login.title": { en: "Sign in to Svika", sn: "Pinda muSvika" },

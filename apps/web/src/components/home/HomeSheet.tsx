@@ -28,6 +28,12 @@ export function HomeSheet({
   children,
 }: HomeSheetProps) {
   const [open, setOpen] = useState(defaultOpen);
+  // Client side navigation keeps this component mounted (story steps move
+  // between ?sheet=open and closed paths): a step that asks for the open
+  // sheet must win over the previous step's resting state.
+  useEffect(() => {
+    if (defaultOpen) setOpen(true);
+  }, [defaultOpen]);
   // Stamped once React is interactive. The e2e suite waits on it before
   // driving forms: a submit that races hydration falls back to a native
   // POST, and Next 15.1's no-JS action replay 500s (pre-existing upstream

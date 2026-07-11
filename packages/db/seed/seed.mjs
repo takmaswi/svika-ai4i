@@ -635,6 +635,40 @@ async function ensureTakunda() {
 }
 await ensureTakunda();
 
+// Rudo: the night ride story persona. No fixture history; her story starts
+// with a stolen wallet (the story reset floats her to zero), a friend's
+// credit transfer, a booking and a shared live ride.
+const RUDO_EMAIL = "demo.rudo@svika.app";
+async function ensureRudo() {
+  const password = process.env.DEMO_JUDGE_PASSWORD;
+  if (!password) {
+    console.log("DEMO_JUDGE_PASSWORD not set; skipping Rudo persona");
+    return;
+  }
+  let user = await findUserByEmail(RUDO_EMAIL);
+  if (!user) {
+    const { data, error } = await admin.auth.admin.createUser({
+      email: RUDO_EMAIL,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: "Rudo" },
+    });
+    if (error) throw error;
+    user = data.user;
+    console.log(`created demo persona ${RUDO_EMAIL}`);
+  } else {
+    await admin.auth.admin.updateUserById(user.id, { password });
+  }
+  const { error: pErr } = await admin
+    .from("profiles")
+    .update({ full_name: "Rudo", preferred_language: "en", demo_sim: true })
+    .eq("id", user.id);
+  if (pErr) throw pErr;
+  await ensureConsent(user.id);
+  console.log("Rudo ready");
+}
+await ensureRudo();
+
 // route assignments: the demo hwindi works every corridor the rehearsal
 // and e2e flows drive (owner.spec clears a MARKETSQ-AVONDALE fare); the RLS
 // test conductor covers the synthetic TEST-01 route plus the corridor the

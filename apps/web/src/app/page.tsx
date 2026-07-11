@@ -144,6 +144,28 @@ export default async function LandingPage({
               {t(lang, "landing.demoStory2")}
             </button>
           </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="takunda-morning" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-takunda"
+            >
+              {t(lang, "landing.demoStory3")}
+            </button>
+          </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="rudo-night" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-rudo"
+            >
+              {t(lang, "landing.demoStory4")}
+            </button>
+          </form>
         </div>
       </div>
     </main>

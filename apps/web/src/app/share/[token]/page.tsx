@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { StoryBar } from "@/components/story/StoryBar";
 import { buildShareOverlay } from "@/lib/map/share-overlay";
 import { homeEtaProvider } from "@/lib/map/eta-home";
 import { CORRIDOR_ROUTE_CODE, corridorMetrics } from "@/lib/map/corridor-data";
@@ -34,11 +35,14 @@ function etaBasis(lang: AppLanguage, eta: EtaEstimate): string {
 // quiet state, so the URL space leaks nothing.
 export default async function SharePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ token: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const lang = await getLang();
   const { token } = await params;
+  const query = await searchParams;
   const supabase = await createClient();
 
   const { data } = await supabase.rpc("ride_share_view", { p_token: token });
@@ -100,6 +104,8 @@ export default async function SharePage({
 
   return (
     <main className="home-screen" data-testid="share-view">
+      {/* Rudo's story steps onto this public page as the mother's view */}
+      <StoryBar params={query} lang={lang} />
       <div className="home-map">
         <LiveMapLazy
           labels={{

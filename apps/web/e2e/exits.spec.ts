@@ -79,6 +79,7 @@ function doorSuffix(slug: string): string {
     "takunda-morning": "takunda",
     "rudo-night": "rudo",
     "eta-knows": "eta",
+    "watchdog-leak": "watchdog",
   };
   return suffix[slug] ?? slug;
 }

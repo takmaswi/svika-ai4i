@@ -17,7 +17,8 @@ export type StoryActionId =
   | "hwindi-clears"
   | "friend-sends"
   | "claim-friend-code"
-  | "share-ride";
+  | "share-ride"
+  | "inject-bad-day";
 
 /** A step path resolved at run time to the rider's live share link. */
 export const SHARE_PATH_SENTINEL = "@share-latest";
@@ -103,6 +104,17 @@ export const STORIES: Record<string, Story> = {
     steps: [
       { path: "/app", captionKey: "story.eta.0" },
       { path: "/app/intelligence", captionKey: "story.eta.1" },
+    ],
+  },
+  "watchdog-leak": {
+    slug: "watchdog-leak",
+    persona: "owner",
+    stayPath: "/app/owner",
+    steps: [
+      { path: "/app/owner", captionKey: "story.wd.0" },
+      { path: "/app/owner", captionKey: "story.wd.1", action: "inject-bad-day" },
+      { path: "/app/owner", captionKey: "story.wd.2" },
+      { path: "/app/owner", captionKey: "story.wd.3" },
     ],
   },
   // --- vision scenes: public simulations of what ships next. persona

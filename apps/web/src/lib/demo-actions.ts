@@ -37,21 +37,29 @@ export async function enterDemo(formData: FormData): Promise<void> {
   const target = String(formData.get("target") ?? "rider");
   const story = String(formData.get("story") ?? "");
   const supabase = await createClient();
-
-  if (target === "owner") {
-    const email = process.env.DEMO_OWNER_EMAIL;
-    const password = process.env.DEMO_OWNER_PASSWORD;
-    if (!email || !password) redirect(DEMO_ERR);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) redirect(DEMO_ERR);
-    redirect("/app/owner");
-  }
-
   const def: Story | undefined = STORIES[story];
 
   // vision scenes are public and never sign anyone in; the shelf links to
   // them directly, but a posted form still lands on the scene, not a persona
   if (def && def.persona === "none") redirect(storyUrl(story, 0));
+
+  if (target === "owner" || def?.persona === "owner") {
+    const email = process.env.DEMO_OWNER_EMAIL;
+    const password = process.env.DEMO_OWNER_PASSWORD;
+    if (!email || !password) redirect(DEMO_ERR);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) redirect(DEMO_ERR);
+    if (def?.persona === "owner") {
+      // the watchdog story's before state: the staged end day sits on its
+      // normal variant until the story injects the bad one
+      const { error: resetErr } = await supabase.rpc("demo_watchdog_set_day", {
+        p_variant: "normal",
+      });
+      if (resetErr) redirect(DEMO_ERR);
+      redirect(storyUrl(story, 0));
+    }
+    redirect("/app/owner");
+  }
 
   const password = process.env.DEMO_JUDGE_PASSWORD;
   if (!password) redirect(DEMO_ERR);
@@ -253,7 +261,20 @@ async function runAction(action: StoryActionId): Promise<boolean> {
       return claimFriendCode();
     case "share-ride":
       return shareLatestRide();
+    case "inject-bad-day":
+      return injectBadDay();
   }
+}
+
+/** The watchdog story's injection: the demo owner swaps their staged end
+ *  day to the bad variant. The scoring happened in the committed pipeline;
+ *  this only moves the caller's own synthetic rows (migration 0029). */
+async function injectBadDay(): Promise<boolean> {
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("demo_watchdog_set_day", {
+    p_variant: "bad_day",
+  });
+  return !error;
 }
 
 /** Books like the plan page does: resolve, re-plan server side, purchase. */

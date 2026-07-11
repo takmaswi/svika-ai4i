@@ -6,6 +6,8 @@ import { resolveRole } from "@/lib/roles";
 import { formatUsd } from "@svika/shared";
 import { RevenueBars, type DayNet } from "@/components/owner/RevenueBars";
 import { WatchdogNarratives } from "@/components/owner/WatchdogNarratives";
+import { StoryStage } from "@/components/story/StoryStage";
+import { resolveStoryParams } from "@/lib/stories";
 import { ArrowIcon, BackIcon } from "@/components/icons";
 
 interface RevenueRow {
@@ -21,6 +23,7 @@ interface RevenueRow {
 interface WatchdogFlagRow {
   day: string;
   flagged: boolean;
+  threshold_flagged: boolean;
   explanation_en: string | null;
   explanation_sn: string | null;
 }
@@ -77,8 +80,13 @@ function routeTotals(rows: RevenueRow[]): RouteTotal[] {
 // The owner ledger view: settled digital fares aggregated per day and route,
 // every number derived from the double entry ledger at read time. Audit
 // language talks about patterns and totals, never about a named person.
-export default async function OwnerPage() {
+export default async function OwnerPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const lang = await getLang();
+  const params = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -98,7 +106,7 @@ export default async function OwnerPage() {
       .maybeSingle(),
     supabase
       .from("watchdog_day_flags")
-      .select("day, flagged, explanation_en, explanation_sn")
+      .select("day, flagged, threshold_flagged, explanation_en, explanation_sn")
       .order("day", { ascending: false }),
   ]);
 
@@ -127,7 +135,48 @@ export default async function OwnerPage() {
     year: "numeric",
   });
 
+  // while the watchdog story narrates this screen, its card leads so every
+  // step's subject is in view inside the stage
+  const watchdogFirst = resolveStoryParams(params)?.story.slug === "watchdog-leak";
+  const watchdogCard = (
+    <section className="svika-card wallet-panel" data-testid="owner-watchdog">
+      <div className="watchdog-head">
+        <h2 className="svika-headline">{t(lang, "owner.watchdog")}</h2>
+        <span className="svika-meta watchdog-label">
+          {t(lang, "owner.watchdogSimulated")}
+        </span>
+      </div>
+      {watchdogDays.length === 0 ? (
+        <p className="svika-body empty-note">{t(lang, "owner.watchdogEmpty")}</p>
+      ) : (
+        <>
+          <p className="svika-meta">{watchdogSummary}</p>
+          {flaggedDays.length === 0 ? (
+            <p className="svika-body empty-note">{t(lang, "owner.watchdogNone")}</p>
+          ) : (
+            <WatchdogNarratives
+              initial={lang}
+              englishLabel={t(lang, "lang.english")}
+              shonaLabel={t(lang, "lang.shona")}
+              forestLabel={t(lang, "owner.wdForest")}
+              thresholdSilentLabel={t(lang, "owner.wdThresholdSilent")}
+              thresholdFiredLabel={t(lang, "owner.wdThresholdFired")}
+              flags={flaggedDays.slice(0, WATCHDOG_FLAGS_SHOWN).map((d) => ({
+                day: d.day,
+                en: d.explanation_en ?? "",
+                sn: d.explanation_sn ?? d.explanation_en ?? "",
+                thresholdFlagged: d.threshold_flagged,
+              }))}
+            />
+          )}
+        </>
+      )}
+      <p className="svika-meta empty-note">{t(lang, "owner.watchdogNote")}</p>
+    </section>
+  );
+
   return (
+    <StoryStage params={params} lang={lang}>
     <main className="shell">
       <header className="screen-head">
         <Link href="/app" className="back-btn" aria-label={t(lang, "common.back")}>
@@ -138,6 +187,8 @@ export default async function OwnerPage() {
           <p className="owner-head-sub">{dateLine}</p>
         </div>
       </header>
+
+      {watchdogFirst && watchdogCard}
 
       <section className="feature-card owner-hero svika-animate-fade-up">
         <p className="feature-label">{t(lang, "owner.balance")}</p>
@@ -209,36 +260,7 @@ export default async function OwnerPage() {
         </section>
       )}
 
-      <section className="svika-card wallet-panel" data-testid="owner-watchdog">
-        <div className="watchdog-head">
-          <h2 className="svika-headline">{t(lang, "owner.watchdog")}</h2>
-          <span className="svika-meta watchdog-label">
-            {t(lang, "owner.watchdogSimulated")}
-          </span>
-        </div>
-        {watchdogDays.length === 0 ? (
-          <p className="svika-body empty-note">{t(lang, "owner.watchdogEmpty")}</p>
-        ) : (
-          <>
-            <p className="svika-meta">{watchdogSummary}</p>
-            {flaggedDays.length === 0 ? (
-              <p className="svika-body empty-note">{t(lang, "owner.watchdogNone")}</p>
-            ) : (
-              <WatchdogNarratives
-                initial={lang}
-                englishLabel={t(lang, "lang.english")}
-                shonaLabel={t(lang, "lang.shona")}
-                flags={flaggedDays.slice(0, WATCHDOG_FLAGS_SHOWN).map((d) => ({
-                  day: d.day,
-                  en: d.explanation_en ?? "",
-                  sn: d.explanation_sn ?? d.explanation_en ?? "",
-                }))}
-              />
-            )}
-          </>
-        )}
-        <p className="svika-meta empty-note">{t(lang, "owner.watchdogNote")}</p>
-      </section>
+      {!watchdogFirst && watchdogCard}
 
       <section className="svika-card wallet-panel owner-tax">
         <div className="watchdog-head">
@@ -257,5 +279,6 @@ export default async function OwnerPage() {
       </Link>
       <p className="owner-note">{t(lang, "owner.taxHint")}</p>
     </main>
+    </StoryStage>
   );
 }

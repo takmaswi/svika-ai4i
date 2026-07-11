@@ -18,7 +18,7 @@ test.describe("the intelligence doors", () => {
     await expect(
       page.getByText("The intelligence, three spines with their evidence"),
     ).toBeVisible();
-    for (const door of ["eta", "takunda"]) {
+    for (const door of ["eta", "takunda", "watchdog"]) {
       await expect(page.getByTestId(`story-door-${door}`)).toBeVisible();
     }
   });
@@ -48,6 +48,50 @@ test.describe("the intelligence doors", () => {
     await expect(page.getByTestId("story-lock")).toHaveAttribute("data-live", "true");
     await page.getByTestId("story-next").click();
     await page.waitForURL(/\/app\/intelligence$/, { timeout: 20_000 });
+    await expect(page.getByTestId("story-bar")).toHaveCount(0);
+  });
+
+  test("door three: the watchdog catches the live injected leak", async ({
+    page,
+  }) => {
+    test.slow();
+    await landingReady(page);
+    await page.getByTestId("story-door-watchdog").click();
+    await page.waitForURL(/story=watchdog-leak&step=0/, { timeout: 25_000 });
+
+    // the before state: entry reset the staged end day to its clean variant,
+    // so the newest flagged day (if any) is older history
+    const watchdog = page.getByTestId("owner-watchdog");
+    await expect(watchdog).toBeVisible();
+    await expect(watchdog).toContainText("Simulated history");
+
+    // next explains the plant; the following next injects it live
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/step=1/, { timeout: 25_000 });
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/step=2/, { timeout: 25_000 });
+
+    // the injected day is flagged by the forest with the threshold silent,
+    // and the card says both verdicts on screen
+    const verdicts = page.getByTestId("watchdog-verdicts").first();
+    await expect(verdicts).toContainText("Forest flagged this day");
+    await expect(verdicts).toContainText("threshold rule stayed silent");
+
+    // the closing step: bilingual narrative, patterns never a person
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/step=3/, { timeout: 25_000 });
+    const narrative = page.locator(".watchdog-narrative").first();
+    await expect(narrative).toBeVisible();
+    await expect(watchdog).toContainText("never a person");
+
+    // final step: unlocked, the owner can flip the narrative to Shona
+    await expect(page.getByTestId("story-live")).toBeVisible();
+    await page.locator(".watchdog-lang button", { hasText: "Shona" }).click();
+    await expect(narrative).not.toHaveText(/^$/);
+
+    // stay and explore keeps the owner dashboard, chrome gone
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/\/app\/owner$/, { timeout: 20_000 });
     await expect(page.getByTestId("story-bar")).toHaveCount(0);
   });
 });

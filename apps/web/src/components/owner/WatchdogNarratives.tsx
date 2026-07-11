@@ -11,6 +11,9 @@ export interface WatchdogFlag {
   day: string;
   en: string;
   sn: string;
+  /** The named fixed threshold's verdict on the same day, held beside the
+   *  forest's flag so the card shows what the rule alone would have missed. */
+  thresholdFlagged: boolean;
 }
 
 interface WatchdogNarrativesProps {
@@ -18,6 +21,10 @@ interface WatchdogNarrativesProps {
   initial: "en" | "sn";
   englishLabel: string;
   shonaLabel: string;
+  /** "Forest flagged this day" line, per verdict pair. */
+  forestLabel: string;
+  thresholdSilentLabel: string;
+  thresholdFiredLabel: string;
 }
 
 export function WatchdogNarratives({
@@ -25,6 +32,9 @@ export function WatchdogNarratives({
   initial,
   englishLabel,
   shonaLabel,
+  forestLabel,
+  thresholdSilentLabel,
+  thresholdFiredLabel,
 }: WatchdogNarrativesProps) {
   const [lang, setLang] = useState<"en" | "sn">(initial);
 
@@ -51,6 +61,10 @@ export function WatchdogNarratives({
       {flags.map((d) => (
         <div key={d.day} className="watchdog-flag">
           <p className="svika-mono-code watchdog-day">{d.day}</p>
+          <p className="svika-meta watchdog-verdicts" data-testid="watchdog-verdicts">
+            {forestLabel} ·{" "}
+            {d.thresholdFlagged ? thresholdFiredLabel : thresholdSilentLabel}
+          </p>
           <p className="svika-body watchdog-narrative">
             {lang === "sn" ? d.sn : d.en}
           </p>

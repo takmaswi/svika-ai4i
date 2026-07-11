@@ -189,6 +189,17 @@ export default async function LandingPage({
               {t(lang, "landing.intelTakunda")}
             </button>
           </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="owner" />
+            <input type="hidden" name="story" value="watchdog-leak" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-watchdog"
+            >
+              {t(lang, "landing.intelWatchdog")}
+            </button>
+          </form>
         </div>
         <p className="svika-meta landing-demo-stories-lead">
           {t(lang, "landing.shelfVision")}

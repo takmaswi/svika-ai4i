@@ -413,6 +413,18 @@ export const dict = {
     en: "No simulated history loaded yet.",
     sn: "Hapasati pane nhoroondo yakagadzirwa.",
   },
+  "owner.wdForest": {
+    en: "Forest flagged this day",
+    sn: "Sango rakadoma zuva iri",
+  },
+  "owner.wdThresholdSilent": {
+    en: "the fixed threshold rule stayed silent",
+    sn: "mutemo wakagadzikwa wakaramba wakanyarara",
+  },
+  "owner.wdThresholdFired": {
+    en: "the fixed threshold rule also fired",
+    sn: "mutemo wakagadzikwa wakadomawo",
+  },
   "owner.watchdogNote": {
     en: "Flags describe patterns, never a person. This card runs on clearly labelled simulated history until the network has months of real fares.",
     sn: "Zviratidzo zvinotaura maitiro, kwete munhu. Kadhi iri rinoshanda nenhoroondo yakagadzirwa kusvika network yava nemwedzi yemari chaiyo.",
@@ -854,6 +866,23 @@ export const dict = {
   "story.eta.1": {
     en: "The whole ladder: a measured average serves today, a trained model waits, and one committed rule promotes it only when it beats the average on rides it never saw. This table is the evidence itself.",
     sn: "Danho rese: avhareji yakayerwa iri kushanda nhasi, modhi yakadzidziswa yakamirira, uye mutemo mumwe wakachengetwa unoikwidza chete kana ichikunda avhareji panzendo yaisati yaona. Tafura iyi ndihwo uchapupu pachahwo.",
+  },
+
+  "story.wd.0": {
+    en: "This is the owner's view. Every money figure comes from the real ledger. The watchdog card scans a simulated history, labelled as such, because a watchdog needs months and this network is days old.",
+    sn: "Uku ndiko kuona kwemuridzi. Nhamba yega yega yemari inobva mubhuku remari chairo. Kadhi remurindi rinoongorora nhoroondo yakagadzirwa, yakanyorwa saizvozvo, nekuti murindi anoda mwedzi uye network iyi ine mazuva.",
+  },
+  "story.wd.1": {
+    en: "Now the test. Next plants a heavy skim on yesterday inside that simulated history: one kombi of four hands over far less than it took. The route total barely moves.",
+    sn: "Zvino muedzo. Enderera inoisa kubiwa kukuru pazuro munhoroondo yakagadzirwa iya: kombi imwe pana ina inopa zvishoma kupfuura zvayakatora. Mari yese yenzira haizununguke zvakanyanya.",
+  },
+  "story.wd.2": {
+    en: "Read the flag. The fixed threshold rule stayed silent, exactly as its committed score said it would: one kombi's skim dilutes to a few percent at route level. The isolation forest flagged the day.",
+    sn: "Verenga chiratidzo. Mutemo wakagadzikwa wakaramba wakanyarara, sekutaura kwakaita zvibodzwa zvawo zvakachengetwa: kubiwa kwekombi imwe kunoderera kusvika pazvikamu zvishoma panzira yese. Sango rekupatsanura rakadoma zuva iri.",
+  },
+  "story.wd.3": {
+    en: "The explanation reads in English or Shona, and it names a day, a route and an unnamed vehicle, never a person. That rule is enforced by a unit test, not a promise.",
+    sn: "Tsanangudzo inoverengeka muChirungu kana muchiShona, uye inodoma zuva, nzira nekombi isina zita, kwete munhu. Mutemo uyu unosimbiswa nebvunzo yekodhi, kwete vimbiso.",
   },
 
   // --- vision scenes: simulations of what ships next, always stamped ------

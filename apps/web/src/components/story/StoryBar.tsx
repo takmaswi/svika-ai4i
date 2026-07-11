@@ -13,9 +13,12 @@ import { ArrowIcon } from "@/components/icons";
 interface StoryBarProps {
   params: Record<string, string | string[] | undefined>;
   lang: AppLanguage;
+  /** In flow instead of floating: shell pages (the vision phone views) use
+   *  this so the caption never covers the content it narrates. */
+  inline?: boolean;
 }
 
-export function StoryBar({ params, lang }: StoryBarProps) {
+export function StoryBar({ params, lang, inline }: StoryBarProps) {
   const slug = typeof params.story === "string" ? params.story : "";
   const rawStep = typeof params.step === "string" ? Number(params.step) : NaN;
   const story = STORIES[slug];
@@ -28,7 +31,10 @@ export function StoryBar({ params, lang }: StoryBarProps) {
   const exitPath = story.exitPath ?? "/app";
 
   return (
-    <aside className="story-bar svika-glass-strong" data-testid="story-bar">
+    <aside
+      className={`story-bar svika-glass-strong${inline ? " story-bar-inline" : ""}`}
+      data-testid="story-bar"
+    >
       <div className="story-bar-head">
         <span className="svika-meta story-bar-count svika-mono-code">
           {step + 1}/{story.steps.length}

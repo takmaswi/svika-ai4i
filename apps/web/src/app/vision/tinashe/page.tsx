@@ -77,7 +77,6 @@ export default async function TinasheVisionPage({
 
   return (
     <main className="shell" data-testid="vision-tinashe" data-view={view}>
-      <StoryBar params={params} lang={lang} />
       <header className="shell-top">
         <Link href="/" className="back-btn" aria-label={t(lang, "common.back")}>
           <BackIcon />
@@ -87,6 +86,7 @@ export default async function TinasheVisionPage({
           <LanguageToggle lang={lang} />
         </span>
       </header>
+      <StoryBar params={params} lang={lang} inline />
 
       {view === "kin" ? (
         <section className="feature-card vision-phone svika-animate-fade-up">

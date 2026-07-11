@@ -64,31 +64,32 @@ async function main() {
     const page = await context.newPage();
 
     // the sandbox shelf: the landing's honesty split, full page
-    await page.goto(`${BASE}/`);
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await settleMap(page);
     await shot(page, "shelf", variant, true);
 
     // Tinashe: the alert on the map, the mother's phone, the responder view
-    await page.goto(`${BASE}/vision/tinashe?view=alert&story=tinashe-crash&step=0`);
+    await page.goto(`${BASE}/vision/tinashe?view=alert&story=tinashe-crash&step=0`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await settleMap(page);
     await shot(page, "vision-tinashe", variant);
-    await page.goto(`${BASE}/vision/tinashe?view=kin&story=tinashe-crash&step=1`);
+    await page.goto(`${BASE}/vision/tinashe?view=kin&story=tinashe-crash&step=1`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1_000);
     await shot(page, "vision-tinashe-kin", variant);
     await page.goto(
       `${BASE}/vision/tinashe?view=responder&story=tinashe-crash&step=2`,
+      { waitUntil: "domcontentloaded", timeout: 60_000 },
     );
     await page.waitForTimeout(1_000);
     await shot(page, "vision-tinashe-responder", variant);
 
     // Gogo: mid session, the menu answered on the mbudzi screen
-    await page.goto(`${BASE}/vision/gogo?story=gogo-ussd&step=0`);
+    await page.goto(`${BASE}/vision/gogo?story=gogo-ussd&step=0`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1_000);
     await dialIntoMenu(page);
     await shot(page, "vision-gogo", variant, true);
 
     // capacity: badges riding the fleet plus the declared/proven card
-    await page.goto(`${BASE}/vision/capacity?story=kombi-capacity&step=0`);
+    await page.goto(`${BASE}/vision/capacity?story=kombi-capacity&step=0`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await settleMap(page);
     await page
       .getByTestId("capacity-badge")

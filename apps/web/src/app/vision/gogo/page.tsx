@@ -23,7 +23,6 @@ export default async function GogoVisionPage({
 
   return (
     <main className="shell" data-testid="vision-gogo">
-      <StoryBar params={params} lang={lang} />
       <header className="shell-top">
         <Link href="/" className="back-btn" aria-label={t(lang, "common.back")}>
           <BackIcon />
@@ -33,6 +32,7 @@ export default async function GogoVisionPage({
           <LanguageToggle lang={lang} />
         </span>
       </header>
+      <StoryBar params={params} lang={lang} inline />
 
       <FeaturePhone
         etaAction={gogoKombiEta}

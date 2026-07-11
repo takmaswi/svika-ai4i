@@ -333,6 +333,14 @@ body:has(.home-screen) .demo-account-chip {
 .story-bar-next {
   flex: 1;
 }
+/* Shell pages put the bar in flow so the caption never hides the content
+   it narrates (the mbudzi screen, the message card). */
+.story-bar-inline {
+  position: static;
+  transform: none;
+  width: 100%;
+  margin: var(--space-4) 0 0;
+}
 /* The vision scenes' permanent Simulation stamp: the demo movement chip's
    pill family without the signal dot (signal marks live truth only). Scenes
    decide where it sits; the pill itself is theme complete via svika-glass. */

@@ -98,6 +98,15 @@ export const STORIES: Record<string, Story> = {
       { path: "/vision/tinashe?view=responder", captionKey: "story.tin.3" },
     ],
   },
+  "gogo-ussd": {
+    slug: "gogo-ussd",
+    persona: "none",
+    exitPath: "/",
+    steps: [
+      { path: "/vision/gogo", captionKey: "story.gogo.0" },
+      { path: "/vision/gogo", captionKey: "story.gogo.1" },
+    ],
+  },
   "rudo-night": {
     slug: "rudo-night",
     persona: "rudo",

@@ -431,6 +431,80 @@ body:has(.home-screen) .demo-account-chip {
 .vision-honesty {
   margin: var(--space-3) 0 0;
 }
+.vision-honesty-card {
+  margin-top: var(--space-4);
+}
+/* Gogo's mbudzi: an object, not a surface, so its colors hold in both
+   themes: char body, park LCD with char mono text (a lit screen), section 6
+   key anatomy scaled to the handset. */
+.mbudzi {
+  margin-top: var(--space-4);
+  border-radius: 26px;
+  background: var(--color-char);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.mbudzi-screen {
+  border-radius: 12px;
+  background: var(--color-park);
+  color: var(--color-char);
+  min-height: 168px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-weight: var(--weight-semibold);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.mbudzi-line {
+  margin: 0;
+}
+.mbudzi-hint {
+  opacity: 0.7;
+}
+.mbudzi-typed {
+  margin: auto 0 0;
+  font-size: 16px;
+  letter-spacing: 2px;
+  min-height: 1.4em;
+}
+.mbudzi-keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.mbudzi-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+}
+.mbudzi-key {
+  min-height: 46px;
+  border-radius: 12px;
+  border: 1.5px solid var(--color-char);
+  background: #ffffff;
+  color: var(--color-char);
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.mbudzi-key:active {
+  transform: scale(0.99);
+  background: #f4f5f1;
+}
+.mbudzi-ok {
+  background: var(--color-marigold);
+}
+.mbudzi-ok:active {
+  background: var(--color-marigold-hover);
+}
 
 /* --- landing (screen 1) ------------------------------------------------------ */
 .landing-h1 {

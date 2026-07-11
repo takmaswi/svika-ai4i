@@ -781,6 +781,51 @@ export const dict = {
     en: "These fields are live in the product today. Only the rider can store them, with consent recorded, and removal is one tap on the profile.",
     sn: "Minda iyi inoshanda muapp nhasi. Mufambi chete ndiye anoichengeta, nemvumo yakanyorwa, uye kubvisa kuri padyo paprofile.",
   },
+
+  // Gogo on her mbudzi
+  "story.gogo.0": {
+    en: "Gogo does not own a smartphone and never will. Her mbudzi's keypad works: dial *123# and press OK.",
+    sn: "Gogo havana smartphone uye havazombovi nayo. Makiyi embudzi yavo anoshanda: dhayira *123# wobaya OK.",
+  },
+  "story.gogo.1": {
+    en: "Every menu here is real tested code, and the how far answer comes from the same eta engine the app uses. What waits is a telco aggregator agreement: a contract, not a build.",
+    sn: "Menyu imwe neimwe pano icode chaiyo yakaedzwa, uye mhinduro yekuti kombi iri kure sei inobva kuinjini imwe chete yeeta inoshandiswa neapp. Chakamirirwa chibvumirano nemakambani emafoni: kondirakiti, kwete kuvaka.",
+  },
+  "vision.gogo.menu1": { en: "1. My credit", sn: "1. Mari yangu" },
+  "vision.gogo.menu2": { en: "2. Book my usual trip", sn: "2. Bhuka rwendo rwangu" },
+  "vision.gogo.menu3": { en: "3. How far is my kombi", sn: "3. Kombi yangu iri kure sei" },
+  "vision.gogo.menu4": { en: "4. Claim my change", sn: "4. Tora chenji yangu" },
+  "vision.gogo.invalid": { en: "That choice is not on the menu.", sn: "Sarudzo iyoyo haipo pamenyu." },
+  "vision.gogo.claimPrompt": {
+    en: "Enter the 4 digit change code from your ride. 0 goes back.",
+    sn: "Isa kodhi yechenji ine nhamba 4 yerwendo rwako. 0 inodzokera shure.",
+  },
+  "vision.gogo.balance": { en: "Your credit:", sn: "Mari yako:" },
+  "vision.gogo.booked": { en: "Booked:", sn: "Zvabhukwa:" },
+  "vision.gogo.bookedCode": { en: "Show the hwindi code", sn: "Ratidza hwindi kodhi" },
+  "vision.gogo.eta": { en: "Your kombi is about", sn: "Kombi yako iri angangoita" },
+  "vision.gogo.etaDemo": { en: "(demo estimate)", sn: "(fungidziro yekuratidzira)" },
+  "vision.gogo.claimed": {
+    en: "Change kept as credit. New balance:",
+    sn: "Chenji yachengetwa semari. Yasvika:",
+  },
+  "vision.gogo.claimRejected": {
+    en: "That code did not match a ride.",
+    sn: "Kodhi iyoyo haina kuwirirana nerwendo.",
+  },
+  "vision.gogo.unavailable": {
+    en: "Service not available now. Try again.",
+    sn: "Sevhisi haipo izvozvi. Edzazve.",
+  },
+  "vision.gogo.idleHint": { en: "Dial", sn: "Dhayira" },
+  "vision.gogo.endedHint": { en: "Session ended. Dial again:", sn: "Zvapera. Dhayirazve:" },
+  "vision.gogo.waiting": { en: "Please wait", sn: "Mirira zvishoma" },
+  "vision.gogo.keyOk": { en: "OK", sn: "OK" },
+  "vision.gogo.keyClear": { en: "C", sn: "C" },
+  "vision.gogo.note": {
+    en: "The menus on this phone are real code with unit tests beside them, and the how far answer calls the live arrival engine. Reaching real handsets waits on a telco aggregator agreement, which is a contract, not a build. The money menus here move nothing.",
+    sn: "Menyu dziri pafoni iyi icode chaiyo ine miedzo padyo payo, uye mhinduro yekure kwekombi inodana injini chaiyo yekusvika. Kusvika pamafoni chaiwo kwakamirira chibvumirano nemakambani emafoni, kondirakiti kwete kuvaka. Menyu dzemari pano hadzifambisi chinhu.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

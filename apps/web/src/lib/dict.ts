@@ -614,6 +614,11 @@ export const dict = {
     en: "That did not save. Try again.",
     sn: "Hazvina kuchengetedzwa. Edzazve.",
   },
+  "alert.title": {
+    en: "Your usual kombi is close",
+    sn: "Kombi yaunogara uchikwira yaswedera",
+  },
+
   "share.sectionH": { en: "Share my ride", sn: "Govera rwendo rwangu" },
   "share.sectionB": {
     en: "Send this link to someone who worries about you. They follow the trip on a map, never your code or your money.",

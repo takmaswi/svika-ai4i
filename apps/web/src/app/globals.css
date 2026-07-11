@@ -1516,6 +1516,39 @@ body:has(.home-screen) .demo-account-chip {
   gap: var(--space-3);
 }
 
+/* commute alert (spine 2): floats just above the peeking sheet, built from
+   the sheet surface and the live dot; the open sheet slides over it */
+.commute-alert {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: calc(396px + 12px);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  animation: svk-rise 0.6s var(--ease-standard) 0.3s both;
+}
+.commute-alert-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.commute-alert-title {
+  font-weight: var(--weight-semibold);
+}
+.commute-alert-eta {
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .commute-alert {
+    animation: none;
+  }
+}
+
 /* the share link shown on the ticket: mono per hard rule 9, wraps at 360px */
 .share-url {
   word-break: break-all;

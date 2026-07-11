@@ -17,6 +17,13 @@ import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
 import { CORRIDOR_ROUTE_CODE } from "@/lib/map/corridor-data";
 import type { EtaEstimate } from "@/lib/map/eta";
 import { homeEtaProvider } from "@/lib/map/eta-home";
+import {
+  activePattern,
+  etaSaysNear,
+  LOOKBACK_DAYS,
+  mineCommutePatterns,
+  type RideFact,
+} from "@/lib/commute/patterns";
 
 interface SavedTripRow {
   id: string;
@@ -75,7 +82,10 @@ export default async function RiderHome({
 
   const role = await resolveRole(supabase, user.id);
 
-  const [balanceRes, savedRes, ticketsRes, corridorRes, corridorFareRes] =
+  const lookbackIso = new Date(
+    Date.now() - LOOKBACK_DAYS * 24 * 60 * 60_000,
+  ).toISOString();
+  const [balanceRes, savedRes, ticketsRes, corridorRes, corridorFareRes, prefsRes, historyRes] =
     await Promise.all([
       supabase
         .from("account_balances")
@@ -110,6 +120,17 @@ export default async function RiderHome({
         .order("effective_from", { ascending: false })
         .limit(1)
         .maybeSingle(),
+      supabase.from("rider_prefs").select("commute_alerts").maybeSingle(),
+      // spine 2 raw material: the rider's own recent rides, under their RLS
+      supabase
+        .from("tickets")
+        .select(
+          "from_stop_id, to_stop_id, purchased_at, from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name)",
+        )
+        .eq("kind", "fare")
+        .gte("purchased_at", lookbackIso)
+        .order("purchased_at", { ascending: false })
+        .limit(120),
     ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
@@ -126,6 +147,41 @@ export default async function RiderHome({
   const etaByTrip = new Map<string, EtaEstimate>();
   for (const trip of savedTrips) {
     etaByTrip.set(trip.id, await etaProvider.estimate(trip.from_stop_id, trip.to_stop_id));
+  }
+
+  // Spine 2, commute alerts: recurring trips mined from the rider's own
+  // history as plain statistics; the alert fires only when the pref is on,
+  // the moment sits in the usual window, and the live wait (Spine 1) says
+  // the usual kombi is near. See docs/SPINE-2-COMMUTE-ALERTS.md.
+  let commuteAlert: {
+    fromName: string;
+    toName: string;
+    eta: EtaEstimate;
+  } | null = null;
+  if (prefsRes.data?.commute_alerts) {
+    interface HistoryRow {
+      from_stop_id: string;
+      to_stop_id: string;
+      purchased_at: string;
+      from_stop: { name: string } | null;
+      to_stop: { name: string } | null;
+    }
+    const facts: RideFact[] = (
+      (historyRes.data ?? []) as unknown as HistoryRow[]
+    ).map((r) => ({
+      fromStopId: r.from_stop_id,
+      toStopId: r.to_stop_id,
+      fromName: r.from_stop?.name ?? "",
+      toName: r.to_stop?.name ?? "",
+      purchasedAt: r.purchased_at,
+    }));
+    const pattern = activePattern(mineCommutePatterns(facts, new Date()), new Date());
+    if (pattern) {
+      const eta = await etaProvider.estimate(pattern.fromStopId, pattern.toStopId);
+      if (etaSaysNear(eta.minutes)) {
+        commuteAlert = { fromName: pattern.fromName, toName: pattern.toName, eta };
+      }
+    }
   }
 
   // the peek card (§9): route + arrival + fare, never behind a scroll
@@ -186,6 +242,27 @@ export default async function RiderHome({
           </span>
         </span>
       </header>
+
+      {commuteAlert && (
+        <aside className="commute-alert svika-glass-strong" data-testid="commute-alert">
+          <span className="svika-live-dot" aria-hidden>
+            <span className="svika-ripple-ring" />
+            <span className="svika-pulse-dot" />
+          </span>
+          <span className="commute-alert-body">
+            <span className="svika-body commute-alert-title">
+              {t(lang, "alert.title")}
+            </span>
+            <span className="svika-meta">
+              {commuteAlert.fromName} {toWord} {commuteAlert.toName} ·{" "}
+              {etaBasisLabel(lang, commuteAlert.eta)}
+            </span>
+          </span>
+          <span className="peek-mono commute-alert-eta">
+            ~{commuteAlert.eta.minutes} {t(lang, "common.minutes")}
+          </span>
+        </aside>
+      )}
 
       <HomeSheet
         openLabel={t(lang, "home.sheetOpen")}

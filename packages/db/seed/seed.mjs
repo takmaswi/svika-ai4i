@@ -540,6 +540,101 @@ async function ensureDemoPool() {
 }
 await ensureDemoPool();
 
+// Takunda: the commute alert demo persona. A named account outside the
+// judge pool (his history is his story) with the alert pref on and a
+// believable daily commute on the real corridor. The rides are fixture
+// data, enumerated in demo_commute_fixtures and rebuilt around the seed
+// moment so the mined window is live whenever the demo runs; no money
+// moves for fixtures (disclosure register entry).
+const TAKUNDA_EMAIL = "demo.takunda@svika.app";
+const TAKUNDA_HISTORY_DAYS = 14;
+async function ensureTakunda() {
+  const password = process.env.DEMO_JUDGE_PASSWORD;
+  if (!password) {
+    console.log("DEMO_JUDGE_PASSWORD not set; skipping Takunda persona");
+    return;
+  }
+  let user = await findUserByEmail(TAKUNDA_EMAIL);
+  if (!user) {
+    const { data, error } = await admin.auth.admin.createUser({
+      email: TAKUNDA_EMAIL,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: "Takunda" },
+    });
+    if (error) throw error;
+    user = data.user;
+    console.log(`created demo persona ${TAKUNDA_EMAIL}`);
+  } else {
+    await admin.auth.admin.updateUserById(user.id, { password });
+  }
+  const { error: pErr } = await admin
+    .from("profiles")
+    .update({ full_name: "Takunda", preferred_language: "en", demo_sim: true })
+    .eq("id", user.id);
+  if (pErr) throw pErr;
+
+  await ensureConsent(user.id);
+  await topUpRider(user.id);
+
+  const { error: prefErr } = await admin
+    .from("rider_prefs")
+    .upsert(
+      { rider_id: user.id, commute_alerts: true, voice_en: true, voice_sn: true },
+      { onConflict: "rider_id" },
+    );
+  if (prefErr) throw prefErr;
+
+  const { data: route } = await admin
+    .from("routes")
+    .select("id")
+    .eq("code", "HEIGHTS-REZENDE")
+    .single();
+  const { data: stops } = await admin
+    .from("route_stops")
+    .select("stop_id, seq")
+    .eq("route_id", route.id)
+    .eq("direction", "outbound")
+    .order("seq");
+  const from = stops[0].stop_id;
+  const to = stops[stops.length - 1].stop_id;
+
+  const { error: tripErr } = await admin.from("saved_trips").upsert(
+    {
+      rider_id: user.id,
+      from_stop_id: from,
+      to_stop_id: to,
+      nickname: "Kubasa",
+    },
+    { onConflict: "rider_id,from_stop_id,to_stop_id" },
+  );
+  if (tripErr) throw tripErr;
+
+  // one ride per day for two weeks, centred a few minutes before the seed
+  // moment with light jitter, so "now" always sits in the mined window
+  const rides = [];
+  for (let d = 0; d < TAKUNDA_HISTORY_DAYS; d++) {
+    const jitterMinutes = 6 + ((d * 7) % 20);
+    const at = new Date(Date.now() - d * 24 * 60 * 60_000 - jitterMinutes * 60_000);
+    rides.push({ at: at.toISOString() });
+  }
+  const { data: inserted, error: histErr } = await admin.rpc(
+    "reset_demo_commute_history",
+    {
+      p_profile: user.id,
+      p_route: route.id,
+      p_direction: "outbound",
+      p_from: from,
+      p_to: to,
+      p_fare_cents: 150,
+      p_rides: rides,
+    },
+  );
+  if (histErr) throw histErr;
+  console.log(`Takunda ready with ${inserted} fixture rides`);
+}
+await ensureTakunda();
+
 // route assignments: the demo hwindi works every corridor the rehearsal
 // and e2e flows drive (owner.spec clears a MARKETSQ-AVONDALE fare); the RLS
 // test conductor covers the synthetic TEST-01 route plus the corridor the

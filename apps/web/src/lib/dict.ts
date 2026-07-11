@@ -38,6 +38,22 @@ export const dict = {
     en: "Real stories, real money on the live system",
     sn: "Nyaya chaidzo, mari chaiyo pasisitimu mhenyu",
   },
+  "landing.shelfIntel": {
+    en: "The intelligence, three spines with their evidence",
+    sn: "Njere dzacho, misana mitatu neuchapupu hwayo",
+  },
+  "landing.intelEta": {
+    en: "How Svika knows your arrival",
+    sn: "Svika inoziva sei kusvika kwako",
+  },
+  "landing.intelTakunda": {
+    en: "Takunda's alert, the learned routine",
+    sn: "Yeuchidzo yaTakunda, tsika yakadzidzwa",
+  },
+  "landing.intelWatchdog": {
+    en: "The watchdog catches a leak",
+    sn: "Murindi anobata kuvhaya",
+  },
   "landing.shelfVision": {
     en: "Vision scenes, simulations of what ships next",
     sn: "Zviratidzo zveramangwana, kufananidzira kwezvinotevera",
@@ -52,10 +68,6 @@ export const dict = {
   "landing.demoStory2": {
     en: "Two kombis and a walk",
     sn: "Makombi maviri nekufamba",
-  },
-  "landing.demoStory3": {
-    en: "Takunda's morning",
-    sn: "Mangwanani aTakunda",
   },
   "landing.demoStory4": {
     en: "Rudo's night ride",
@@ -509,6 +521,51 @@ export const dict = {
     sn: "Ona kuti Svika inoziva sei",
   },
 
+  "intel.title": {
+    en: "How Svika knows your arrival",
+    sn: "Svika inoziva sei kusvika kwako",
+  },
+  "intel.intro": {
+    en: "No kombi runs on a timetable. The number on your screen stands on a ladder you can check, rung by rung.",
+    sn: "Hapana kombi inofamba netimetable. Nhamba iri pascreen yako yakamira padanho raunogona kuongorora.",
+  },
+  "intel.rung1H": { en: "Measured, serving today", sn: "Yakayerwa, iri kushanda nhasi" },
+  "intel.rung1B": {
+    en: "The number you see is a plain average over segment times from {count} real rides recorded on this road, phone in hand. Its label on every screen says so.",
+    sn: "Nhamba yaunoona iavhareji yenguva dzezvikamu kubva panzendo {count} chaidzo dzakarekodhwa munzira ino. Chiratidzo chayo pascreen yega yega chinozvitaura.",
+  },
+  "intel.rung2H": { en: "Trained, waiting", sn: "Yakadzidziswa, yakamirira" },
+  "intel.rung2B": {
+    en: "A model that learns how each hour of the day moves is trained on the same rides. It does not serve yet.",
+    sn: "Modhi inodzidza mafambiro eawa rega rega yakadzidziswa nenzendo dzimwe chetedzo. Haisati yashanda.",
+  },
+  "intel.rung3H": { en: "One rule decides", sn: "Mutemo mumwe ndiwo unosarudza" },
+  "intel.rung3B": {
+    en: "The model serves only when there are at least {min} recorded journeys and it beats the average on rides it never saw. The verdict lives in a committed file; nothing else decides.",
+    sn: "Modhi inoshanda chete kana pane nzendo {min} kana kupfuura dzakarekodhwa uye ichikunda avhareji panzendo yaisati yamboona. Mutongo unogara mufaira yakachengetwa; hapana chimwe chinosarudza.",
+  },
+  "intel.tableH": { en: "The committed evidence", sn: "Uchapupu hwakachengetwa" },
+  "intel.rowJourneys": { en: "Recorded journeys", sn: "Nzendo dzakarekodhwa" },
+  "intel.rowSegments": { en: "Segment observations", sn: "Zvikamu zvakaonekwa" },
+  "intel.rowBaseline": {
+    en: "Baseline error, held out",
+    sn: "Kukanganisa kweavhareji",
+  },
+  "intel.rowModel": { en: "Model error, held out", sn: "Kukanganisa kwemodhi" },
+  "intel.rowServed": { en: "Serving now", sn: "Iri kushanda" },
+  "intel.verdictPromoted": {
+    en: "The model beat the baseline on held out rides, so it serves.",
+    sn: "Modhi yakakunda avhareji panzendo dzayaisati yaona, saka iri kushanda.",
+  },
+  "intel.verdictHeld": {
+    en: "Verdict: not enough rides to trust any evaluation (the rule asks for {min}), so the plain average serves and every estimate says how many rides it stands on.",
+    sn: "Mutongo: nzendo hadzisati dzakwana kuvimba nechiyero (mutemo unoda {min}), saka avhareji ndiyo inoshanda uye fungidziro yega yega inotaura nzendo dzainomira padziri.",
+  },
+  "intel.note": {
+    en: "This table is the training run's own committed file, not retyped numbers. It updates when new rides are recorded.",
+    sn: "Tafura iyi ifaira rakachengetwa rekudzidziswa pachako, kwete nhamba dzakanyorwazve. Inovandudzwa kana nzendo itsva dzarekodhwa.",
+  },
+
   "plan.saveTitle": {
     en: "Save this trip for your home map",
     sn: "Chengetedza rwendo urwu pamepu yako",
@@ -787,6 +844,16 @@ export const dict = {
   "share.deadB": {
     en: "The trip has ended or the rider stopped sharing it.",
     sn: "Rwendo rwapera kana kuti mufambi amira kurugovera.",
+  },
+
+  // --- the intelligence doors: the three spines with their evidence -------
+  "story.eta.0": {
+    en: "Watch the arrives number on the card. The label under it says what the number stands on: real rides recorded on this road with a phone, not a guess.",
+    sn: "Tarisa nhamba yekusvika pakadhi. Chiratidzo chiri pasi payo chinotaura painomira: nzendo chaidzo dzakarekodhwa munzira ino nefoni, kwete fungidziro.",
+  },
+  "story.eta.1": {
+    en: "The whole ladder: a measured average serves today, a trained model waits, and one committed rule promotes it only when it beats the average on rides it never saw. This table is the evidence itself.",
+    sn: "Danho rese: avhareji yakayerwa iri kushanda nhasi, modhi yakadzidziswa yakamirira, uye mutemo mumwe wakachengetwa unoikwidza chete kana ichikunda avhareji panzendo yaisati yaona. Tafura iyi ndihwo uchapupu pachahwo.",
   },
 
   // --- vision scenes: simulations of what ships next, always stamped ------

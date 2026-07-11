@@ -93,6 +93,18 @@ export const STORIES: Record<string, Story> = {
       { path: "/app?voicedemo=1", captionKey: "story.tk.3" },
     ],
   },
+  // --- the intelligence doors: the spines shown honestly. Door one rides a
+  // pooled persona onto the live map, then the committed evidence page.
+  // Door two is takunda-morning above; door three is watchdog-leak below. --
+  "eta-knows": {
+    slug: "eta-knows",
+    persona: "pool",
+    stayPath: "/app/intelligence",
+    steps: [
+      { path: "/app", captionKey: "story.eta.0" },
+      { path: "/app/intelligence", captionKey: "story.eta.1" },
+    ],
+  },
   // --- vision scenes: public simulations of what ships next. persona
   // "none", no sign in, no writes, every screen stamped Simulation. --------
   "tinashe-crash": {

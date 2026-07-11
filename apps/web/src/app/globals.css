@@ -412,6 +412,15 @@ body:has(.home-screen) .demo-account-chip {
   text-align: center;
 }
 
+/* --- the intelligence page: the honest ladder and its committed table ------- */
+.intel-intro {
+  margin: var(--space-2) 0 0;
+  text-wrap: pretty;
+}
+.intel-verdict {
+  margin: 0;
+}
+
 /* --- eta provenance: the basis label opens its honest card ------------------ */
 /* The label keeps its meta look; the underline says it answers a tap. The
    expanded hit area rides a pseudo element so the peek card layout holds. */

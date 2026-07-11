@@ -150,17 +150,6 @@ export default async function LandingPage({
           </form>
           <form action={enterDemo}>
             <input type="hidden" name="target" value="rider" />
-            <input type="hidden" name="story" value="takunda-morning" />
-            <button
-              className="landing-story-btn touch-target"
-              type="submit"
-              data-testid="story-door-takunda"
-            >
-              {t(lang, "landing.demoStory3")}
-            </button>
-          </form>
-          <form action={enterDemo}>
-            <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="rudo-night" />
             <button
               className="landing-story-btn touch-target"
@@ -168,6 +157,36 @@ export default async function LandingPage({
               data-testid="story-door-rudo"
             >
               {t(lang, "landing.demoStory4")}
+            </button>
+          </form>
+        </div>
+        {/* The intelligence: the three spines with their evidence. Real
+            stories on the live system (Takunda's alert moves here as spine 2
+            at work); nothing on these doors overclaims. */}
+        <p className="svika-meta landing-demo-stories-lead">
+          {t(lang, "landing.shelfIntel")}
+        </p>
+        <div className="landing-demo-doors">
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="eta-knows" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-eta"
+            >
+              {t(lang, "landing.intelEta")}
+            </button>
+          </form>
+          <form action={enterDemo}>
+            <input type="hidden" name="target" value="rider" />
+            <input type="hidden" name="story" value="takunda-morning" />
+            <button
+              className="landing-story-btn touch-target"
+              type="submit"
+              data-testid="story-door-takunda"
+            >
+              {t(lang, "landing.intelTakunda")}
             </button>
           </form>
         </div>

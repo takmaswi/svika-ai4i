@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
-import { StoryBar } from "@/components/story/StoryBar";
+import { StoryStage } from "@/components/story/StoryStage";
 import { SimStamp } from "@/components/story/SimStamp";
 import { BackIcon } from "@/components/icons";
 
@@ -36,8 +36,8 @@ export default async function TinasheVisionPage({
 
   if (view === "alert") {
     return (
+      <StoryStage params={params} lang={lang}>
       <main className="home-screen" data-testid="vision-tinashe" data-view={view}>
-        <StoryBar params={params} lang={lang} />
         <div className="home-map">
           <LiveMapLazy
             labels={{
@@ -72,10 +72,12 @@ export default async function TinasheVisionPage({
           </p>
         </section>
       </main>
+      </StoryStage>
     );
   }
 
   return (
+    <StoryStage params={params} lang={lang}>
     <main className="shell" data-testid="vision-tinashe" data-view={view}>
       <header className="shell-top">
         <Link href="/" className="back-btn" aria-label={t(lang, "common.back")}>
@@ -86,7 +88,6 @@ export default async function TinasheVisionPage({
           <LanguageToggle lang={lang} />
         </span>
       </header>
-      <StoryBar params={params} lang={lang} inline />
 
       {view === "kin" ? (
         <section className="feature-card vision-phone svika-animate-fade-up">
@@ -129,5 +130,6 @@ export default async function TinasheVisionPage({
         </section>
       )}
     </main>
+    </StoryStage>
   );
 }

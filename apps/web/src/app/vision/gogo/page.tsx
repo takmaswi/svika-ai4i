@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { StoryBar } from "@/components/story/StoryBar";
+import { StoryStage } from "@/components/story/StoryStage";
 import { SimStamp } from "@/components/story/SimStamp";
 import { FeaturePhone } from "@/components/vision/FeaturePhone";
 import { BackIcon } from "@/components/icons";
@@ -22,6 +22,7 @@ export default async function GogoVisionPage({
   const params = await searchParams;
 
   return (
+    <StoryStage params={params} lang={lang}>
     <main className="shell" data-testid="vision-gogo">
       <header className="shell-top">
         <Link href="/" className="back-btn" aria-label={t(lang, "common.back")}>
@@ -32,7 +33,6 @@ export default async function GogoVisionPage({
           <LanguageToggle lang={lang} />
         </span>
       </header>
-      <StoryBar params={params} lang={lang} inline />
 
       <FeaturePhone
         etaAction={gogoKombiEta}
@@ -65,5 +65,6 @@ export default async function GogoVisionPage({
         <p className="svika-body">{t(lang, "vision.gogo.note")}</p>
       </section>
     </main>
+    </StoryStage>
   );
 }

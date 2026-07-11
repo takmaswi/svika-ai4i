@@ -4,7 +4,7 @@ import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { sendCredit, claimCredit, cancelTransfer } from "@/lib/actions";
 import { formatUsd } from "@svika/shared";
-import { StoryBar } from "@/components/story/StoryBar";
+import { StoryStage } from "@/components/story/StoryStage";
 import { HomeIcon, KombiIcon, PlusIcon, RidesIcon, WalletIcon } from "@/components/icons";
 
 interface PostingRow {
@@ -92,9 +92,8 @@ export default async function WalletPage({
             : null;
 
   return (
+    <StoryStage params={params} lang={lang}>
     <main className="shell">
-      <StoryBar params={params} lang={lang} />
-
       <h1 className="svika-headline">{t(lang, "wallet.title")}</h1>
 
       <section
@@ -238,5 +237,6 @@ export default async function WalletPage({
         </span>
       </nav>
     </main>
+    </StoryStage>
   );
 }

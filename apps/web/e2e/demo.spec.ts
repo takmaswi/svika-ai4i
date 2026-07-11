@@ -65,9 +65,11 @@ test.describe("demo door and story mode", () => {
     await expect(page.getByTestId("wallet-balance")).toHaveText("$5.50");
     await expect(page.getByTestId("change-story")).toContainText(/\$\d+\.\d{2}/);
 
-    // the story ends back in free roam
+    // the final step unlocks the screen and offers the stay door: free roam
+    // on the wallet, story chrome gone
+    await expect(page.getByTestId("story-live")).toBeVisible();
     await page.getByTestId("story-next").click();
-    await page.waitForURL(/\/app$/);
+    await page.waitForURL(/\/app\/wallet$/);
     await expect(page.getByTestId("story-bar")).toHaveCount(0);
   });
 
@@ -97,5 +99,51 @@ test.describe("demo door and story mode", () => {
     await page.getByTestId("story-next").click();
     await page.waitForURL(/\/app$/);
     await expect(page.getByTestId("story-bar")).toHaveCount(0);
+  });
+
+  test("mid story the screen is watch only; the final step unlocks it", async ({
+    page,
+  }) => {
+    await landingReady(page);
+    await page.getByTestId("story-door-transfer").click();
+    await page.waitForURL(/story=transfer-trip&step=0/, { timeout: 20_000 });
+
+    // the app surface under the story is inert: the plan page's pay buttons
+    // exist but cannot be driven, so the script cannot be derailed
+    await expect(page.getByTestId("story-lock")).toHaveAttribute("data-live", "false");
+    const payCash = page.locator(".pay-cash");
+    await expect(payCash).toBeVisible();
+    let derailed = false;
+    try {
+      await payCash.click({ timeout: 1_500 });
+      derailed = true;
+    } catch {
+      // unclickable is the point: inert strips hit testing
+    }
+    expect(derailed).toBe(false);
+
+    // the story controls are the only live elements
+    await waitForHydration(page);
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/step=1/, { timeout: 20_000 });
+    await waitForHydration(page);
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/booked=1/, { timeout: 20_000 });
+
+    // the final step says the screen is live and drops the lock: the booked
+    // sheet arrives open, and the grabber now really responds to a tap
+    await expect(page.getByTestId("story-live")).toBeVisible();
+    await expect(page.getByTestId("story-lock")).toHaveAttribute("data-live", "true");
+    await waitForHydration(page);
+    const grabber = page.locator(".home-sheet-grabber");
+    await expect(grabber).toHaveAttribute("aria-expanded", "true");
+    await grabber.click();
+    await expect(grabber).toHaveAttribute("aria-expanded", "false");
+
+    // two doors: the shelf door lands back on the landing shelf
+    await expect(page.getByTestId("story-next")).toBeVisible();
+    await page.getByTestId("story-shelf").click();
+    await page.waitForURL(/\/#shelf$/);
+    await expect(page.getByTestId("story-door-transfer")).toBeVisible();
   });
 });

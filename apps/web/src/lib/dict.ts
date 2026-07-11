@@ -69,7 +69,17 @@ export const dict = {
   "demo.chip": { en: "Demo account", sn: "Akaunti yekuratidzira" },
 
   "story.next": { en: "Next", sn: "Enderera" },
-  "story.done": { en: "Explore freely", sn: "Zvionere wega" },
+  "story.back": { en: "Back a step", sn: "Dzokera danho" },
+  "story.stay": { en: "Stay and explore", sn: "Gara uzvionere" },
+  "story.shelf": { en: "Back to the stories", sn: "Dzokera kunyaya" },
+  "story.live": {
+    en: "Now try it yourself. Everything on this screen is live.",
+    sn: "Zviedze wega manje. Zvese zviri pano zvinoshanda.",
+  },
+  "story.liveVision": {
+    en: "Now try it yourself. This scene is a simulation and touches no real account.",
+    sn: "Zviedze wega manje. Ichi chiratidzo chekufananidzira, hachibate akaunti chaiyo.",
+  },
   "story.exit": { en: "Exit story", sn: "Buda munyaya" },
   "story.err": {
     en: "That step could not run. Try next again, or exit the story.",

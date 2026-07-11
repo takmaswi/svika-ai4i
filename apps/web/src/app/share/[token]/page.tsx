@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
-import { StoryBar } from "@/components/story/StoryBar";
+import { StoryStage } from "@/components/story/StoryStage";
 import { buildShareOverlay } from "@/lib/map/share-overlay";
 import { homeEtaProvider } from "@/lib/map/eta-home";
 import { CORRIDOR_ROUTE_CODE, corridorMetrics } from "@/lib/map/corridor-data";
@@ -103,9 +103,9 @@ export default async function SharePage({
   const onBoard = view.trip_status === "redeemed";
 
   return (
+    // Rudo's story steps onto this public page as the mother's view
+    <StoryStage params={query} lang={lang}>
     <main className="home-screen" data-testid="share-view">
-      {/* Rudo's story steps onto this public page as the mother's view */}
-      <StoryBar params={query} lang={lang} />
       <div className="home-map">
         <LiveMapLazy
           labels={{
@@ -174,5 +174,6 @@ export default async function SharePage({
         </section>
       </HomeSheet>
     </main>
+    </StoryStage>
   );
 }

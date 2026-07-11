@@ -2,9 +2,13 @@
 // engine, step by step with captions. A step is a real app screen; steps
 // with an action run a real write (booking, the simulated hwindi clearing a
 // code, a simulated friend's transfer) when the judge taps next. Missing
-// actors are simulated and say so in the caption. Every story ends back in
-// free roam.
+// actors are simulated and say so in the caption. While a story runs the
+// screen is watch only (the StoryStage makes it inert); the final step
+// unlocks it and offers two doors, back to the shelf or stay and explore.
 import type { DictKey } from "./dict";
+
+/** Where every story exit and the shelf door land: the sandbox shelf. */
+export const SHELF_PATH = "/#shelf";
 
 export type StoryActionId =
   | "book-cash-town"
@@ -29,14 +33,15 @@ export interface StoryStep {
 
 export interface Story {
   slug: string;
-  /** Who the door signs the judge in as: a pooled Tariro or a named persona.
-   *  "none" is a vision scene: nobody signs in and nothing writes. */
-  persona: "pool" | "takunda" | "rudo" | "none";
+  /** Who the door signs the judge in as: a pooled Tariro, a named persona,
+   *  or the demo owner. "none" is a vision scene: nobody signs in and
+   *  nothing writes. */
+  persona: "pool" | "takunda" | "rudo" | "owner" | "none";
   /** The theme the story is staged in; unset leaves the visitor's choice. */
   theme?: "light" | "dark";
-  /** Where exit and done land. Vision scenes exit to the landing; real
-   *  stories keep the default free roam. */
-  exitPath?: string;
+  /** Where the final step's stay and explore door lands. Exit always lands
+   *  on the shelf (SHELF_PATH). */
+  stayPath: string;
   steps: StoryStep[];
 }
 
@@ -44,6 +49,7 @@ export const STORIES: Record<string, Story> = {
   "tariro-town": {
     slug: "tariro-town",
     persona: "pool",
+    stayPath: "/app/wallet",
     steps: [
       { path: "/app", captionKey: "story.town.0" },
       { path: "/app/plan?from=heights&to=rezende", captionKey: "story.town.1" },
@@ -60,6 +66,7 @@ export const STORIES: Record<string, Story> = {
   "transfer-trip": {
     slug: "transfer-trip",
     persona: "pool",
+    stayPath: "/app",
     steps: [
       { path: "/app/plan?from=heights&to=avondale", captionKey: "story.transfer.0" },
       {
@@ -74,6 +81,7 @@ export const STORIES: Record<string, Story> = {
     slug: "takunda-morning",
     persona: "takunda",
     theme: "light",
+    stayPath: "/app",
     steps: [
       { path: "/app", captionKey: "story.tk.0" },
       {
@@ -90,7 +98,7 @@ export const STORIES: Record<string, Story> = {
   "tinashe-crash": {
     slug: "tinashe-crash",
     persona: "none",
-    exitPath: "/",
+    stayPath: "/vision/tinashe?view=responder",
     steps: [
       { path: "/vision/tinashe?view=alert", captionKey: "story.tin.0" },
       { path: "/vision/tinashe?view=kin", captionKey: "story.tin.1" },
@@ -101,7 +109,7 @@ export const STORIES: Record<string, Story> = {
   "gogo-ussd": {
     slug: "gogo-ussd",
     persona: "none",
-    exitPath: "/",
+    stayPath: "/vision/gogo",
     steps: [
       { path: "/vision/gogo", captionKey: "story.gogo.0" },
       { path: "/vision/gogo", captionKey: "story.gogo.1" },
@@ -110,7 +118,7 @@ export const STORIES: Record<string, Story> = {
   "kombi-capacity": {
     slug: "kombi-capacity",
     persona: "none",
-    exitPath: "/",
+    stayPath: "/vision/capacity",
     steps: [
       { path: "/vision/capacity", captionKey: "story.cap.0" },
       { path: "/vision/capacity", captionKey: "story.cap.1" },
@@ -120,6 +128,7 @@ export const STORIES: Record<string, Story> = {
     slug: "rudo-night",
     persona: "rudo",
     theme: "dark",
+    stayPath: "/app",
     steps: [
       { path: "/app?sheet=open", captionKey: "story.ru.0" },
       { path: "/app/wallet", captionKey: "story.ru.1", action: "friend-sends" },
@@ -139,6 +148,27 @@ export const STORIES: Record<string, Story> = {
     ],
   },
 };
+
+export interface ActiveStory {
+  story: Story;
+  step: number;
+  current: StoryStep;
+  isLast: boolean;
+}
+
+/** The running story named by a page's search params, or null when the page
+ *  is in free roam. Shared by the stage (inert lock) and the caption bar. */
+export function resolveStoryParams(
+  params: Record<string, string | string[] | undefined>,
+): ActiveStory | null {
+  const slug = typeof params.story === "string" ? params.story : "";
+  const rawStep = typeof params.step === "string" ? Number(params.step) : NaN;
+  const story = STORIES[slug];
+  const step = Number.isInteger(rawStep) ? rawStep : -1;
+  const current = story?.steps[step];
+  if (!story || !current) return null;
+  return { story, step, current, isLast: step === story.steps.length - 1 };
+}
 
 /** The step's URL with the story chrome attached. The share sentinel is
  *  resolved by storyAdvance (it always follows the share action); anything

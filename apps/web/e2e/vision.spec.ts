@@ -76,18 +76,25 @@ test.describe("vision scenes", () => {
     await expect(details).toContainText("Amai Moyo");
     await expect(details).toContainText("PSMAS");
 
-    // the closing caption, then done lands on the landing, not the app
+    // the closing caption unlocks the scene; the shelf door lands back on
+    // the landing shelf, never the app
     await nextStep(page, /step=3/);
     await expect(page.getByTestId("sim-stamp")).toBeVisible();
-    await page.getByTestId("story-next").click();
-    await page.waitForURL(/\/$/);
+    await expect(page.getByTestId("story-live")).toBeVisible();
+    await page.getByTestId("story-shelf").click();
+    await page.waitForURL(/\/#shelf$/);
     await expect(page.getByTestId("story-bar")).toHaveCount(0);
   });
 
   test("Gogo's mbudzi runs the real menu machine from the keypad", async ({
     page,
   }) => {
+    // the keypad is watch only until the story's final step unlocks it
     await page.goto("/vision/gogo?story=gogo-ussd&step=0");
+    await expect(page.getByTestId("story-lock")).toHaveAttribute("data-live", "false");
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/step=1/, { timeout: 25_000 });
+    await expect(page.getByTestId("story-lock")).toHaveAttribute("data-live", "true");
     await expect(page.getByTestId("sim-stamp")).toBeVisible();
     const screen = page.getByTestId("phone-screen");
 

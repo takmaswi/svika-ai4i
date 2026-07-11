@@ -95,7 +95,7 @@ export default async function LandingPage({
         <Link href="/login">{t(lang, "landing.signinLink")}</Link>
       </p>
 
-      <div className="landing-demo svika-animate-fade-up svika-rise-7">
+      <div className="landing-demo svika-animate-fade-up svika-rise-7" id="shelf">
         <p className="svika-meta landing-demo-lead">{t(lang, "landing.demoLead")}</p>
         {demoErr && (
           <p className="auth-error svika-body">{t(lang, "landing.demoErr")}</p>

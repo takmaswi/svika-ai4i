@@ -1,7 +1,7 @@
 import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
-import { StoryBar } from "@/components/story/StoryBar";
+import { StoryStage } from "@/components/story/StoryStage";
 import { SimStamp } from "@/components/story/SimStamp";
 import { CAPACITY_FIXTURES, capacityBadges } from "@/lib/vision/capacity-fixtures";
 
@@ -22,8 +22,8 @@ export default async function CapacityVisionPage({
   );
 
   return (
+    <StoryStage params={params} lang={lang}>
     <main className="home-screen" data-testid="vision-capacity">
-      <StoryBar params={params} lang={lang} />
       <div className="home-map">
         <LiveMapLazy
           labels={{
@@ -67,5 +67,6 @@ export default async function CapacityVisionPage({
         </p>
       </section>
     </main>
+    </StoryStage>
   );
 }

@@ -293,14 +293,72 @@ body:has(.home-screen) .demo-account-chip {
   top: 62px;
 }
 
-/* --- story mode chrome ------------------------------------------------------ */
+/* --- story mode chrome: the presentation stage ----------------------------- */
+/* The screen box and the caption band. The band is in flow below the screen,
+   so the caption can never cover cards, codes or the map focus; the lock
+   makes the screen watch only until the final step. */
+.story-stage {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+/* The screen box owns the scroll (it is never inert, so a watching judge can
+   still see below the fold); the lock inside it is what goes inert. */
+.story-stage-screen {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.story-stage-lock {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+/* pages size themselves to the viewport; inside the stage they fill the
+   screen box instead */
+.story-stage-lock .home-screen {
+  height: auto;
+  flex: 1;
+  min-height: 0;
+}
+.story-stage-lock .shell {
+  min-height: 100%;
+}
+.story-stage-side {
+  flex: none;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+/* Desktop stage (flagged spec addition, composed from the §8 card grammar):
+   the app in a phone sized frame, the caption and progress standing beside
+   it, so a judge on a laptop sees the narration and the untouched screen. */
+@media (min-width: 900px) {
+  .story-stage {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-10);
+  }
+  .story-stage-screen {
+    flex: none;
+    width: 360px;
+    height: min(720px, 92dvh);
+    border: var(--border-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card-dark);
+    overflow: hidden;
+  }
+  .story-stage-side {
+    width: 384px;
+    padding: 0;
+  }
+}
 .story-bar {
-  position: fixed;
-  top: 108px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(92vw, 448px);
-  z-index: 50;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
   padding: var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
@@ -308,13 +366,16 @@ body:has(.home-screen) .demo-account-chip {
 }
 .story-bar-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
 }
 .story-bar-count {
   color: var(--color-ink-mute);
 }
 .story-bar-exit {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
   color: var(--color-ink-soft);
   text-decoration: none;
   text-transform: uppercase;
@@ -322,6 +383,10 @@ body:has(.home-screen) .demo-account-chip {
 }
 .story-bar-caption {
   margin: 0;
+}
+.story-bar-live {
+  margin: 0;
+  color: var(--color-ink-soft);
 }
 .story-bar-err {
   margin: 0;
@@ -333,13 +398,16 @@ body:has(.home-screen) .demo-account-chip {
 .story-bar-next {
   flex: 1;
 }
-/* Shell pages put the bar in flow so the caption never hides the content
-   it narrates (the mbudzi screen, the message card). */
-.story-bar-inline {
-  position: static;
-  transform: none;
-  width: 100%;
-  margin: var(--space-4) 0 0;
+.story-bar-doors {
+  align-items: center;
+  gap: var(--space-3);
+}
+.story-bar-doors .story-bar-next {
+  flex: 1.6;
+}
+.story-bar-shelf {
+  flex: 1;
+  text-align: center;
 }
 /* The vision scenes' permanent Simulation stamp: the demo movement chip's
    pill family without the signal dot (signal marks live truth only). Scenes

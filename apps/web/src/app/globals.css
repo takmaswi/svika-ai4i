@@ -285,8 +285,10 @@ body {
   pointer-events: none;
 }
 /* shell pages start below the floating demo chip; on map screens the chip
-   drops under the pill row instead */
-.demo-account-chip ~ .shell {
+   drops under the pill row instead. Inside the story stage the shell nests
+   under the stage wrapper, so the sibling selector reaches through it. */
+.demo-account-chip ~ .shell,
+.demo-account-chip ~ .story-stage .shell {
   padding-top: 56px;
 }
 body:has(.home-screen) .demo-account-chip {
@@ -447,15 +449,16 @@ body:has(.home-screen) .demo-account-chip {
   transform: scale(0.99);
 }
 /* the honest card: §8 card grammar over a char tinted scrim (flagged spec
-   addition alongside the stage frame) */
-.eta-basis-scrim {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-5);
+   addition alongside the stage frame). The native dialog rides the top
+   layer so the sheet's transform can never stack the nav over it. */
+.eta-basis-dialog {
+  border: none;
+  padding: 0;
+  margin: auto;
+  background: transparent;
+  max-width: calc(100vw - 2 * var(--space-5));
+}
+.eta-basis-dialog::backdrop {
   background: rgba(22, 29, 24, 0.45);
 }
 .eta-basis-card {

@@ -47,8 +47,8 @@ test.describe("demo door and story mode", () => {
     const card = page.getByTestId("eta-basis-card");
     await expect(card).toBeVisible();
     await expect(card).toContainText(/recorded|demo/i);
-    await page.getByTestId("eta-basis-scrim").click({ position: { x: 5, y: 5 } });
-    await expect(card).toHaveCount(0);
+    await page.keyboard.press("Escape");
+    await expect(card).not.toBeVisible();
   });
 
   test("story: Tariro's trip to town ends with change as credit", async ({

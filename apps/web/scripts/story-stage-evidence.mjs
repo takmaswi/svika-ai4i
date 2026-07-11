@@ -233,8 +233,14 @@ async function shootSurfaces(browser) {
     await page.goto(`${BASE}/app`, { waitUntil: "domcontentloaded" });
     await settle(page);
     await hydrated(page);
-    await page.getByTestId("eta-basis").first().click();
-    await page.getByTestId("eta-basis-card").waitFor({ timeout: 10_000 });
+    // the sheet peeks over the basis label on the peek card; open it so the
+    // label is in reach, then tap to raise the dialog
+    await page.locator(".home-sheet-grabber").click();
+    await page.waitForTimeout(500);
+    const label = page.getByTestId("eta-basis").first();
+    await label.scrollIntoViewIfNeeded();
+    await label.click();
+    await page.locator("dialog.eta-basis-dialog[open]").waitFor({ timeout: 10_000 });
     await page.screenshot({
       path: join(dir("eta-provenance"), `${v.theme}-${v.lang}.png`),
     });

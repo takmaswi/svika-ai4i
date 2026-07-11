@@ -348,6 +348,90 @@ body:has(.home-screen) .demo-account-chip {
   pointer-events: none;
 }
 
+/* --- vision scenes (Phase D): staged surfaces from the section 8/9 kit --- */
+/* Bottom panel over the map: the section 9 sheet surface, top corners only. */
+.vision-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  border-radius: 24px 24px 0 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+/* The staged alert: marigold + char, the product's warning pair. */
+.vision-alert-card {
+  border-radius: var(--radius);
+  background: var(--color-marigold);
+  color: var(--color-char);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.vision-alert-title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.vision-alert-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}
+/* On marigold the plate chip flips to char + marigold (ticket grammar). */
+.vision-alert-plate {
+  background: var(--color-char);
+  color: var(--color-marigold);
+}
+.vision-sheet-note {
+  margin: 0;
+}
+/* Amai Moyo's phone: the dark feature card holding one message bubble. */
+.vision-phone {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.vision-sms {
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.vision-sms-body {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #ffffff;
+  margin: 0;
+}
+.vision-sms-link {
+  color: var(--color-marigold);
+}
+.vision-sms-meta {
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+}
+.vision-honesty {
+  margin: var(--space-3) 0 0;
+}
+
 /* --- landing (screen 1) ------------------------------------------------------ */
 .landing-h1 {
   font-family: var(--font-display);

@@ -737,6 +737,50 @@ export const dict = {
 
   // --- vision scenes: simulations of what ships next, always stamped ------
   "vision.stamp": { en: "Simulation", sn: "Kufananidzira" },
+
+  // Tinashe's crash flow
+  "story.tin.0": {
+    en: "Tinashe is riding home from a job interview when his kombi stops hard. This moment is staged: nothing detects crashes in this web app today.",
+    sn: "Tinashe ari kudzokera kumba achibva kuinterview yebasa apo kombi yake inomira zvakaoma. Chiitiko ichi ndechekufananidzira: hapana chinobata tsaona muapp iyi nhasi.",
+  },
+  "story.tin.1": {
+    en: "His mother's phone gets the auto message with a live location link. The link grammar is Svika's real share my ride feature.",
+    sn: "Foni yaamai vake inogamuchira meseji nelink yekuona paari. Link iyi inoshanda semashandiro eshare my ride chaiyo yeSvika.",
+  },
+  "story.tin.2": {
+    en: "A responder opens the link and sees what Tinashe chose to store: next of kin and medical aid. These are the real profile fields from the app today, shown with demo persona values.",
+    sn: "Mubatsiri anovhura link oona zvakasarudzwa naTinashe kuchengetwa: hama yepedyo nemedical aid. Ndiwo minda chaiyo yeprofile iripo nhasi, ichiratidzwa neruzivo rwemuenzaniso.",
+  },
+  "story.tin.3": {
+    en: "Plainly: crash detection ships with the native app, not this build. What is live today is the profile's emergency details, consented and protected, one tap from help.",
+    sn: "Zviri pachena: kubata tsaona kunouya neapp yepafoni, kwete build ino. Chiripo nhasi ndicho ruzivo rwepakaoma rwepaprofile, rwakabvumirwa uye rwakachengetedzwa, padyo nerubatsiro.",
+  },
+  "vision.tin.alertH": {
+    en: "Sudden stop on the corridor",
+    sn: "Kumira kwakaoma munzira",
+  },
+  "vision.tin.alertNear": { en: "near", sn: "pedyo ne" },
+  "vision.tin.alertSent": {
+    en: "The auto message with his live location is on its way to Amai Moyo.",
+    sn: "Meseji ine paari izvozvi iri kuenda kuna Amai Moyo.",
+  },
+  "vision.tin.kinPhone": { en: "Amai Moyo's phone", sn: "Foni yaAmai Moyo" },
+  "vision.tin.kinMsg": {
+    en: "Tinashe's kombi stopped suddenly near Copacabana. Follow his live location:",
+    sn: "Kombi yaTinashe yamira nekukurumidza pedyo neCopacabana. Ona paari izvozvi:",
+  },
+  "vision.tin.kinFrom": {
+    en: "Auto message from Svika",
+    sn: "Meseji inozvitumira kubva kuSvika",
+  },
+  "vision.tin.responderWhy": {
+    en: "What a responder sees through the emergency link: only what Tinashe chose to store.",
+    sn: "Zvinoonekwa nemubatsiri kuburikidza nelink yepakaoma: zvakasarudzwa naTinashe chete.",
+  },
+  "vision.tin.responderNote": {
+    en: "These fields are live in the product today. Only the rider can store them, with consent recorded, and removal is one tap on the profile.",
+    sn: "Minda iyi inoshanda muapp nhasi. Mufambi chete ndiye anoichengeta, nemvumo yakanyorwa, uye kubvisa kuri padyo paprofile.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

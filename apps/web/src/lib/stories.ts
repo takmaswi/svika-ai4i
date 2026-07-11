@@ -85,6 +85,19 @@ export const STORIES: Record<string, Story> = {
       { path: "/app?voicedemo=1", captionKey: "story.tk.3" },
     ],
   },
+  // --- vision scenes: public simulations of what ships next. persona
+  // "none", no sign in, no writes, every screen stamped Simulation. --------
+  "tinashe-crash": {
+    slug: "tinashe-crash",
+    persona: "none",
+    exitPath: "/",
+    steps: [
+      { path: "/vision/tinashe?view=alert", captionKey: "story.tin.0" },
+      { path: "/vision/tinashe?view=kin", captionKey: "story.tin.1" },
+      { path: "/vision/tinashe?view=responder", captionKey: "story.tin.2" },
+      { path: "/vision/tinashe?view=responder", captionKey: "story.tin.3" },
+    ],
+  },
   "rudo-night": {
     slug: "rudo-night",
     persona: "rudo",

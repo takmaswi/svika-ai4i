@@ -29,10 +29,14 @@ export interface StoryStep {
 
 export interface Story {
   slug: string;
-  /** Who the door signs the judge in as: a pooled Tariro or a named persona. */
-  persona: "pool" | "takunda" | "rudo";
+  /** Who the door signs the judge in as: a pooled Tariro or a named persona.
+   *  "none" is a vision scene: nobody signs in and nothing writes. */
+  persona: "pool" | "takunda" | "rudo" | "none";
   /** The theme the story is staged in; unset leaves the visitor's choice. */
   theme?: "light" | "dark";
+  /** Where exit and done land. Vision scenes exit to the landing; real
+   *  stories keep the default free roam. */
+  exitPath?: string;
   steps: StoryStep[];
 }
 

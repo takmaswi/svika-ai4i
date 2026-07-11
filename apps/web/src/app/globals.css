@@ -333,6 +333,20 @@ body:has(.home-screen) .demo-account-chip {
 .story-bar-next {
   flex: 1;
 }
+/* The vision scenes' permanent Simulation stamp: the demo movement chip's
+   pill family without the signal dot (signal marks live truth only). Scenes
+   decide where it sits; the pill itself is theme complete via svika-glass. */
+.sim-stamp {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
 
 /* --- landing (screen 1) ------------------------------------------------------ */
 .landing-h1 {

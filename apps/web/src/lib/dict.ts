@@ -734,6 +734,9 @@ export const dict = {
     en: "The trip has ended or the rider stopped sharing it.",
     sn: "Rwendo rwapera kana kuti mufambi amira kurugovera.",
   },
+
+  // --- vision scenes: simulations of what ships next, always stamped ------
+  "vision.stamp": { en: "Simulation", sn: "Kufananidzira" },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

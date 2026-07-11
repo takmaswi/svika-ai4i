@@ -25,6 +25,7 @@ export function StoryBar({ params, lang }: StoryBarProps) {
 
   const isLast = step === story.steps.length - 1;
   const showErr = params.err === "story";
+  const exitPath = story.exitPath ?? "/app";
 
   return (
     <aside className="story-bar svika-glass-strong" data-testid="story-bar">
@@ -32,7 +33,7 @@ export function StoryBar({ params, lang }: StoryBarProps) {
         <span className="svika-meta story-bar-count svika-mono-code">
           {step + 1}/{story.steps.length}
         </span>
-        <Link className="svika-meta story-bar-exit" href="/app">
+        <Link className="svika-meta story-bar-exit" href={exitPath}>
           {t(lang, "story.exit")}
         </Link>
       </div>
@@ -57,7 +58,7 @@ export function StoryBar({ params, lang }: StoryBarProps) {
         <div className="story-bar-actions">
           <Link
             className="cta touch-target story-bar-next"
-            href={isLast ? "/app" : storyUrl(slug, step + 1)}
+            href={isLast ? exitPath : storyUrl(slug, step + 1)}
             data-testid="story-next"
           >
             {t(lang, isLast ? "story.done" : "story.next")}

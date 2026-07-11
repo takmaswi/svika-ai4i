@@ -47,10 +47,14 @@ export async function enterDemo(formData: FormData): Promise<void> {
     redirect("/app/owner");
   }
 
+  const def: Story | undefined = STORIES[story];
+
+  // vision scenes are public and never sign anyone in; the shelf links to
+  // them directly, but a posted form still lands on the scene, not a persona
+  if (def && def.persona === "none") redirect(storyUrl(story, 0));
+
   const password = process.env.DEMO_JUDGE_PASSWORD;
   if (!password) redirect(DEMO_ERR);
-
-  const def: Story | undefined = STORIES[story];
 
   // named personas own their stories; pooled Tariros carry everything else
   if (def && def.persona !== "pool") {

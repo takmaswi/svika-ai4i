@@ -87,8 +87,7 @@ export function VoiceGuide({ lang, trip, mode, captions }: VoiceGuideProps) {
       disposed = true;
       if (timer) clearInterval(timer);
     };
-    // the trip is identity-stable per ride; a new ride remounts via key
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // the trip is identity-stable per ride; a new ride remounts the component
   }, [lang, mode]);
 
   if (!lang) return null;

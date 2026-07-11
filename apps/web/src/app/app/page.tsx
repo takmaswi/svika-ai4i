@@ -308,6 +308,7 @@ export default async function RiderHome({
 
       {voiceTrip && (
         <VoiceGuideLazy
+          key={boarded!.id}
           lang={voiceLang}
           trip={voiceTrip}
           mode={params.voicedemo === "1" ? "replay" : "live"}

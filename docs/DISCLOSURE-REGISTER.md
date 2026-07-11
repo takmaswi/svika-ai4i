@@ -5,7 +5,7 @@ working against the live database. Tier 2 is clickable with a fixed or
 simulated backend, always labelled on screen. Tier 3 lives in slides only and
 never in code. We never present a Tier 2 surface as live to judges.
 
-Last updated: 2026-07-11 (Phase C: the app becomes personal).
+Last updated: 2026-07-11 (Phase D: the vision scenes).
 
 | Feature | Tier | What is actually happening |
 | --- | --- | --- |
@@ -38,5 +38,10 @@ Last updated: 2026-07-11 (Phase C: the app becomes personal).
 | Share my ride | 1 | Real 128 bit capability links minted server side from the rider's own live fare. The public viewer page answers only for a live, unrevoked, unexpired token and shows route facts, the live map and the arrival estimate, never who is riding, their code or their money. Revoked, expired and unknown tokens share one dead state. The kombi positions it shows are the simulated fleet, labelled as on the map. |
 | Landing page stat cards | 2 | Illustrative product preview on the marketing surface: the "Change kept $1.50 this week" and "Boarding code 74 21" cards show example values in the reference design's grammar, not any user's data. Everything behind the sign in shows real ledger figures. |
 | Home peek card (route, arrives, fare) | 1 | Real: the corridor route and fare come from routes and route_fares in Postgres, the arrival minutes from the same ETA provider as saved trips, with its basis labelled on screen (recorded rides or demo estimate). |
+
+| Vision scene: the crash flow (Tinashe) | 2 | Simulated vision content on a public read only page, permanently stamped Simulation, both themes. No crash detection exists in this build; the captions say so and detection ships with the native app (slides tier stays slides). The responder card renders the Phase C emergency detail fields with fixture demo values because the real emergency_details table is RLS locked and must never be publicly readable; the auto message mirrors the real share link grammar. Nothing reads or writes any account. |
+| Vision scene: Gogo's mbudzi (USSD) | 2 | Simulated vision content, permanently stamped Simulation. The keypad drives a real tested menu state machine (apps/web/src/lib/ussd, unit tests beside it) that waits on a telco aggregator agreement, a contract, not a build. The money menus run fixture twins that move nothing; the how far menu calls the live eta wiring (spine when configured, mock twin labelled otherwise) through a read only server action. |
+| Vision scene: kombi capacity | 2 | Simulated vision content, permanently stamped Simulation. Occupancy numbers are fixtures riding the simulated fleet; the card holds what a conductor declares against what redeemed tickets and check ins would prove, and drift is flagged as a pattern, never a person. Ships when real vehicles stream data. |
+| Sandbox shelf (landing) | 1 | Real UI: the demo door's story list under two headings, real stories that run real money on the live system and vision scenes that are stamped simulations. Vision doors are plain links that sign nobody in and touch no persona. |
 
 Update this file in the same commit as any feature that changes tier.

@@ -221,7 +221,7 @@ export default async function ProfilePage({
                     {ride.from_stop && ride.to_stop
                       ? `${ride.from_stop.name} ${toWord} ${ride.to_stop.name}`
                       : (ride.routes?.name ?? "")}
-                    <span className="svika-meta profile-ride-date">
+                    <span className="svika-meta svika-mono-code profile-ride-date">
                       {" "}
                       {dayLabel(lang, ride.purchased_at)}
                     </span>

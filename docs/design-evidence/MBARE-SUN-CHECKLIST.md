@@ -71,3 +71,47 @@ improvised in code):
    values. Proposal: bless a walking-leg token.
 3. **Wallet transaction row icons.** See item 2 note; proposal: add plus and
    kombi glyphs to the icon set as the sanctioned transaction pair.
+
+## Phase C addendum (2026-07-11)
+
+New surfaces, verified at 360px, both themes, both languages; packs in
+`profile/`, `share/` and `marker/` beside this file.
+
+| # | Check | profile | share viewer | alert banner | voice caption |
+|---|-------|---------|--------------|--------------|---------------|
+| 1 | Status bar correct | yes* | yes* | yes* | yes* |
+| 2 | THE arrow only (§3) | yes | yes | yes | yes |
+| 3 | CTA matches §5 anatomy | yes | yes | n/a | n/a |
+| 4 | Day and night from §2 tokens only | yes | yes | yes | yes |
+| 5 | Numbers/codes/times Plex Mono 600 | yes | yes | yes | n/a |
+| 6 | Hit targets 44px+ | yes | yes | n/a | n/a |
+| 7 | Press state on every button | yes | yes | n/a | n/a |
+| 8 | Copy: sentence case, real Harare names, $1.50 | yes | yes | yes | yes |
+| 9 | Tinted shadows, no gradients | yes | yes | yes | yes |
+| 10 | Kombi marker box + bob + glow kept | n/a | yes | n/a | n/a |
+
+Phase C item notes:
+
+- **Profile, one primary action.** A settings surface: section forms use the
+  medium pill (wallet form grammar), toggles wear the language chip grammar
+  from screens 1 and 2 (`lang-toggle`), and no §5 CTA competes. Ride dates
+  and history figures are Plex Mono.
+- **Share viewer.** Composed from screen 2 and 3 patterns: full bleed map,
+  §9 peek sheet with route, status and mono arrival, glass chips, the §11
+  route treatment for the trip leg. The dead link state is a bordered card
+  on the shell, quiet and identical for wrong, revoked and expired tokens.
+- **Alert banner and voice caption.** Both wear the §9 sheet surface
+  (`svika-glass-strong`) with svk-rise entrances honouring reduced motion;
+  the alert's live dot is the §7 signal pair (live only, per hard rule 3).
+- **Marker (task 0).** Verified unchanged: the client asset was already the
+  glyph inside the §10 box; close-up proof in `marker/`.
+
+Phase C spec gaps flagged (extract-only, proposals not improvisations):
+
+4. **Checkbox.** No reference screen has one; the emergency details consent
+   tick is a native checkbox tinted with the day CTA colour (forest) via
+   `accent-color`, char track by night. Proposal: bless a drawn checkbox in
+   the §6 control set.
+5. **On/off toggle.** No reference has a boolean control; the profile reuses
+   the EN|SN segmented pill with On/Off labels. Proposal: adopt it as the
+   sanctioned boolean control.

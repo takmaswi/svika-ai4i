@@ -79,13 +79,18 @@ test.describe("search, plan, pay", () => {
   });
 
   test("the ticket page shows the big board code", async ({ page }) => {
+    test.slow(); // three full page loads on the dev server, like the cash test
     // book fresh so the top of the list is an ISSUED ticket (other suites
     // leave redeemed tickets behind, and those carry no live code)
     await page.goto("/app/plan?from=heights&to=rezende");
     await waitForHydration(page);
     await page.click("button[value=cash]");
     await page.waitForURL("**/app?booked=1");
+    // hydrate before tapping the ticket: a click racing hydration can be
+    // swallowed by the re-render, and real fingers are slower than Playwright
+    await waitForHydration(page);
     await page.locator(".ticket-item").first().click();
-    await expect(page.getByTestId("board-code")).toBeVisible();
+    // the ticket route pays its dev compile on first hit under full load
+    await expect(page.getByTestId("board-code")).toBeVisible({ timeout: 20_000 });
   });
 });

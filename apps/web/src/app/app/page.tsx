@@ -281,7 +281,10 @@ export default async function RiderHome({
             ariaLabel: t(lang, "map.ariaLabel"),
             demoChip: t(lang, "map.demoChip"),
             unavailable: t(lang, "map.unavailable"),
+            viewWhole: t(lang, "map.viewWhole"),
+            viewNear: t(lang, "map.viewNear"),
           }}
+          camera="boarding"
         />
       </div>
 

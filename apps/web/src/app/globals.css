@@ -1692,13 +1692,17 @@ body:has(.home-screen) .demo-account-chip {
   pointer-events: none;
 }
 
-/* Kombi marker (DESIGN.md §10): 30px marigold box, char stroke by day,
-   white stroke + glow + headlight beam by night, idle bob. The glyph inside
-   is the client's kombi asset; the box is law. */
+/* Kombi map marker: the client's kombi asset standalone at its pre reskin
+   44px, rotating with the road heading. Agreed deviation from DESIGN.md §10
+   (docs/DESIGN-DEVIATIONS.md): no marigold box on live map markers; the box
+   language stays everywhere else. Bob, night glow and beam are kept. */
 .kombi-map-marker {
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
+}
+.kombi-map-enter {
+  animation: svk-fadein 0.5s var(--ease-standard) both;
 }
 .kombi-map-bob {
   position: absolute;
@@ -1713,22 +1717,12 @@ body:has(.home-screen) .demo-account-chip {
   animation: svk-beam 2.8s ease-in-out infinite;
   pointer-events: none;
 }
-.kombi-map-box {
+.kombi-map-img {
   display: block;
   position: relative;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  background: var(--color-marigold);
-  border: var(--marker-stroke);
-  box-sizing: border-box;
-  overflow: hidden;
+  width: 44px;
+  height: 44px;
   filter: var(--kombi-glow);
-}
-.kombi-map-box img {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 /* MapLibre's default marker cursor reads as draggable; these kombis are not. */
 .kombi-map-marker,
@@ -1737,6 +1731,9 @@ body:has(.home-screen) .demo-account-chip {
 }
 @media (prefers-reduced-motion: reduce) {
   .kombi-beam {
+    animation: none;
+  }
+  .kombi-map-enter {
     animation: none;
   }
 }
@@ -1772,6 +1769,32 @@ body:has(.home-screen) .demo-account-chip {
   bottom: auto;
   top: calc(var(--space-4) + 96px);
   left: var(--space-3);
+}
+/* one tap between the boarding view and the whole corridor; mirrors the
+   demo chip row on the right so neither covers the map's meaningful band */
+.live-map-view-toggle {
+  position: absolute;
+  top: calc(var(--space-4) + 96px);
+  right: var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-ink);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.live-map-view-toggle:active {
+  transform: scale(0.99);
+}
+/* on full screen maps the attribution drops below the chip stack so it
+   never hides under the sheet or overlaps a control */
+.home-map .maplibregl-ctrl-top-right {
+  top: calc(var(--space-4) + 96px + 52px);
 }
 
 .home-chips {

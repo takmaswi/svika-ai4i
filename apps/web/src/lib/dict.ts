@@ -487,6 +487,8 @@ export const dict = {
     sn: "Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live.",
   },
   "map.demoChip": { en: "Demo movement", sn: "Kuratidzira" },
+  "map.viewWhole": { en: "Whole route", sn: "Nzira yose" },
+  "map.viewNear": { en: "Boarding area", sn: "Panokwirwa" },
   "map.unavailable": {
     en: "The map could not load. Your trips and wallet still work.",
     sn: "Mepu haina kukwanisa kuvhurika. Nzendo dzako nechikwama zvichiri kushanda.",

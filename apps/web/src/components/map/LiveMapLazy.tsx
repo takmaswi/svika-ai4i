@@ -14,9 +14,11 @@ const Inner = dynamic(() => import("./LiveMap").then((m) => m.LiveMap), {
 export function LiveMapLazy({
   labels,
   overlay,
+  camera,
 }: {
   labels: LiveMapLabels;
   overlay?: LiveMapOverlay;
+  camera?: "corridor" | "boarding";
 }) {
-  return <Inner labels={labels} overlay={overlay} />;
+  return <Inner labels={labels} overlay={overlay} camera={camera} />;
 }

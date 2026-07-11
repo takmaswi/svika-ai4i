@@ -349,6 +349,8 @@ body:has(.home-screen) .demo-account-chip {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card-dark);
     overflow: hidden;
+    /* anchors fixed descendants (the provenance scrim) inside the frame */
+    transform: translateZ(0);
   }
   .story-stage-side {
     width: 384px;
@@ -408,6 +410,64 @@ body:has(.home-screen) .demo-account-chip {
 .story-bar-shelf {
   flex: 1;
   text-align: center;
+}
+
+/* --- eta provenance: the basis label opens its honest card ------------------ */
+/* The label keeps its meta look; the underline says it answers a tap. The
+   expanded hit area rides a pseudo element so the peek card layout holds. */
+.eta-basis {
+  position: relative;
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.eta-basis::after {
+  content: "";
+  position: absolute;
+  inset: -14px -8px;
+}
+.eta-basis:active {
+  transform: scale(0.99);
+}
+/* the honest card: §8 card grammar over a char tinted scrim (flagged spec
+   addition alongside the stage frame) */
+.eta-basis-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background: rgba(22, 29, 24, 0.45);
+}
+.eta-basis-card {
+  width: min(340px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--border-card);
+  border-radius: var(--radius-card-lg);
+  box-shadow: var(--shadow-card-dark);
+}
+.eta-basis-title {
+  margin: 0;
+}
+.eta-basis-line {
+  margin: 0;
+}
+.eta-basis-close {
+  align-self: flex-end;
 }
 /* The vision scenes' permanent Simulation stamp: the demo movement chip's
    pill family without the signal dot (signal marks live truth only). Scenes
@@ -2317,6 +2377,14 @@ body:has(.home-screen) .demo-account-chip {
   border-radius: var(--radius-card-lg);
   text-decoration: none;
   color: var(--color-ink);
+}
+/* the trip link fills the card's left; the basis label keeps its own tap */
+.home-pick-link {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  text-decoration: none;
+  color: inherit;
 }
 .home-pick-body {
   min-width: 0;

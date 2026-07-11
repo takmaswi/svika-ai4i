@@ -36,6 +36,19 @@ test.describe("demo door and story mode", () => {
     // the chip follows onto other demo surfaces
     await page.goto("/app/wallet");
     await expect(page.getByTestId("demo-account-chip")).toBeVisible();
+
+    // provenance at the point of use: the arrival basis label answers a tap
+    // with the honest card saying where the number comes from
+    await page.goto("/app");
+    await waitForHydration(page);
+    const basis = page.getByTestId("eta-basis").first();
+    await expect(basis).toBeVisible();
+    await basis.click();
+    const card = page.getByTestId("eta-basis-card");
+    await expect(card).toBeVisible();
+    await expect(card).toContainText(/recorded|demo/i);
+    await page.getByTestId("eta-basis-scrim").click({ position: { x: 5, y: 5 } });
+    await expect(card).toHaveCount(0);
   });
 
   test("story: Tariro's trip to town ends with change as credit", async ({

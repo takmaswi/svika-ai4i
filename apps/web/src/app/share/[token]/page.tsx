@@ -3,13 +3,13 @@ import { createClient } from "@/lib/supabase/server";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { EtaBasis } from "@/components/home/EtaBasis";
 import { StoryStage } from "@/components/story/StoryStage";
 import { buildShareOverlay } from "@/lib/map/share-overlay";
 import { homeEtaProvider } from "@/lib/map/eta-home";
 import { CORRIDOR_ROUTE_CODE, corridorMetrics } from "@/lib/map/corridor-data";
-import type { EtaEstimate } from "@/lib/map/eta";
+import { etaBasisCard, etaBasisLabel } from "@/lib/eta-provenance";
 import type { LngLat } from "@/lib/map/geometry";
-import type { AppLanguage } from "@svika/shared";
 
 interface ShareViewRow {
   route_code: string;
@@ -21,12 +21,6 @@ interface ShareViewRow {
   to_stop_name: string | null;
   trip_status: string;
   share_expires_at: string;
-}
-
-function etaBasis(lang: AppLanguage, eta: EtaEstimate): string {
-  if (eta.isMock) return t(lang, "home.etaDemo");
-  const key = eta.rides === 1 ? "home.etaFromRide" : "home.etaFromRides";
-  return t(lang, key).replace("{count}", String(eta.rides));
 }
 
 // The share link's world: a public page (no account, no gate) that answers
@@ -153,7 +147,13 @@ export default async function SharePage({
                   <p className="peek-mono" data-testid="share-eta">
                     ~{eta.minutes} {t(lang, "common.minutes")}
                   </p>
-                  <span className="peek-route-sub">{etaBasis(lang, eta)}</span>
+                  {/* public page: the honest card opens here too, without
+                      the signed in link into the app */}
+                  <EtaBasis
+                    className="peek-route-sub"
+                    label={etaBasisLabel(lang, eta)}
+                    card={etaBasisCard(lang, eta)}
+                  />
                 </div>
               )}
             </div>

@@ -475,6 +475,40 @@ export const dict = {
     sn: "kubva panzendo {count} dzakarekodhwa",
   },
 
+  "eta.cardAria": {
+    en: "Where this number comes from",
+    sn: "Kunobva nhamba iyi",
+  },
+  "eta.cardTitle": {
+    en: "Where this number comes from",
+    sn: "Kunobva nhamba iyi",
+  },
+  "eta.cardMeasured": {
+    en: "It is measured from {count} real rides we recorded on this road, phone in hand.",
+    sn: "Yakayerwa kubva panzendo {count} chaidzo dzatakarekodha munzira ino, nefoni muruoko.",
+  },
+  "eta.cardModel": {
+    en: "A trained model waits behind a promotion rule. It serves only when committed numbers prove it beats this measured average on held out rides.",
+    sn: "Modhi yakadzidziswa yakamirira mutemo wekukwidziridzwa. Inoshanda chete kana nhamba dzakachengetwa dzichiratidza kuti inokunda avhareji iyi.",
+  },
+  "eta.cardImprove": {
+    en: "Every new recorded ride sharpens it.",
+    sn: "Rwendo rwega rwega rutsva rwakarekodhwa runoinatsa.",
+  },
+  "eta.cardDemo": {
+    en: "This is a demo estimate from the offline twin, not a measurement.",
+    sn: "Iyi ifungidziro yekuratidzira kubva kumbeu yekumira, kwete chiyero.",
+  },
+  "eta.cardDemoWhen": {
+    en: "It serves when the arrival engine is unreachable or the trip is off the recorded corridor.",
+    sn: "Inoshanda kana injini yekusvika isingawanikwe kana rwendo rusiri munzira yakarekodhwa.",
+  },
+  "eta.cardClose": { en: "Close", sn: "Vhara" },
+  "eta.cardMore": {
+    en: "See how Svika knows",
+    sn: "Ona kuti Svika inoziva sei",
+  },
+
   "plan.saveTitle": {
     en: "Save this trip for your home map",
     sn: "Chengetedza rwendo urwu pamepu yako",

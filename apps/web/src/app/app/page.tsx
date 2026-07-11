@@ -10,7 +10,9 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { EtaBasis } from "@/components/home/EtaBasis";
 import { StoryStage } from "@/components/story/StoryStage";
+import { etaBasisCard, etaBasisLabel } from "@/lib/eta-provenance";
 import { ArrowIcon, HomeIcon, RidesIcon, WalletIcon } from "@/components/icons";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
@@ -58,14 +60,6 @@ interface CorridorStopRow {
   stop_id: string;
   seq: number;
   stops: { name: string } | null;
-}
-
-// Every rendered estimate says what it stands on: recorded rides for the
-// real thing, the demo label for the mock twin.
-function etaBasisLabel(lang: Awaited<ReturnType<typeof getLang>>, eta: EtaEstimate): string {
-  if (eta.isMock) return t(lang, "home.etaDemo");
-  const key = eta.rides === 1 ? "home.etaFromRide" : "home.etaFromRides";
-  return t(lang, key).replace("{count}", String(eta.rides));
 }
 
 // Rider home (reference screen 2): the live map is the whole screen, the
@@ -334,7 +328,12 @@ export default async function RiderHome({
             </span>
             <span className="svika-meta">
               {commuteAlert.fromName} {toWord} {commuteAlert.toName} ·{" "}
-              {etaBasisLabel(lang, commuteAlert.eta)}
+              <EtaBasis
+                label={etaBasisLabel(lang, commuteAlert.eta)}
+                card={etaBasisCard(lang, commuteAlert.eta)}
+                moreHref="/app/intelligence"
+                moreLabel={t(lang, "eta.cardMore")}
+              />
             </span>
           </span>
           <span className="peek-mono commute-alert-eta">
@@ -396,9 +395,13 @@ export default async function RiderHome({
                   <p className="peek-mono">
                     {corridorEta.minutes} {t(lang, "common.minutes")}
                   </p>
-                  <span className="peek-route-sub">
-                    {etaBasisLabel(lang, corridorEta)}
-                  </span>
+                  <EtaBasis
+                    className="peek-route-sub"
+                    label={etaBasisLabel(lang, corridorEta)}
+                    card={etaBasisCard(lang, corridorEta)}
+                    moreHref="/app/intelligence"
+                    moreLabel={t(lang, "eta.cardMore")}
+                  />
                 </div>
                 <div>
                   <p className="peek-label">{t(lang, "ticket.fare")}</p>
@@ -415,10 +418,12 @@ export default async function RiderHome({
             <ul className="home-pick-list">
               {savedTrips.map((trip) => {
                 const eta = etaByTrip.get(trip.id)!;
+                // the pick stays one card: the trip link fills the left, the
+                // basis label answers its own tap on the right
                 return (
-                  <li key={trip.id}>
+                  <li key={trip.id} className="home-pick svika-card">
                     <Link
-                      className="home-pick svika-card touch-target"
+                      className="home-pick-link touch-target"
                       href={`/app/plan?from=${trip.from_stop_id}&to=${trip.to_stop_id}`}
                     >
                       <span className="home-pick-body">
@@ -427,15 +432,19 @@ export default async function RiderHome({
                           {trip.from_stop?.name} {toWord} {trip.to_stop?.name}
                         </span>
                       </span>
-                      <span className="home-pick-eta">
-                        <span className="svika-mono-code">
-                          ~{eta.minutes} {t(lang, "common.minutes")}
-                        </span>
-                        <span className="svika-meta home-pick-demo">
-                          {etaBasisLabel(lang, eta)}
-                        </span>
-                      </span>
                     </Link>
+                    <span className="home-pick-eta">
+                      <span className="svika-mono-code">
+                        ~{eta.minutes} {t(lang, "common.minutes")}
+                      </span>
+                      <EtaBasis
+                        className="svika-meta home-pick-demo"
+                        label={etaBasisLabel(lang, eta)}
+                        card={etaBasisCard(lang, eta)}
+                        moreHref="/app/intelligence"
+                        moreLabel={t(lang, "eta.cardMore")}
+                      />
+                    </span>
                   </li>
                 );
               })}

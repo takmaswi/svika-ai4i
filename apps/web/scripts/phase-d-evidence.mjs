@@ -82,8 +82,9 @@ async function main() {
     await page.waitForTimeout(1_000);
     await shot(page, "vision-tinashe-responder", variant);
 
-    // Gogo: mid session, the menu answered on the mbudzi screen
-    await page.goto(`${BASE}/vision/gogo?story=gogo-ussd&step=0`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    // Gogo: mid session, the menu answered on the mbudzi screen. The keypad
+    // unlocks on the story's final step (presentation mode), so dial there.
+    await page.goto(`${BASE}/vision/gogo?story=gogo-ussd&step=1`, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await page.waitForTimeout(1_000);
     await dialIntoMenu(page);
     await shot(page, "vision-gogo", variant, true);

@@ -860,8 +860,8 @@ export const dict = {
 
   // --- the intelligence doors: the three spines with their evidence -------
   "story.eta.0": {
-    en: "Watch the arrives number on the card. The label under it says what the number stands on: real rides recorded on this road with a phone, not a guess.",
-    sn: "Tarisa nhamba yekusvika pakadhi. Chiratidzo chiri pasi payo chinotaura painomira: nzendo chaidzo dzakarekodhwa munzira ino nefoni, kwete fungidziro.",
+    en: "Watch the arrives number on the card, and the label under it. That label always says what the number stands on: rides we recorded on this road with a phone, or plainly a demo estimate if the engine is ever unreachable. Tap any basis label in the app and it explains itself.",
+    sn: "Tarisa nhamba yekusvika pakadhi, nechiratidzo chiri pasi payo. Chiratidzo icho chinogara chichitaura painomira nhamba: nzendo dzatakarekodha munzira ino nefoni, kana kuti fungidziro yekuratidzira pachena kana injini isingawanikwe. Baya chiratidzo chipi zvacho muapp chinozvitsanangura.",
   },
   "story.eta.1": {
     en: "The whole ladder: a measured average serves today, a trained model waits, and one committed rule promotes it only when it beats the average on rides it never saw. This table is the evidence itself.",

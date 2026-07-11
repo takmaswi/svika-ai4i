@@ -49,5 +49,15 @@ export default defineConfig({
       reuseExistingServer: true,
       timeout: 120_000,
     },
+    {
+      // spine 1 serves the real arrival numbers (SPINE_URL in .env.local);
+      // without it the mock twin serves and every basis label says demo
+      // estimate, which the intelligence door test refuses to record
+      command: "pnpm --filter @svika/spine dev",
+      cwd: join(__dirname, "..", ".."),
+      url: "http://127.0.0.1:8787/health",
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
   ],
 });

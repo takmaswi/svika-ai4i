@@ -30,9 +30,13 @@ test.describe("the intelligence doors", () => {
     await page.getByTestId("story-door-eta").click();
     await page.waitForURL(/story=eta-knows&step=0/, { timeout: 25_000 });
 
-    // step 0: the live map with the arrives number and its basis label
+    // step 0: the live map with the arrives number and its measured basis;
+    // the spine serves in this environment, so a demo estimate label here
+    // means the door is showing the wrong story and must fail
     await expect(page.getByTestId("peek-stats")).toBeVisible();
-    await expect(page.getByTestId("eta-basis").first()).toBeVisible();
+    const basis = page.getByTestId("eta-basis").first();
+    await expect(basis).toBeVisible();
+    await expect(basis).toContainText(/recorded ride/);
 
     // step 1: the ladder page; the table renders the committed file itself
     await page.getByTestId("story-next").click();

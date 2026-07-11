@@ -30,8 +30,9 @@ test.describe("saved trips", () => {
     await expect(pick.locator(".home-pick-eta .svika-mono-code")).toContainText("min");
     await expect(pick.locator(".home-pick-demo")).toBeVisible();
 
-    // tapping the pick lands straight on a priced plan
-    await pick.click();
+    // tapping the pick's trip link lands straight on a priced plan (the eta
+    // column beside it answers its own tap with the provenance card)
+    await pick.locator(".home-pick-link").click();
     await expect(page.locator(".plan-total")).toHaveText("$1.50");
   });
 

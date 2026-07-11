@@ -91,7 +91,7 @@ export class SpineEtaProvider implements EtaProvider {
 
   async estimate(fromStopId: string, toStopId: string): Promise<EtaEstimate> {
     try {
-      const real = await this.realEstimate(fromStopId, toStopId);
+      const real = await this.realEstimate(fromStopId, toStopId, "board");
       if (real) return real;
     } catch {
       // the mock twin serves below; the demo never dies on a network miss
@@ -99,9 +99,23 @@ export class SpineEtaProvider implements EtaProvider {
     return this.deps.fallback.estimate(fromStopId, toStopId);
   }
 
+  /** Arrival at the destination stop: the share viewer's number. The kombi
+   *  between the two stops (the one carrying the rider) is exactly the one
+   *  still approaching the destination, so the same picker serves. */
+  async estimateArrival(fromStopId: string, toStopId: string): Promise<EtaEstimate> {
+    try {
+      const real = await this.realEstimate(fromStopId, toStopId, "alight");
+      if (real) return real;
+    } catch {
+      // fall through to the mock twin
+    }
+    return this.deps.fallback.estimateArrival(fromStopId, toStopId);
+  }
+
   private async realEstimate(
     fromStopId: string,
     toStopId: string,
+    mode: "board" | "alight",
   ): Promise<EtaEstimate | null> {
     const { corridor } = this.deps;
     if (corridor.orderedStopIds.length !== corridor.stopLngLats.length) return null;
@@ -109,8 +123,9 @@ export class SpineEtaProvider implements EtaProvider {
     const direction = tripDirection(corridor.orderedStopIds, fromStopId, toStopId);
     if (!direction) return null;
 
-    const boardIndex = corridor.orderedStopIds.indexOf(fromStopId);
-    const targetMeters = distanceAlongLine(corridor.metrics, corridor.stopLngLats[boardIndex]!);
+    const targetStopId = mode === "board" ? fromStopId : toStopId;
+    const targetIndex = corridor.orderedStopIds.indexOf(targetStopId);
+    const targetMeters = distanceAlongLine(corridor.metrics, corridor.stopLngLats[targetIndex]!);
 
     const now = (this.deps.now ?? Date.now)();
     const travels = this.deps.vehicles.map((v) =>
@@ -122,8 +137,9 @@ export class SpineEtaProvider implements EtaProvider {
     // leg, but the kombi finishing the opposite leg is the next departure
     // here, so its arrival at the rank is the honest wait.
     const isTerminus =
-      (direction === "outbound" && boardIndex === 0) ||
-      (direction === "inbound" && boardIndex === corridor.orderedStopIds.length - 1);
+      mode === "board" &&
+      ((direction === "outbound" && targetIndex === 0) ||
+        (direction === "inbound" && targetIndex === corridor.orderedStopIds.length - 1));
     if (!vehicle && isTerminus) {
       vehicleDirection = direction === "outbound" ? "inbound" : "outbound";
       vehicle = pickApproachingVehicle(travels, vehicleDirection, targetMeters);
@@ -134,7 +150,7 @@ export class SpineEtaProvider implements EtaProvider {
     const params = new URLSearchParams({
       route: corridor.routeCode,
       direction: vehicleDirection,
-      target: fromStopId,
+      target: targetStopId,
       lat: String(lat),
       lng: String(lng),
     });

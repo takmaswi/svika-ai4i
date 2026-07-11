@@ -14,7 +14,10 @@ export interface EtaEstimate {
 }
 
 export interface EtaProvider {
+  /** When the kombi reaches the boarding stop: the rider's wait. */
   estimate(fromStopId: string, toStopId: string): Promise<EtaEstimate>;
+  /** When the trip reaches its destination: the share viewer's number. */
+  estimateArrival(fromStopId: string, toStopId: string): Promise<EtaEstimate>;
 }
 
 const MIN_ETA = 2;
@@ -39,5 +42,10 @@ export class MockEtaProvider implements EtaProvider {
       isMock: true,
       rides: 0,
     });
+  }
+
+  /** The mock's arrival number hangs off the destination stop instead. */
+  estimateArrival(_fromStopId: string, toStopId: string): Promise<EtaEstimate> {
+    return this.estimate(toStopId);
   }
 }

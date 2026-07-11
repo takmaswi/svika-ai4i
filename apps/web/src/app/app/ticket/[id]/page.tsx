@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { formatUsd } from "@svika/shared";
 import { BackIcon } from "@/components/icons";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
+import { createRideShare, revokeRideShare } from "@/lib/share-actions";
 
 interface TicketDetail {
   id: string;
@@ -23,11 +25,14 @@ interface TicketDetail {
 // means a rider can only ever open their own ticket here.
 export default async function TicketPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const lang = await getLang();
   const { id } = await params;
+  const shareState = (await searchParams).share;
   const supabase = await createClient();
 
   const {
@@ -35,7 +40,7 @@ export default async function TicketPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [ticketRes, statusRes] = await Promise.all([
+  const [ticketRes, statusRes, shareRes] = await Promise.all([
     supabase
       .from("tickets")
       .select(
@@ -44,6 +49,15 @@ export default async function TicketPage({
       .eq("id", id)
       .maybeSingle(),
     supabase.from("ticket_status").select("status").eq("ticket_id", id).maybeSingle(),
+    supabase
+      .from("ride_shares")
+      .select("id, token, expires_at")
+      .eq("ticket_id", id)
+      .is("revoked_at", null)
+      .gt("expires_at", new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const ticket = ticketRes.data as unknown as TicketDetail | null;
@@ -64,6 +78,14 @@ export default async function TicketPage({
       : "";
   const isLive = status === "issued";
   const isStamped = status === "redeemed";
+
+  // share my ride: only a running trip can be shared, and the link is shown
+  // right here (never in a URL we control the logging of)
+  const share = shareRes.data;
+  const hdrs = await headers();
+  const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host") ?? "localhost:3000";
+  const proto = hdrs.get("x-forwarded-proto") ?? "http";
+  const shareUrl = share ? `${proto}://${host}/share/${share.token}` : "";
 
   return (
     <main className="shell">
@@ -133,6 +155,55 @@ export default async function TicketPage({
           )}
         </div>
       </article>
+
+      {(isLive || isStamped) && (
+        <section
+          className="svika-card wallet-panel svika-animate-fade-up svika-rise-3"
+          data-testid="share-section"
+        >
+          <h2 className="svika-title">{t(lang, "share.sectionH")}</h2>
+          <p className="svika-body">{t(lang, "share.sectionB")}</p>
+          {share ? (
+            <>
+              <p className="svika-meta">{t(lang, "share.linkLabel")}</p>
+              <p className="share-url svika-mono-code" data-testid="share-url">
+                {shareUrl}
+              </p>
+              <form action={revokeRideShare}>
+                <input type="hidden" name="ticket" value={id} />
+                <input type="hidden" name="share" value={share.id} />
+                <button
+                  className="auth-link touch-target"
+                  type="submit"
+                  data-testid="share-revoke"
+                >
+                  {t(lang, "share.revokeCta")}
+                </button>
+              </form>
+              <p className="svika-meta">{t(lang, "share.expiryNote")}</p>
+            </>
+          ) : (
+            <form action={createRideShare}>
+              <input type="hidden" name="ticket" value={id} />
+              <button
+                className="auth-submit touch-target"
+                type="submit"
+                data-testid="share-create"
+              >
+                {t(lang, "share.createCta")}
+              </button>
+            </form>
+          )}
+          {shareState === "revoked" && (
+            <p className="wallet-ok svika-body" data-testid="share-revoked">
+              {t(lang, "share.revokedNote")}
+            </p>
+          )}
+          {shareState === "err" && (
+            <p className="auth-error svika-body">{t(lang, "share.err")}</p>
+          )}
+        </section>
+      )}
     </main>
   );
 }

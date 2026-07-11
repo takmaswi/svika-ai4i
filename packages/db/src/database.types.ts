@@ -887,6 +887,58 @@ export type Database = {
         }
         Relationships: []
       }
+      ride_shares: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          revoked_at: string | null
+          rider_id: string
+          ticket_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          revoked_at?: string | null
+          rider_id: string
+          ticket_id: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          revoked_at?: string | null
+          rider_id?: string
+          ticket_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ride_shares_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ride_shares_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "ticket_status"
+            referencedColumns: ["ticket_id"]
+          },
+          {
+            foreignKeyName: "ride_shares_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rider_prefs: {
         Row: {
           commute_alerts: boolean
@@ -1663,6 +1715,13 @@ export type Database = {
         }[]
       }
       claim_demo_persona: { Args: never; Returns: string }
+      create_ride_share: {
+        Args: { p_ticket: string }
+        Returns: {
+          share_expires_at: string
+          share_token: string
+        }[]
+      }
       current_fare_cents: { Args: { p_route: string }; Returns: number }
       delete_emergency_details: {
         Args: { p_consent_version: string }
@@ -1769,6 +1828,21 @@ export type Database = {
       reset_conductor_attempt_log: {
         Args: { p_profile: string }
         Returns: number
+      }
+      revoke_ride_share: { Args: { p_share: string }; Returns: undefined }
+      ride_share_view: {
+        Args: { p_token: string }
+        Returns: {
+          direction: Database["public"]["Enums"]["route_direction"]
+          from_stop_id: string
+          from_stop_name: string
+          route_code: string
+          route_name: string
+          share_expires_at: string
+          to_stop_id: string
+          to_stop_name: string
+          trip_status: string
+        }[]
       }
       save_emergency_details: {
         Args: {

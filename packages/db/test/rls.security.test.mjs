@@ -825,5 +825,98 @@ check(
   await A.c.from("rider_prefs").delete().eq("rider_id", A.uid);
 }
 
+// --- ride shares (migration 0026) -------------------------------------------
+// The share link is the capability: 128 bit token, viewer sees route facts
+// only, and there is no client write path or cross rider door anywhere.
+{
+  const A = await signIn("RIDER_A");
+  const B = await signIn("RIDER_B");
+  const buyRes = await A.c.rpc("purchase_ticket", {
+    p_route: routeId,
+    p_direction: "outbound",
+  });
+  if (buyRes.error) {
+    skip("ride shares", `ticket purchase failed: ${buyRes.error.message}`);
+  } else {
+    const ticketId = buyRes.data[0].ticket_id;
+
+    const share = await A.c.rpc("create_ride_share", { p_ticket: ticketId });
+    const token = share.data?.[0]?.share_token ?? "";
+    check(
+      "SH-1 the rider mints a 128 bit share token for their own fare",
+      !share.error && /^[0-9a-f]{32}$/.test(token),
+      share.error?.message,
+    );
+
+    const again = await A.c.rpc("create_ride_share", { p_ticket: ticketId });
+    check(
+      "SH-2 minting twice returns the same live link",
+      !again.error && again.data?.[0]?.share_token === token,
+    );
+
+    const foreign = await B.c.rpc("create_ride_share", { p_ticket: ticketId });
+    check("SH-3 a rider cannot share someone else's ticket", !!foreign.error);
+
+    const anonShares = await anon.from("ride_shares").select("token");
+    check("SH-4 anon cannot read the share table", deniedOrEmpty(anonShares));
+    const bShares = await B.c.from("ride_shares").select("token");
+    check(
+      "SH-5 another rider cannot read A's share tokens",
+      !bShares.error && (bShares.data ?? []).every((r) => r.token !== token),
+    );
+
+    const forge = await A.c.from("ride_shares").insert({
+      ticket_id: ticketId,
+      rider_id: A.uid,
+      token: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      expires_at: new Date(Date.now() + 3600_000).toISOString(),
+    });
+    check("SH-6 even the owner cannot write the share table directly", !!forge.error);
+
+    const view = await anon.rpc("ride_share_view", { p_token: token });
+    const row = view.data?.[0];
+    check(
+      "SH-7 the anonymous viewer sees route facts for a live token",
+      !view.error && !!row && typeof row.route_name === "string",
+      view.error?.message,
+    );
+    check(
+      "SH-8 the view exposes nothing about who is riding",
+      !!row &&
+        !("rider_id" in row) &&
+        !("ticket_id" in row) &&
+        !("board_code" in row) &&
+        !("fare_cents" in row),
+      row ? Object.keys(row).join(",") : "no row",
+    );
+
+    const miss = await anon.rpc("ride_share_view", {
+      p_token: "0123456789abcdef0123456789abcdef",
+    });
+    check(
+      "SH-9 a wrong token answers with nothing",
+      !miss.error && (miss.data ?? []).length === 0,
+    );
+
+    const { data: shareRow } = await A.c
+      .from("ride_shares")
+      .select("id")
+      .eq("token", token)
+      .single();
+    const foreignRevoke = await B.c.rpc("revoke_ride_share", {
+      p_share: shareRow.id,
+    });
+    check("SH-10 another rider cannot revoke A's share", !!foreignRevoke.error);
+
+    const revoke = await A.c.rpc("revoke_ride_share", { p_share: shareRow.id });
+    const afterRevoke = await anon.rpc("ride_share_view", { p_token: token });
+    check(
+      "SH-11 revoking kills the link for the viewer",
+      !revoke.error && !afterRevoke.error && (afterRevoke.data ?? []).length === 0,
+      revoke.error?.message,
+    );
+  }
+}
+
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`);
 process.exit(failed === 0 ? 0 : 1);

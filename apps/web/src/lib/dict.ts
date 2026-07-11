@@ -614,6 +614,52 @@ export const dict = {
     en: "That did not save. Try again.",
     sn: "Hazvina kuchengetedzwa. Edzazve.",
   },
+  "share.sectionH": { en: "Share my ride", sn: "Govera rwendo rwangu" },
+  "share.sectionB": {
+    en: "Send this link to someone who worries about you. They follow the trip on a map, never your code or your money.",
+    sn: "Tumira link iyi kune anokufungira. Vanoona rwendo pamepu, kwete kodhi yako kana mari yako.",
+  },
+  "share.createCta": { en: "Create the link", sn: "Gadzira link" },
+  "share.linkLabel": {
+    en: "Anyone with this link can follow the trip",
+    sn: "Ane link iyi anogona kuona rwendo",
+  },
+  "share.revokeCta": { en: "Stop sharing", sn: "Mira kugovera" },
+  "share.revokedNote": {
+    en: "Sharing stopped. The link is dead now.",
+    sn: "Kugovera kwamira. Link haichashande.",
+  },
+  "share.err": {
+    en: "That did not work. Try again.",
+    sn: "Hazvina kushanda. Edzazve.",
+  },
+  "share.expiryNote": {
+    en: "The link stops working when the trip ends.",
+    sn: "Link inomira kushanda kana rwendo rwapera.",
+  },
+  "share.viewerTitle": { en: "Following a trip", sn: "Kuona rwendo" },
+  "share.statusWaiting": { en: "Waiting to board", sn: "Kumirira kukwira" },
+  "share.statusOnBoard": { en: "On board", sn: "Vari mukombi" },
+  "share.arrives": { en: "Arrives", sn: "Vanosvika" },
+  "share.canSeeH": { en: "What you can see", sn: "Zvaunogona kuona" },
+  "share.canSee1": {
+    en: "The route this trip rides and where the kombis on it are right now.",
+    sn: "Nzira yerwendo urwu uye pari makombi ayo izvozvi.",
+  },
+  "share.canSee2": {
+    en: "The stop the trip ends at and the arrival estimate.",
+    sn: "Chiteshi chinopera rwendo nefungidziro yekusvika.",
+  },
+  "share.cannotSeeH": { en: "What you cannot see", sn: "Zvausingakwanise kuona" },
+  "share.cannotSee1": {
+    en: "Who is riding, their phone number, their boarding code or their wallet.",
+    sn: "Ari kufamba, nhamba yefoni yake, kodhi yake kana chikwama chake.",
+  },
+  "share.deadH": { en: "This link is no longer live", sn: "Link iyi haichashande" },
+  "share.deadB": {
+    en: "The trip has ended or the rider stopped sharing it.",
+    sn: "Rwendo rwapera kana kuti mufambi amira kurugovera.",
+  },
 } as const satisfies Record<string, Entry>;
 
 export type DictKey = keyof typeof dict;

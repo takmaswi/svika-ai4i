@@ -186,4 +186,35 @@ describe("SpineEtaProvider", () => {
     expect(eta.isMock).toBe(true);
     expect(fetchFn).not.toHaveBeenCalled();
   });
+
+  test("arrival mode targets the destination stop", async () => {
+    const { provider, fetchFn } = providerWith();
+    const eta = await provider.estimateArrival("stop-a", "stop-c");
+    expect(eta).toEqual({ minutes: 5, isMock: false, rides: 2 });
+    const url = String(fetchFn.mock.calls[0]![0]);
+    expect(url).toContain("target=stop-c");
+    expect(url).toContain("direction=outbound");
+  });
+
+  test("arrival mode still works while the kombi rides between the stops", async () => {
+    const { provider, fetchFn } = providerWith({
+      // 200 s in: the kombi is 2000 m along, between stop-b and stop-c, so
+      // it has passed the boarding stop but still approaches the destination
+      now: () => 200_000,
+    });
+    const eta = await provider.estimateArrival("stop-b", "stop-c");
+    expect(eta.isMock).toBe(false);
+    const url = String(fetchFn.mock.calls[0]![0]);
+    expect(url).toContain("target=stop-c");
+  });
+
+  test("arrival mode falls back once the trip is done and none approach", async () => {
+    const { provider, fetchFn } = providerWith({
+      // 320 s in: 3200 m along, past stop-c (2223 m), nothing approaches it
+      now: () => 320_000,
+    });
+    const eta = await provider.estimateArrival("stop-b", "stop-c");
+    expect(eta.isMock).toBe(true);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
 });

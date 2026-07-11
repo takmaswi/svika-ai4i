@@ -1516,6 +1516,13 @@ body:has(.home-screen) .demo-account-chip {
   gap: var(--space-3);
 }
 
+/* the share link shown on the ticket: mono per hard rule 9, wraps at 360px */
+.share-url {
+  word-break: break-all;
+  font-size: 12.5px;
+  user-select: all;
+}
+
 /* --- profile (unreferenced screen, composed from numbered patterns) ------- */
 .profile-form {
   display: grid;

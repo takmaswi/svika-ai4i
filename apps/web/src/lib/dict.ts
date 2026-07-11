@@ -614,6 +614,19 @@ export const dict = {
     en: "That did not save. Try again.",
     sn: "Hazvina kuchengetedzwa. Edzazve.",
   },
+  "voice.approaching": {
+    en: "Your stop is coming up.",
+    sn: "Wakusvika pachiteshi chako.",
+  },
+  "voice.getOff": {
+    en: "This is your stop. Get off here.",
+    sn: "Chiteshi chako ndechichi. Chiburuka pano.",
+  },
+  "voice.walk": {
+    en: "Your walking leg starts here.",
+    sn: "Kufamba netsoka kunotangira pano.",
+  },
+
   "alert.title": {
     en: "Your usual kombi is close",
     sn: "Kombi yaunogara uchikwira yaswedera",

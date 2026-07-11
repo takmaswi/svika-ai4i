@@ -14,7 +14,13 @@ import { StoryBar } from "@/components/story/StoryBar";
 import { ArrowIcon, HomeIcon, RidesIcon, WalletIcon } from "@/components/icons";
 import { formatUsd } from "@svika/shared";
 import { boardCodesOf, type BoardCodeEmbed } from "@/lib/tickets";
-import { CORRIDOR_ROUTE_CODE } from "@/lib/map/corridor-data";
+import {
+  CORRIDOR_ROUTE_CODE,
+  corridorMetrics,
+  corridorStops,
+} from "@/lib/map/corridor-data";
+import { distanceAlongLine } from "@/lib/map/eta-live";
+import { VoiceGuideLazy } from "@/components/voice/VoiceGuideLazy";
 import type { EtaEstimate } from "@/lib/map/eta";
 import { homeEtaProvider } from "@/lib/map/eta-home";
 import {
@@ -39,7 +45,10 @@ interface TicketRow {
   fare_cents: number;
   payment_method: "wallet" | "cash";
   purchased_at: string;
-  routes: { name: string } | null;
+  direction: "outbound" | "inbound";
+  from_stop_id: string;
+  to_stop_id: string;
+  routes: { code: string; name: string } | null;
   from_stop: { name: string } | null;
   to_stop: { name: string } | null;
   board_codes: BoardCodeEmbed | BoardCodeEmbed[] | null;
@@ -102,7 +111,7 @@ export default async function RiderHome({
       supabase
         .from("tickets")
         .select(
-          "id, fare_cents, payment_method, purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name), board_codes(code, valid_until)",
+          "id, fare_cents, payment_method, purchased_at, direction, from_stop_id, to_stop_id, routes(code, name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name), board_codes(code, valid_until)",
         )
         .eq("kind", "fare")
         .order("purchased_at", { ascending: false })
@@ -120,7 +129,10 @@ export default async function RiderHome({
         .order("effective_from", { ascending: false })
         .limit(1)
         .maybeSingle(),
-      supabase.from("rider_prefs").select("commute_alerts").maybeSingle(),
+      supabase
+        .from("rider_prefs")
+        .select("commute_alerts, voice_en, voice_sn")
+        .maybeSingle(),
       // spine 2 raw material: the rider's own recent rides, under their RLS
       supabase
         .from("tickets")
@@ -210,6 +222,57 @@ export default async function RiderHome({
     (statusRes.data ?? []).map((s) => [s.ticket_id as string, s.status as string]),
   );
 
+  // The voice guide rides the newest boarded corridor fare, in whichever
+  // enabled voice matches the app language (falling back to the other
+  // enabled one). Replay mode compresses the ride's last stretch for story
+  // steps; the story caption says so.
+  const prefs = prefsRes.data;
+  const voiceLang =
+    lang === "sn" && prefs?.voice_sn
+      ? ("sn" as const)
+      : lang === "en" && prefs?.voice_en
+        ? ("en" as const)
+        : prefs?.voice_sn
+          ? ("sn" as const)
+          : prefs?.voice_en
+            ? ("en" as const)
+            : null;
+  const boarded = tickets.find(
+    (tk) =>
+      (statusByTicket.get(tk.id) ?? "issued") === "redeemed" &&
+      tk.routes?.code === CORRIDOR_ROUTE_CODE &&
+      Date.now() - new Date(tk.purchased_at).getTime() < 2 * 60 * 60_000,
+  );
+  let voiceTrip: {
+    targetMeters: number;
+    direction: "outbound" | "inbound";
+    hasWalkAfter: boolean;
+  } | null = null;
+  if (voiceLang && boarded && corridorStopIds.length === corridorStops.length) {
+    const alightIndex = corridorStopIds.indexOf(boarded.to_stop_id);
+    if (alightIndex !== -1) {
+      const hasWalkAfter = tickets.some(
+        (other) =>
+          other.id !== boarded.id &&
+          (statusByTicket.get(other.id) ?? "issued") === "issued" &&
+          other.from_stop_id !== boarded.to_stop_id &&
+          Math.abs(
+            new Date(other.purchased_at).getTime() -
+              new Date(boarded.purchased_at).getTime(),
+          ) <
+            30 * 60_000,
+      );
+      voiceTrip = {
+        targetMeters: distanceAlongLine(
+          corridorMetrics,
+          corridorStops[alightIndex]!.lngLat,
+        ),
+        direction: boarded.direction,
+        hasWalkAfter,
+      };
+    }
+  }
+
   return (
     <main className="home-screen">
       <div className="home-map">
@@ -242,6 +305,19 @@ export default async function RiderHome({
           </span>
         </span>
       </header>
+
+      {voiceTrip && (
+        <VoiceGuideLazy
+          lang={voiceLang}
+          trip={voiceTrip}
+          mode={params.voicedemo === "1" ? "replay" : "live"}
+          captions={{
+            approaching: t(voiceLang!, "voice.approaching"),
+            getOff: t(voiceLang!, "voice.getOff"),
+            walk: t(voiceLang!, "voice.walk"),
+          }}
+        />
+      )}
 
       {commuteAlert && (
         <aside className="commute-alert svika-glass-strong" data-testid="commute-alert">

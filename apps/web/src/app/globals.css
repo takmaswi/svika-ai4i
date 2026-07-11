@@ -1516,6 +1516,32 @@ body:has(.home-screen) .demo-account-chip {
   gap: var(--space-3);
 }
 
+/* voice guide caption: the spoken line, centred over the map while it plays;
+   the same trigger feeds the aria-live region for screen readers */
+.voice-caption-region {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 42%;
+  z-index: 26;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.voice-caption {
+  margin: 0;
+  padding: var(--space-3) var(--space-5);
+  font-size: 16px;
+  font-weight: var(--weight-semibold);
+  text-align: center;
+  animation: svk-rise 0.6s var(--ease-standard) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .voice-caption {
+    animation: none;
+  }
+}
+
 /* commute alert (spine 2): floats just above the peeking sheet, built from
    the sheet surface and the live dot; the open sheet slides over it */
 .commute-alert {

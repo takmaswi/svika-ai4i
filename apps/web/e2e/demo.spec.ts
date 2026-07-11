@@ -44,11 +44,12 @@ test.describe("demo door and story mode", () => {
     const basis = page.getByTestId("eta-basis").first();
     await expect(basis).toBeVisible();
     await basis.click();
-    const card = page.getByTestId("eta-basis-card");
+    // the card lives in the one open dialog (every EtaBasis mounts one)
+    const card = page.locator("dialog[open]").getByTestId("eta-basis-card");
     await expect(card).toBeVisible();
     await expect(card).toContainText(/recorded|demo/i);
     await page.keyboard.press("Escape");
-    await expect(card).not.toBeVisible();
+    await expect(page.locator("dialog[open]")).toHaveCount(0);
   });
 
   test("story: Tariro's trip to town ends with change as credit", async ({

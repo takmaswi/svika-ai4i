@@ -49,7 +49,7 @@ async function prepareFixtures() {
     { onConflict: "rider_id" },
   );
   await rider.rpc("save_emergency_details", {
-    p_next_of_kin_name: "Amai Tariro",
+    p_next_of_kin_name: "Amai Tino",
     p_next_of_kin_phone: "+263 77 234 5678",
     p_medical_aid_name: "PSMAS",
     p_medical_aid_number: "PS 448812",

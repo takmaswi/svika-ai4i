@@ -29,8 +29,8 @@ export const dict = {
   },
   "landing.signinLink": { en: "Sign in here", sn: "Pinda pano" },
   "landing.demoLead": {
-    en: "Walk straight in as Tariro, a demo rider on the live system. No sign up.",
-    sn: "Pinda pakarepo saTariro, mufambi wekuratidzira pane system chaiyo. Hapana kunyoresa.",
+    en: "Walk straight in as Tino, a demo rider on the live system. No sign up.",
+    sn: "Pinda pakarepo saTino, mufambi wekuratidzira pane system chaiyo. Hapana kunyoresa.",
   },
   "landing.demoEnter": { en: "Enter the demo", sn: "Pinda mudemo" },
   "landing.demoOwner": { en: "Owner dashboard", sn: "Dashboard yemuridzi" },
@@ -98,8 +98,8 @@ export const dict = {
     sn: "Danho iri harina kushanda. Edzazve, kana kubuda munyaya.",
   },
   "story.town.0": {
-    en: "Meet Tariro. She rides this corridor into town most mornings. Watch one normal trip.",
-    sn: "Uyu ndiTariro. Anokwira nzira iyi achienda kutown mangwanani mazhinji. Ona rwendo rumwe chete.",
+    en: "Meet Tino. She rides this corridor into town most mornings. Watch one normal trip.",
+    sn: "Uyu ndiTino. Anokwira nzira iyi achienda kutown mangwanani mazhinji. Ona rwendo rumwe chete.",
   },
   "story.town.1": {
     en: "She types where she is going. The planner quotes the real corridor fare: $1.50, one kombi.",

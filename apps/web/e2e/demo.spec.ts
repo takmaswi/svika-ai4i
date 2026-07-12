@@ -17,7 +17,7 @@ async function landingReady(page: Page): Promise<void> {
 }
 
 test.describe("demo door and story mode", () => {
-  test("one tap in as a fresh Tariro, demo chip on and state reset", async ({
+  test("one tap in as a fresh Tino, demo chip on and state reset", async ({
     page,
   }) => {
     await landingReady(page);
@@ -52,12 +52,12 @@ test.describe("demo door and story mode", () => {
     await expect(page.locator("dialog[open]")).toHaveCount(0);
   });
 
-  test("story: Tariro's trip to town ends with change as credit", async ({
+  test("story: Tino's trip to town ends with change as credit", async ({
     page,
   }) => {
     await landingReady(page);
     await page.getByTestId("story-door-town").click();
-    await page.waitForURL(/story=tariro-town&step=0/, { timeout: 20_000 });
+    await page.waitForURL(/story=tino-town&step=0/, { timeout: 20_000 });
 
     // walk the five steps: plan, book cash, boarding card, simulated hwindi
     // clears and keys the $2 note, wallet

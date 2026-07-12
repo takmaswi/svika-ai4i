@@ -20,7 +20,7 @@ const BASE = "http://localhost:3000";
 const OUT = join(repoRoot, "docs", "design-evidence", "stage");
 
 const DOORS = {
-  "tariro-town": { testid: "story-door-town", steps: 6 },
+  "tino-town": { testid: "story-door-town", steps: 6 },
   "transfer-trip": { testid: "story-door-transfer", steps: 3 },
   "takunda-morning": { testid: "story-door-takunda", steps: 4 },
   "rudo-night": { testid: "story-door-rudo", steps: 7 },
@@ -116,7 +116,7 @@ async function walkSignedInStory(browser, slug, door) {
 // TypeScript module; keep in sync when stories change). The share sentinel
 // step is skipped by its caller.
 const STEP_PATHS = {
-  "tariro-town": [
+  "tino-town": [
     "/app",
     "/app/plan?from=heights&to=rezende",
     "/app/plan?from=heights&to=rezende",

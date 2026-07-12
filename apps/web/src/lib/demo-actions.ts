@@ -64,7 +64,7 @@ export async function enterDemo(formData: FormData): Promise<void> {
   const password = process.env.DEMO_JUDGE_PASSWORD;
   if (!password) redirect(DEMO_ERR);
 
-  // named personas own their stories; pooled Tariros carry everything else
+  // named personas own their stories; pooled Tinos carry everything else
   if (def && def.persona !== "pool") {
     const email = def.persona === "takunda" ? TAKUNDA_EMAIL : RUDO_EMAIL;
     const { error: signErr } = await supabase.auth.signInWithPassword({

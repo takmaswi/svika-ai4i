@@ -491,7 +491,7 @@ await seedNetwork();
 
 // --- demo door personas (migration 0022) -----------------------------------
 // Judges enter through the landing page door as pooled personas (all named
-// Tariro), claimed least recently used so concurrent visitors never share a
+// Tino), claimed least recently used so concurrent visitors never share a
 // session. demo_sim on the profile flags every row they own as demo data;
 // per visit state (float, saved trip, consent) is rebuilt by demo_reset_mine.
 const JUDGE_POOL_SIZE = 6;
@@ -509,7 +509,7 @@ async function ensureDemoPool() {
         email,
         password,
         email_confirm: true,
-        user_metadata: { full_name: "Tariro" },
+        user_metadata: { full_name: "Tino" },
       });
       if (error) throw error;
       user = data.user;
@@ -519,13 +519,13 @@ async function ensureDemoPool() {
     }
     const { error: pErr } = await admin
       .from("profiles")
-      .update({ full_name: "Tariro", preferred_language: "en", demo_sim: true })
+      .update({ full_name: "Tino", preferred_language: "en", demo_sim: true })
       .eq("id", user.id);
     if (pErr) throw pErr;
     const { error: poolErr } = await admin
       .from("demo_pool")
       .upsert(
-        { profile_id: user.id, persona: "Tariro", email },
+        { profile_id: user.id, persona: "Tino", email },
         { onConflict: "profile_id" },
       );
     if (poolErr) throw poolErr;

@@ -74,7 +74,7 @@ test.describe("no dead ends", () => {
 /** The landing door testids abbreviate the slugs. */
 function doorSuffix(slug: string): string {
   const suffix: Record<string, string> = {
-    "tariro-town": "town",
+    "tino-town": "town",
     "transfer-trip": "transfer",
     "takunda-morning": "takunda",
     "rudo-night": "rudo",

@@ -34,7 +34,7 @@ export interface StoryStep {
 
 export interface Story {
   slug: string;
-  /** Who the door signs the judge in as: a pooled Tariro, a named persona,
+  /** Who the door signs the judge in as: a pooled Tino, a named persona,
    *  or the demo owner. "none" is a vision scene: nobody signs in and
    *  nothing writes. */
   persona: "pool" | "takunda" | "rudo" | "owner" | "none";
@@ -47,8 +47,8 @@ export interface Story {
 }
 
 export const STORIES: Record<string, Story> = {
-  "tariro-town": {
-    slug: "tariro-town",
+  "tino-town": {
+    slug: "tino-town",
     persona: "pool",
     stayPath: "/app/wallet",
     steps: [

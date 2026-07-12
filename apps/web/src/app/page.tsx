@@ -128,7 +128,7 @@ export default async function LandingPage({
         <div className="landing-demo-doors">
           <form action={enterDemo}>
             <input type="hidden" name="target" value="rider" />
-            <input type="hidden" name="story" value="tariro-town" />
+            <input type="hidden" name="story" value="tino-town" />
             <button
               className="landing-story-btn touch-target"
               type="submit"

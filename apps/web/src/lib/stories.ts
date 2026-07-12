@@ -27,7 +27,14 @@ export const SHARE_PATH_SENTINEL = "@share-latest";
  *  for this beat instead of the raw app screen, so the beat reads clean on a
  *  360px phone and nothing waits on the database. Preview steps write nothing;
  *  the live tail that follows carries every real write. */
-export type StoryPreviewBeat = "town-book" | "town-clear" | "town-wallet";
+export type StoryPreviewBeat =
+  | "town-book"
+  | "town-clear"
+  | "town-wallet"
+  | "night-wallet"
+  | "night-board"
+  | "night-clear"
+  | "night-share";
 
 export interface StoryStep {
   /** Real app path (may carry its own query), without the story params;
@@ -162,27 +169,37 @@ export const STORIES: Record<string, Story> = {
       { path: "/vision/capacity", captionKey: "story.cap.1" },
     ],
   },
+  // Rudo's night ride, two layers, staged in the night theme. Steps 0 to 3
+  // are a simulated preview: a stolen wallet filling to $2 from a friend's
+  // credit, boarding, the hwindi clearing, and her mother's live view opening,
+  // all animated so the safety and share arc reads at a glance. Steps 4 to 9
+  // are the real tail: the same friend, claim, booking, clear and share run
+  // through the real escrow and ledger RPCs, ending on the real /share link
+  // her mother would open. Every real write lives on the tail.
   "rudo-night": {
     slug: "rudo-night",
     persona: "rudo",
     theme: "dark",
     stayPath: "/app",
     steps: [
-      { path: "/app?sheet=open", captionKey: "story.ru.0" },
-      { path: "/app/wallet", captionKey: "story.ru.1", action: "friend-sends" },
+      { path: "/app/wallet", captionKey: "story.ru.0", preview: "night-wallet" },
+      { path: "/app/wallet", captionKey: "story.ru.1", preview: "night-board" },
+      { path: "/app?booked=1", captionKey: "story.ru.2", preview: "night-clear" },
+      { path: "/app?booked=1", captionKey: "story.ru.3", preview: "night-share" },
+      { path: "/app/wallet", captionKey: "story.ru.4", action: "friend-sends" },
       {
         path: "/app/wallet",
-        captionKey: "story.ru.2",
+        captionKey: "story.ru.5",
         action: "claim-friend-code",
       },
       {
         path: "/app/wallet",
-        captionKey: "story.ru.3",
+        captionKey: "story.ru.6",
         action: "book-wallet-corridor",
       },
-      { path: "/app?booked=1", captionKey: "story.ru.4", action: "hwindi-clears" },
-      { path: "/app?booked=1", captionKey: "story.ru.5", action: "share-ride" },
-      { path: SHARE_PATH_SENTINEL, captionKey: "story.ru.6" },
+      { path: "/app?booked=1", captionKey: "story.ru.7", action: "hwindi-clears" },
+      { path: "/app?booked=1", captionKey: "story.ru.8", action: "share-ride" },
+      { path: SHARE_PATH_SENTINEL, captionKey: "story.ru.9" },
     ],
   },
 };

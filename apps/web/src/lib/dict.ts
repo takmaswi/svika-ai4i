@@ -101,6 +101,9 @@ export const dict = {
   "story.working": { en: "Working…", sn: "Kushanda…" },
   "story.beatCode": { en: "Board code", sn: "Kodhi yekukwira" },
   "story.beatCleared": { en: "Cleared", sn: "Yabviswa" },
+  "story.beatSimFriend": { en: "Simulated friend", sn: "Shamwari yekuratidzira" },
+  "story.beatMother": { en: "Mother's live view", sn: "Muono waamai unorarama" },
+  "story.beatOnBoard": { en: "On board", sn: "Ari mukombi" },
   "story.town.0": {
     en: "Preview: Tino books her trip and her 4 digit board code appears.",
     sn: "Muonero: Tino anobhuka rwendo rwake uye kodhi yake ye4 inobuda.",
@@ -156,32 +159,44 @@ export const dict = {
   },
 
   "story.ru.0": {
-    en: "It is late and Rudo's wallet was stolen in town. Her Svika balance reads zero. Watch what her people can do about it.",
-    sn: "Kwadoka uye chikwama chaRudo chakabiwa mutown. Mari yake muSvika iri pazero. Ona zvinogona kuitwa nevanhu vake.",
+    en: "Preview: it is late and Rudo's wallet was stolen, so her balance reads zero. A simulated friend sends $2 and it climbs to $2.00.",
+    sn: "Muonero: kwadoka uye chikwama chaRudo chakabiwa, saka mari yake iri pazero. Shamwari yekuratidzira inotumira $2 uye inokwira kusvika $2.00.",
   },
   "story.ru.1": {
-    en: "A friend sends her credit from their own wallet. The friend is simulated; the escrow is the real ledger.",
-    sn: "Shamwari inomutumira mari kubva muchikwama chayo. Shamwari ndeyekuratidzira; mari inochengetwa mubhuku remari chairo.",
+    en: "Preview: she books the kombi home and her 4 digit board code appears.",
+    sn: "Muonero: anobhuka kombi yekuenda kumba uye kodhi yake ye4 inobuda.",
   },
   "story.ru.2": {
-    en: "A claim code reaches her phone (simulated SMS). Next types it in for her.",
-    sn: "Kodhi yekutora inosvika pafoni yake (SMS yekuratidzira). Enderera inoinyora.",
+    en: "Preview: on the kombi the hwindi clears her board code.",
+    sn: "Muonero: mukombi hwindi anobvisa kodhi yake yekukwira.",
   },
   "story.ru.3": {
-    en: "The credit landed in her wallet. She books the kombi home with it.",
-    sn: "Mari yapinda muchikwama chake. Anobhuka kombi yekuenda kumba nayo.",
+    en: "Preview: she shares the ride, and her mother opens the live link.",
+    sn: "Muonero: anogovera rwendo, uye amai vake vanovhura link inorarama.",
   },
   "story.ru.4": {
-    en: "Her boarding card is ready and the simulated hwindi clears her code. She is on her way.",
-    sn: "Kadhi rake ragadzirira uye hwindi yekuratidzira yabvisa kodhi yake. Ava munzira.",
+    en: "That was the preview. Now watch it happen for real. A friend sends real credit into escrow; the friend is simulated, the ledger is real.",
+    sn: "Uyo waiva muonero. Zvino tarisa zvichiitika chaizvo. Shamwari inotumira mari chaiyo mukuchengetedza; shamwari ndeyekuratidzira, bhuku remari nderechokwadi.",
   },
   "story.ru.5": {
-    en: "Her mother worries. Next creates a live share link, straight from her ticket.",
-    sn: "Amai vake vanofunganya. Enderera inogadzira link yekuona rwendo, kubva patikiti rake.",
+    en: "A claim code reaches her phone (simulated SMS). Next types it in; the $2 lands in her wallet.",
+    sn: "Kodhi yekutora inosvika pafoni yake (SMS yekuratidzira). Enderera inoinyora; $2 inopinda muchikwama chake.",
   },
   "story.ru.6": {
-    en: "This is exactly what her mother sees, no account needed: the trip, the arrival estimate, never the code or the wallet. The link dies when the trip ends.",
-    sn: "Izvi ndizvo chaizvo zvinoonekwa naamai vake, pasina akaunti: rwendo, fungidziro yekusvika, kwete kodhi kana chikwama. Link inofa kana rwendo rwapera.",
+    en: "The credit is real wallet money now. She books the kombi home with it.",
+    sn: "Mari yava mari chaiyo yechikwama. Anobhuka kombi yekuenda kumba nayo.",
+  },
+  "story.ru.7": {
+    en: "Her boarding card is ready and the simulated hwindi clears her code on the live ledger. She is on her way.",
+    sn: "Kadhi rake rekukwira ragadzirira uye hwindi yekuratidzira yabvisa kodhi yake pabhuku remari chairo. Ava munzira.",
+  },
+  "story.ru.8": {
+    en: "Her mother worries. Next mints a live share link, straight from her ticket.",
+    sn: "Amai vake vanofunganya. Enderera inogadzira link yekuona rwendo, kubva patikiti rake.",
+  },
+  "story.ru.9": {
+    en: "This is exactly what her mother sees, no account needed: the live trip and arrival, never the code or the wallet. The link dies when the trip ends.",
+    sn: "Izvi ndizvo chaizvo zvinoonekwa naamai vake, pasina akaunti: rwendo runorarama nekusvika, kwete kodhi kana chikwama. Link inofa kana rwendo rwapera.",
   },
 
   "login.title": { en: "Sign in to Svika", sn: "Pinda muSvika" },

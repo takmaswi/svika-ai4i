@@ -518,6 +518,50 @@ body:has(.home-screen) .demo-account-chip {
   animation-delay: 0.28s;
 }
 
+/* Rudo's night beats: the simulated friend row, the share card and its
+   stand-in QR. Theme aware through the same tokens as the town beats. */
+.sa-friend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.sa-friend-tag {
+  color: var(--color-ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.sa-share {
+  gap: var(--space-4);
+}
+.sa-share-link {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-park);
+  color: var(--color-char);
+}
+.sa-qr {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  width: 92px;
+  height: 92px;
+}
+.sa-qr > span {
+  border-radius: 2px;
+}
+.sa-qr .sa-qr-on {
+  background: var(--color-char);
+}
+:root[data-theme="dark"] .sa-qr .sa-qr-on {
+  background: var(--color-marigold);
+}
+.sa-mother {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-ink-soft);
+}
+
 /* the live tail's honest loading spinner (StoryNextButton pending state) */
 .story-spinner {
   display: inline-block;

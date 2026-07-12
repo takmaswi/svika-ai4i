@@ -14,7 +14,10 @@ test.describe("profile", () => {
     await page.goto("/app?sheet=open");
     await waitForHydration(page);
     await page.getByTestId("profile-link").click();
-    await expect(page).toHaveURL(/\/app\/profile/);
+    // the profile page derives ride stats server side; on a loaded dev server
+    // with a heavily reused pool persona the RSC nav can commit past the 5s
+    // default, so give the URL room
+    await expect(page).toHaveURL(/\/app\/profile/, { timeout: 20_000 });
 
     await page.fill("#full_name", "Tatenda Demo");
     await page

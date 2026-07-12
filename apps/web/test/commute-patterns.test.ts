@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import {
   activePattern,
+  alertPattern,
   ALERT_ETA_MINUTES,
   etaSaysNear,
   mineCommutePatterns,
@@ -9,7 +10,12 @@ import {
 
 const NOW = new Date("2026-07-10T06:00:00Z"); // 08:00 CAT, a Friday
 
-function ride(daysAgo: number, catHour: number, catMinute: number, pair = "a>b"): RideFact {
+function ride(
+  daysAgo: number,
+  catHour: number,
+  catMinute: number,
+  pair = "a>b",
+): RideFact {
   const [from, to] = pair.split(">") as [string, string];
   const at = new Date(NOW);
   at.setUTCDate(at.getUTCDate() - daysAgo);
@@ -25,7 +31,9 @@ function ride(daysAgo: number, catHour: number, catMinute: number, pair = "a>b")
 
 describe("mineCommutePatterns", () => {
   test("a two week daily commute becomes one pattern with a sane window", () => {
-    const rides = Array.from({ length: 12 }, (_, i) => ride(i + 1, 7, 40 + (i % 3) * 5));
+    const rides = Array.from({ length: 12 }, (_, i) =>
+      ride(i + 1, 7, 40 + (i % 3) * 5),
+    );
     const patterns = mineCommutePatterns(rides, NOW);
     expect(patterns).toHaveLength(1);
     const p = patterns[0]!;
@@ -76,6 +84,35 @@ describe("activePattern", () => {
   test("silent outside the window", () => {
     const later = new Date(NOW.getTime() + 3 * 60 * 60_000); // 11:00 CAT
     expect(activePattern(patterns, later)).toBeNull();
+  });
+});
+
+describe("alertPattern", () => {
+  const rides = Array.from({ length: 12 }, (_, i) => ride(i + 1, 8, 0));
+  const patterns = mineCommutePatterns(rides, NOW);
+  const afternoon = new Date(NOW.getTime() + 7 * 60 * 60_000); // 15:00 CAT
+
+  test("a real rider stays gated on the usual window", () => {
+    expect(alertPattern(patterns, NOW, { demo: false })).not.toBeNull();
+    // well outside the 08:00 window: the real rider gets nothing
+    expect(alertPattern(patterns, afternoon, { demo: false })).toBeNull();
+  });
+
+  test("a demo persona fires at a non-morning clock, window waived", () => {
+    // the landmine: an afternoon stage clock. The real gate would be silent,
+    // but the demo persona shows the busiest mined pattern anyway.
+    expect(activePattern(patterns, afternoon)).toBeNull();
+    const shown = alertPattern(patterns, afternoon, { demo: true });
+    expect(shown).not.toBeNull();
+    expect(shown!.fromStopId).toBe("a");
+  });
+
+  test("a demo persona with no mined pattern still gets no alert", () => {
+    const thin = mineCommutePatterns(
+      Array.from({ length: 3 }, (_, i) => ride(i + 1, 8, 0)),
+      NOW,
+    );
+    expect(alertPattern(thin, afternoon, { demo: true })).toBeNull();
   });
 });
 

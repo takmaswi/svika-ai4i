@@ -117,6 +117,27 @@ export function activePattern(
   );
 }
 
+/**
+ * Which mined pattern drives the home commute alert.
+ *
+ * A real rider sees it only when the moment sits in the usual window
+ * (activePattern), exactly as before. A demo persona runs on whatever wall
+ * clock the stage happens to have, and its fixture history can straddle a
+ * reseed (leaving two clusters whose median lands between them), so the
+ * "is it the usual time" gate is waived and the busiest mined pattern drives
+ * the alert on any clock. The live ETA gate (etaSaysNear) and the honest
+ * basis label are untouched, so what shows is still the real route and the
+ * real minutes; real riders are never widened.
+ */
+export function alertPattern(
+  patterns: CommutePattern[],
+  now: Date,
+  opts: { demo: boolean },
+): CommutePattern | null {
+  if (opts.demo) return patterns[0] ?? null;
+  return activePattern(patterns, now);
+}
+
 /** "The usual kombi is near": the live wait fits inside the threshold. */
 export function etaSaysNear(etaMinutes: number): boolean {
   return etaMinutes <= ALERT_ETA_MINUTES;

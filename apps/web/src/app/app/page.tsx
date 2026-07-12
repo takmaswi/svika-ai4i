@@ -33,7 +33,7 @@ import { VoiceGuideLazy } from "@/components/voice/VoiceGuideLazy";
 import type { EtaEstimate } from "@/lib/map/eta";
 import { homeEtaProvider } from "@/lib/map/eta-home";
 import {
-  activePattern,
+  alertPattern,
   etaSaysNear,
   LOOKBACK_DAYS,
   mineCommutePatterns,
@@ -152,8 +152,13 @@ export default async function RiderHome({
       .gte("purchased_at", lookbackIso)
       .order("purchased_at", { ascending: false })
       .limit(120),
-    // the profile door's initial avatar reads the rider's own name
-    supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+    // the profile door's initial avatar reads the rider's own name; demo_sim
+    // tells the alert to run on any stage clock (see the alert block below)
+    supabase
+      .from("profiles")
+      .select("full_name, demo_sim")
+      .eq("id", user.id)
+      .maybeSingle(),
   ]);
 
   const balance = balanceRes.data?.balance_cents ?? 0;
@@ -179,7 +184,9 @@ export default async function RiderHome({
   // Spine 2, commute alerts: recurring trips mined from the rider's own
   // history as plain statistics; the alert fires only when the pref is on,
   // the moment sits in the usual window, and the live wait (Spine 1) says
-  // the usual kombi is near. See docs/SPINE-2-COMMUTE-ALERTS.md.
+  // the usual kombi is near. A demo persona (demo_sim) waives the window so
+  // the alert plays on any stage clock; the mined route, the live ETA and the
+  // basis label stay real. See docs/SPINE-2-COMMUTE-ALERTS.md.
   let commuteAlert: {
     fromName: string;
     toName: string;
@@ -202,7 +209,10 @@ export default async function RiderHome({
         purchasedAt: r.purchased_at,
       }),
     );
-    const pattern = activePattern(mineCommutePatterns(facts, new Date()), new Date());
+    const isDemo = profileRes.data?.demo_sim === true;
+    const pattern = alertPattern(mineCommutePatterns(facts, new Date()), new Date(), {
+      demo: isDemo,
+    });
     if (pattern) {
       const eta = await etaProvider.estimate(pattern.fromStopId, pattern.toStopId);
       if (etaSaysNear(eta.minutes)) {

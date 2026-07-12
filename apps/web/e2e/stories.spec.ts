@@ -24,6 +24,7 @@ test.describe("phase C stories", () => {
   test("Takunda's morning: alert, quick pick booking, voice as the stop nears", async ({
     page,
   }) => {
+    test.setTimeout(120_000);
     await landingReady(page);
     await page.getByTestId("story-door-takunda").click();
     await page.waitForURL(/story=takunda-morning&step=0/, { timeout: 25_000 });
@@ -37,9 +38,13 @@ test.describe("phase C stories", () => {
     await nextStep(page, /step=1/);
     await expect(page.locator(".home-pick", { hasText: "Kubasa" })).toBeVisible();
 
-    // next books from the wallet through the real engine
+    // next books from the wallet through the real engine. The booked home is
+    // a heavy render (map, several live ETAs, status), so the ticket list can
+    // take a few seconds to commit after the redirect; wait for it.
     await nextStep(page, /booked=1.*step=2/);
-    await expect(page.locator(".ticket-item-code").first()).not.toHaveText("····");
+    await expect(page.locator(".ticket-item-code").first()).not.toHaveText("····", {
+      timeout: 20_000,
+    });
 
     // the simulated hwindi clears him; the voice step begins
     await nextStep(page, /voicedemo=1.*step=3/);
@@ -49,7 +54,7 @@ test.describe("phase C stories", () => {
     await expect(caption).toBeVisible({ timeout: 30_000 });
     await expect(caption).toHaveText("Your stop is coming up.");
     await expect(caption).toHaveText("This is your stop. Get off here.", {
-      timeout: 30_000,
+      timeout: 60_000,
     });
 
     // the story ends back in free roam

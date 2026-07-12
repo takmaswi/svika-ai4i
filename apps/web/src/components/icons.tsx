@@ -143,6 +143,33 @@ export function CheckIcon({ size = 12 }: IconProps) {
   );
 }
 
+/** Bottom nav "you" person (the fourth tab and the initial avatar fallback):
+    a chunky rounded head over shoulders, same grammar as the other nav glyphs,
+    filled when active and stroked otherwise. */
+export function YouIcon({ active = false }: { active?: boolean }) {
+  return active ? (
+    <svg viewBox="0 0 24 24" width="23" height="23" fill="currentColor" aria-hidden>
+      <circle cx="12" cy="8" r="4.2" />
+      <path d="M4.5 19.4c0-3.8 3.4-6.4 7.5-6.4s7.5 2.6 7.5 6.4a1 1 0 0 1-1 1.1H5.5a1 1 0 0 1-1-1.1z" />
+    </svg>
+  ) : (
+    <svg
+      viewBox="0 0 24 24"
+      width="23"
+      height="23"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="12" cy="8" r="4.2" />
+      <path d="M4.7 20c0-3.7 3.3-6 7.3-6s7.3 2.3 7.3 6" />
+    </svg>
+  );
+}
+
 /** The little kombi from the map marker placeholder (screens 1–3): used for
     fare rows so no arrow shape sneaks in beside THE arrow. */
 export function KombiIcon({ size = 18 }: IconProps) {

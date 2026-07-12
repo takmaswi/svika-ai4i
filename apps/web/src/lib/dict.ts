@@ -484,6 +484,7 @@ export const dict = {
   "nav.home": { en: "Home", sn: "Kumba" },
   "nav.rides": { en: "Rides", sn: "Nzendo" },
   "nav.wallet": { en: "Wallet", sn: "Chikwama" },
+  "nav.you": { en: "You", sn: "Iwe" },
 
   "home.yourTrips": { en: "Your trips", sn: "Nzendo dzako" },
   "home.etaDemo": {
@@ -541,7 +542,10 @@ export const dict = {
     en: "No kombi runs on a timetable. The number on your screen stands on a ladder you can check, rung by rung.",
     sn: "Hapana kombi inofamba netimetable. Nhamba iri pascreen yako yakamira padanho raunogona kuongorora.",
   },
-  "intel.rung1H": { en: "Measured, serving today", sn: "Yakayerwa, iri kushanda nhasi" },
+  "intel.rung1H": {
+    en: "Measured, serving today",
+    sn: "Yakayerwa, iri kushanda nhasi",
+  },
   "intel.rung1B": {
     en: "The number you see is a plain average over segment times from {count} real rides recorded on this road, phone in hand. Its label on every screen says so.",
     sn: "Nhamba yaunoona iavhareji yenguva dzezvikamu kubva panzendo {count} chaidzo dzakarekodhwa munzira ino. Chiratidzo chayo pascreen yega yega chinozvitaura.",
@@ -654,7 +658,10 @@ export const dict = {
     sn: "Hazvina kuchengetedzwa. Edzazve.",
   },
 
-  "privacy.title": { en: "How Svika treats your data", sn: "Svika inobata sei ruzivo rwako" },
+  "privacy.title": {
+    en: "How Svika treats your data",
+    sn: "Svika inobata sei ruzivo rwako",
+  },
   "privacy.collectH": { en: "What Svika stores", sn: "Zvinochengetwa neSvika" },
   "privacy.collectB": {
     en: "Your name, phone number, language, tickets, wallet credit and the trips you save. Nothing else.",
@@ -686,12 +693,18 @@ export const dict = {
     sn: "Peji reruzivo rwako rinoratidza zvese zvakachengetwa nezvako. Kudzima kunobvisa zita, foni nenzendo dzakachengetwa; nhoroondo yematikiti nemari inosara asi haichataure kuti ndiwe ani.",
   },
   "privacy.versionLabel": { en: "Notice version", sn: "Vhezheni yechiziviso" },
-  "privacy.yourDataLink": { en: "Your data and privacy", sn: "Ruzivo rwako nekuvanzika" },
+  "privacy.yourDataLink": {
+    en: "Your data and privacy",
+    sn: "Ruzivo rwako nekuvanzika",
+  },
 
   "lang.english": { en: "English", sn: "Chirungu" },
   "lang.shona": { en: "Shona", sn: "ChiShona" },
 
-  "yourdata.title": { en: "What Svika knows about you", sn: "Zvinozivikanwa neSvika nezvako" },
+  "yourdata.title": {
+    en: "What Svika knows about you",
+    sn: "Zvinozivikanwa neSvika nezvako",
+  },
   "yourdata.profileH": { en: "Your profile", sn: "Ruzivo rwako" },
   "yourdata.name": { en: "Name", sn: "Zita" },
   "yourdata.language": { en: "Language", sn: "Mutauro" },
@@ -707,7 +720,10 @@ export const dict = {
     sn: "Nhoroondo yemari nematikiti inongowedzerwa, saka haigone kudzimwa. Kudzima kunobvisa zita nefoni yako, kunodzima nzendo dzakachengetwa, uye kunovhara app kusvika wabvumazve. Kupinda kwako kunosara kusvika mushandi akubvisa.",
   },
   "yourdata.deleteCta": { en: "Delete my details", sn: "Dzima ruzivo rwangu" },
-  "yourdata.deleteConfirm": { en: "Yes, delete my details", sn: "Hongu, dzima ruzivo rwangu" },
+  "yourdata.deleteConfirm": {
+    en: "Yes, delete my details",
+    sn: "Hongu, dzima ruzivo rwangu",
+  },
   "yourdata.deleteCancel": { en: "Keep them", sn: "Zvichengete" },
   "yourdata.err": {
     en: "That did not work. Try again.",
@@ -715,6 +731,29 @@ export const dict = {
   },
   "profile.open": { en: "Profile and settings", sn: "Profile nemarongero" },
   "profile.title": { en: "Your Svika", sn: "Svika yako" },
+
+  // welcome header (unreferenced screen, spec gap proposal): greeting in Harare
+  // time, the rider's name, and honest ride stats.
+  "profile.greetMorning": { en: "Good morning", sn: "Mangwanani" },
+  "profile.greetAfternoon": { en: "Good afternoon", sn: "Masikati" },
+  "profile.greetEvening": { en: "Good evening", sn: "Manheru" },
+  "profile.welcomeNoName": { en: "Welcome to Svika", sn: "Mauya kuSvika" },
+  "profile.statTotal": { en: "Total rides", sn: "Nzendo dzese" },
+  "profile.statMonth": { en: "This month", sn: "Mwedzi uno" },
+  "profile.statFave": { en: "Top trip", sn: "Rwendo rukuru" },
+  "profile.statsEmpty": {
+    en: "No rides yet. Plan a trip and your count starts here.",
+    sn: "Hapana nzendo. Ronga rwendo uye kuverenga kwako kunotangira pano.",
+  },
+  "profile.statsDemo": {
+    en: "Some of these rides are simulated demo history.",
+    sn: "Dzimwe nzendo idzi inhoroondo yekuratidzira.",
+  },
+  "profile.settingsH": { en: "Settings", sn: "Marongero" },
+  "profile.appearanceH": { en: "Look and language", sn: "Chitarisiko nemutauro" },
+  "profile.languageH": { en: "Language", sn: "Mutauro" },
+  "profile.themeH": { en: "Day or night", sn: "Masikati kana usiku" },
+
   "profile.youH": { en: "Your details", sn: "Ruzivo rwako" },
   "profile.nameLabel": { en: "Your name", sn: "Zita rako" },
   "profile.phoneLabel": { en: "Phone", sn: "Foni" },
@@ -771,7 +810,10 @@ export const dict = {
     en: "I agree that Svika stores these details for emergencies. I can remove them at any time.",
     sn: "Ndinobvuma kuti Svika ichengete ruzivo urwu rwepakaoma. Ndinogona kuzvibvisa chero nguva.",
   },
-  "profile.emergencySave": { en: "Save emergency details", sn: "Chengeta ruzivo rwepakaoma" },
+  "profile.emergencySave": {
+    en: "Save emergency details",
+    sn: "Chengeta ruzivo rwepakaoma",
+  },
   "profile.emergencyRemove": { en: "Remove these details", sn: "Bvisa ruzivo urwu" },
   "profile.emergencySaved": {
     en: "Saved. Only you can see these details.",
@@ -943,9 +985,15 @@ export const dict = {
   },
   "vision.gogo.menu1": { en: "1. My credit", sn: "1. Mari yangu" },
   "vision.gogo.menu2": { en: "2. Book my usual trip", sn: "2. Bhuka rwendo rwangu" },
-  "vision.gogo.menu3": { en: "3. How far is my kombi", sn: "3. Kombi yangu iri kure sei" },
+  "vision.gogo.menu3": {
+    en: "3. How far is my kombi",
+    sn: "3. Kombi yangu iri kure sei",
+  },
   "vision.gogo.menu4": { en: "4. Claim my change", sn: "4. Tora chenji yangu" },
-  "vision.gogo.invalid": { en: "That choice is not on the menu.", sn: "Sarudzo iyoyo haipo pamenyu." },
+  "vision.gogo.invalid": {
+    en: "That choice is not on the menu.",
+    sn: "Sarudzo iyoyo haipo pamenyu.",
+  },
   "vision.gogo.claimPrompt": {
     en: "Enter the 4 digit change code from your ride. 0 goes back.",
     sn: "Isa kodhi yechenji ine nhamba 4 yerwendo rwako. 0 inodzokera shure.",
@@ -968,7 +1016,10 @@ export const dict = {
     sn: "Sevhisi haipo izvozvi. Edzazve.",
   },
   "vision.gogo.idleHint": { en: "Dial", sn: "Dhayira" },
-  "vision.gogo.endedHint": { en: "Session ended. Dial again:", sn: "Zvapera. Dhayirazve:" },
+  "vision.gogo.endedHint": {
+    en: "Session ended. Dial again:",
+    sn: "Zvapera. Dhayirazve:",
+  },
   "vision.gogo.waiting": { en: "Please wait", sn: "Mirira zvishoma" },
   "vision.gogo.keyOk": { en: "OK", sn: "OK" },
   "vision.gogo.keyClear": { en: "C", sn: "C" },

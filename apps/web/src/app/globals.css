@@ -1448,7 +1448,8 @@ body:has(.home-screen) .demo-account-chip {
   gap: var(--space-3);
 }
 .wallet-panel h1,
-.wallet-panel h2 {
+.wallet-panel h2,
+.wallet-panel h3 {
   margin: 0;
 }
 .wallet-inline-form {
@@ -1547,7 +1548,6 @@ body:has(.home-screen) .demo-account-chip {
 .history-amount-credit {
   color: var(--credit-ink);
 }
-
 
 /* --- parcels: staged LOAD and COLLECT boarding cards ---------------------- */
 .parcel-item {
@@ -1977,9 +1977,23 @@ body:has(.home-screen) .demo-account-chip {
   display: grid;
   gap: var(--space-4);
 }
+/* Saved trips as friendly cards: nickname leads, the stop pair sits under it,
+   rename and remove share a row (§8 card grammar). */
 .profile-trip {
   display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+}
+.profile-trip-name {
+  font-weight: var(--weight-semibold);
+}
+.profile-trip-route {
+  color: var(--color-ink-soft);
+}
+.profile-trip-actions {
+  display: grid;
   gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 .pref-row {
   display: flex;
@@ -1989,6 +2003,121 @@ body:has(.home-screen) .demo-account-chip {
 }
 .profile-ride-date {
   white-space: nowrap;
+}
+
+/* --- profile welcome header (unreferenced screen, spec gap proposal) -------
+   The initial avatar extracts the route badge (screen 3): marigold square,
+   char glyph, DM Sans 700. Char on marigold is correct in both themes. The
+   stat tiles reuse the §9 peek-stats grammar. */
+.profile-welcome {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.welcome-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.welcome-id {
+  min-width: 0;
+}
+.welcome-greeting {
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+.welcome-name {
+  margin: var(--space-1) 0 0;
+  overflow-wrap: anywhere;
+}
+.svika-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--color-marigold);
+  color: var(--color-char);
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+}
+.svika-avatar-lg {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-card-lg);
+  font-size: 26px;
+}
+.svika-avatar-lg svg {
+  width: 30px;
+  height: 30px;
+}
+.svika-avatar-chip {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+.svika-avatar-chip svg {
+  width: 17px;
+  height: 17px;
+}
+.welcome-stats {
+  display: grid;
+  grid-template-columns: 0.8fr 0.8fr 1.4fr;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  border: var(--border-card);
+}
+.stat-tile {
+  min-width: 0;
+}
+.stat-tile .peek-mono {
+  margin-top: var(--space-1);
+}
+.stat-fave {
+  margin: var(--space-1) 0 0;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+.welcome-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-ink-soft);
+}
+.welcome-demo {
+  margin: 0;
+  color: var(--color-ink-soft);
+}
+
+/* --- profile one-home structure ------------------------------------------- */
+.profile-trips {
+  margin-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.profile-block-head {
+  margin: 0;
+}
+.profile-settings {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+}
+/* The one Settings heading sits above the grouped control cards, set off by a
+   hairline so the welcome and trips above read as their own zone. */
+.profile-settings-head {
+  margin: 0;
+  padding-top: var(--space-5);
+  border-top: 1.5px solid var(--color-hairline);
+}
+.profile-footer {
+  justify-content: flex-start;
+  padding-bottom: var(--space-8);
 }
 /* No checkbox exists in the references (flagged spec gap): a native box
    tinted with the day CTA colour, char track by night via the token. */
@@ -2030,7 +2159,6 @@ body:has(.home-screen) .demo-account-chip {
   align-items: center;
   gap: var(--space-4);
 }
-
 
 /* --- live map ------------------------------------------------------------ */
 .live-map {
@@ -2501,8 +2629,19 @@ body:has(.home-screen) .demo-account-chip {
 /* --- theme toggle + brand chip ------------------------------------------- */
 .home-chips-right {
   display: inline-flex;
+  align-items: center;
   gap: var(--space-2);
   pointer-events: auto;
+}
+/* The profile door on the map: a compact glass pill wrapping the initial
+   avatar, sitting beside the theme and language chips (§7 map pill grammar). */
+.home-chip-profile {
+  padding: 4px;
+  text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.home-chip-profile:active {
+  transform: scale(0.99);
 }
 .theme-toggle {
   display: inline-flex;

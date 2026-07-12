@@ -17,7 +17,9 @@ test.describe("profile", () => {
     await expect(page).toHaveURL(/\/app\/profile/);
 
     await page.fill("#full_name", "Tatenda Demo");
-    await page.locator('[data-testid="profile-identity"] button[type="submit"]').click();
+    await page
+      .locator('[data-testid="profile-identity"] button[type="submit"]')
+      .click();
     await expect(page.getByTestId("identity-saved")).toBeVisible();
     await expect(page.locator("#full_name")).toHaveValue("Tatenda Demo");
   });
@@ -32,6 +34,50 @@ test.describe("profile", () => {
     await expect(
       page.getByTestId("pref-commute_alerts").locator('button[value="on"]'),
     ).toHaveClass(/lang-on/);
+  });
+
+  test("the You tab and the map profile chip both open the profile", async ({
+    page,
+  }) => {
+    await page.goto("/app");
+    await waitForHydration(page);
+
+    await page.getByTestId("you-tab").click();
+    await expect(page).toHaveURL(/\/app\/profile/);
+
+    await page.goto("/app");
+    await waitForHydration(page);
+    await page.getByTestId("profile-chip").click();
+    await expect(page).toHaveURL(/\/app\/profile/);
+  });
+
+  test("the welcome header shows greeting, name, avatar and stats, with Settings below", async ({
+    page,
+  }) => {
+    await page.goto("/app/profile");
+
+    const welcome = page.getByTestId("profile-welcome");
+    await expect(welcome).toBeVisible();
+    await expect(welcome.locator(".welcome-greeting")).not.toBeEmpty();
+    await expect(page.getByTestId("welcome-name")).not.toBeEmpty();
+    await expect(page.getByTestId("profile-avatar")).toBeVisible();
+    await expect(page.getByTestId("profile-rides")).toBeVisible();
+
+    // every control lives under one Settings group, below the welcome
+    await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+    await expect(page.getByTestId("profile-identity")).toBeVisible();
+    await expect(page.getByTestId("profile-appearance")).toBeVisible();
+  });
+
+  test("the greeting speaks Shona when the language is Shona", async ({ page }) => {
+    await page.goto("/app/profile");
+    await page.evaluate(() => {
+      document.cookie = "svika_lang=sn; path=/; max-age=3600";
+    });
+    await page.reload();
+    await expect(
+      page.getByTestId("profile-welcome").locator(".welcome-greeting"),
+    ).toHaveText(/Mangwanani|Masikati|Manheru/);
   });
 
   test("emergency details need the consent tick, save, then remove without closing the app", async ({

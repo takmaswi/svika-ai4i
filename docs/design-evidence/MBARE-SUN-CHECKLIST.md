@@ -221,3 +221,63 @@ Stage spec gaps flagged (extract-only, proposals not improvisations):
     one meta line per flagged day (forest flagged, threshold silent). It is
     §2 meta type with the mono day above it; flagged in case verdict
     comparisons recur elsewhere.
+
+## Profile home addendum (2026-07-12): the welcome home and its two doors
+
+The profile became a welcoming home, not a settings screen, and gained two
+doors from the map home (a fourth "You" tab and a glass profile chip). New and
+changed surfaces, verified at 360px, both themes, both languages; the reshot
+`profile/` and `home/` packs beside this file are the proof, regenerated with
+`node scripts/profile-home-evidence.mjs`.
+
+| # | Check | welcome header | profile chip | You tab | reorg (settings) |
+|---|-------|----------------|--------------|---------|------------------|
+| 1 | Status bar correct | yes* | yes* | yes* | yes* |
+| 2 | THE arrow only (§3) | yes | yes | yes | yes |
+| 3 | CTA matches §5 anatomy | n/a | n/a | n/a | yes |
+| 4 | Day and night from §2 tokens only | yes | yes | yes | yes |
+| 5 | Numbers/codes/times Plex Mono 600 | yes | n/a | n/a | yes |
+| 6 | Hit targets 44px+ | yes | yes | yes | yes |
+| 7 | Press state on every button | n/a | yes | yes | yes |
+| 8 | Copy: sentence case, real Harare names, $1.50 | yes | yes | yes | yes |
+| 9 | Tinted shadows, no gradients | yes | yes | yes | yes |
+| 10 | Kombi marker box + bob + glow kept | n/a | n/a | n/a | n/a |
+
+Profile home item notes:
+
+- **Two doors, one primary action each stays intact.** The You tab and the
+  profile chip are quiet navigation, not screen CTAs: the map home keeps its
+  plan-trip arrow as its one primary action, and the profile page keeps its
+  section form buttons (§6 medium pills) with no competing §5 CTA.
+- **The initial avatar** is char on marigold, the §7 chip pairing, correct in
+  both themes without flipping (unlike a CTA). It extracts the route badge
+  (screen 3): marigold square, char glyph, DM Sans 700. With no name it holds
+  the you glyph so it is never empty.
+- **The You glyph** is a chunky rounded head over shoulders in the same
+  grammar as the other nav glyphs (home, clock, wallet card), filled when
+  active, stroked otherwise, `currentColor`.
+- **The stat tiles** reuse the §9 peek-stats grammar (uppercase meta label,
+  Plex Mono count) inside a §8 bordered card. Counts are mono; the top trip is
+  §2 sub type. Demo personas carry an honest "simulated demo history" line.
+- **The settings group** folds identity, alerts, voice, language, theme,
+  emergency and the your data link under one §9 sheet-title heading set off by
+  a hairline. Toggles keep the language chip grammar (Phase C gap 5); theme
+  and language reuse the map home chips.
+
+Profile home spec gaps flagged (extract-only, proposals not improvisations):
+
+13. **Initial avatar.** No reference screen shows an account avatar. Composed
+    from the route badge (screen 3) as a marigold rounded square with a char
+    initial. Proposal: bless the initial avatar (char on marigold, both
+    themes) as the sanctioned identity token, with a chip size and a large
+    size.
+14. **Time based greeting header.** No reference has a greeting. The eyebrow
+    is §2 meta uppercase over the name in §2 headline, computed in Harare
+    time from the three greetings the dictionary already carries. Proposal:
+    bless the greeting header as the sanctioned welcome pattern.
+15. **Stat tiles.** No reference has a stats block. Composed from the §9
+    peek-stats grammar in a §8 card. Proposal: bless a stat tile row (meta
+    label, mono count) as the sanctioned way to show honest personal counts.
+16. **You nav glyph.** No reference has a person glyph (the reference nav is
+    three items). Drawn in the existing nav grammar. Proposal: adopt the
+    person glyph as the sanctioned fourth nav item.

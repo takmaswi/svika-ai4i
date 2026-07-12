@@ -10,6 +10,7 @@ import { storyAdvance } from "@/lib/demo-actions";
 import { resolveStoryParams, SHELF_PATH, storyUrl } from "@/lib/stories";
 import { t } from "@/lib/i18n";
 import { ArrowIcon, BackIcon } from "@/components/icons";
+import { StoryNextButton } from "./StoryNextButton";
 
 interface StoryBarProps {
   params: Record<string, string | string[] | undefined>;
@@ -78,16 +79,10 @@ export function StoryBar({ params, lang }: StoryBarProps) {
         <form action={storyAdvance} className="story-bar-actions">
           <input type="hidden" name="story" value={story.slug} />
           <input type="hidden" name="step" value={step} />
-          <button
-            className="cta touch-target story-bar-next"
-            type="submit"
-            data-testid="story-next"
-          >
-            {t(lang, "story.next")}
-            <span className="cta-chip" aria-hidden>
-              <ArrowIcon />
-            </span>
-          </button>
+          <StoryNextButton
+            label={t(lang, "story.next")}
+            pendingLabel={t(lang, "story.working")}
+          />
         </form>
       ) : (
         <div className="story-bar-actions">

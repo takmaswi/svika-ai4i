@@ -52,39 +52,80 @@ test.describe("demo door and story mode", () => {
     await expect(page.locator("dialog[open]")).toHaveCount(0);
   });
 
-  test("story: Tino's trip to town ends with change as credit", async ({
-    page,
-  }) => {
+  // The flagship, two layers: three simulated preview beats (book code, hwindi
+  // clear, change into wallet) then the real tail where the judge taps to book
+  // and to clear on the live ledger, and the real wallet shows the credit. Run
+  // in both languages and both themes so the layer holds either way.
+  async function runFlagship(
+    page: Page,
+    opts: { lang: "en" | "sn"; theme: "light" | "dark" },
+  ): Promise<void> {
+    await page.context().addCookies([
+      { name: "svika_lang", value: opts.lang, url: "http://localhost:3000" },
+      { name: "svika_theme", value: opts.theme, url: "http://localhost:3000" },
+    ]);
     await landingReady(page);
     await page.getByTestId("story-door-town").click();
     await page.waitForURL(/story=tino-town&step=0/, { timeout: 20_000 });
 
-    // walk the five steps: plan, book cash, boarding card, simulated hwindi
-    // clears and keys the $2 note, wallet
-    for (let i = 0; i < 5; i++) {
-      await expect(page.getByTestId("story-bar")).toBeVisible();
-      if (await page.getByTestId("home-sheet").count()) {
-        await waitForHydration(page);
-      }
+    // the staged theme and language both hold (the rename is in the URL above)
+    await expect(page.locator("html")).toHaveAttribute("data-theme", opts.theme);
+    await expect(page.locator(".story-bar-caption")).toContainText(
+      opts.lang === "sn" ? "Muonero" : "Preview",
+    );
+
+    // layer one: three preview beats, each labelled a preview and animated,
+    // none of them touching the database
+    const beats = ["town-book", "town-clear", "town-wallet"];
+    for (let i = 0; i < beats.length; i++) {
+      await expect(page.getByTestId("story-preview-badge")).toBeVisible();
+      await expect(page.getByTestId("story-animation")).toHaveAttribute(
+        "data-beat",
+        beats[i]!,
+      );
       await page.getByTestId("story-next").click();
       await page.waitForURL(new RegExp(`step=${i + 1}`), { timeout: 20_000 });
     }
 
-    // final step: the wallet. The balance is deterministic (the reset floats
-    // it to exactly $5.00 and the story adds 50 cents of change); the change
-    // story card's "kept so far" grows with each reuse of a pooled persona,
-    // because money history is append only by design, so it is asserted as
-    // present and non-empty rather than as an exact figure.
-    await page.waitForURL(/\/app\/wallet/, { timeout: 20_000 });
+    // the switch: the preview is gone and the real app screen is under the lock
+    await expect(page.getByTestId("story-animation")).toHaveCount(0);
+    await expect(page.getByTestId("story-lock")).toBeVisible();
+
+    // layer two, the real tail: tap to book the real cash trip through the
+    // engine, then tap to let the simulated hwindi clear it on the live ledger
+    await waitForHydration(page);
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/booked=1.*step=4/, { timeout: 20_000 });
+    await expect(page.locator(".ticket-item-code").first()).not.toHaveText("····");
+
+    await page.getByTestId("story-next").click();
+    await page.waitForURL(/\/app\/wallet.*step=5/, { timeout: 20_000 });
+
+    // the wallet actually updated on the real ledger: the reset floats it to
+    // exactly $5.00 and the live clear adds 50 cents of change. The change
+    // story card's lifetime figure grows with each reuse of a pooled persona
+    // (money history is append only), so it is asserted present, not exact.
     await expect(page.getByTestId("wallet-balance")).toHaveText("$5.50");
     await expect(page.getByTestId("change-story")).toContainText(/\$\d+\.\d{2}/);
 
-    // the final step unlocks the screen and offers the stay door: free roam
-    // on the wallet, story chrome gone
+    // the final step unlocks the screen and offers the stay door: free roam on
+    // the wallet, story chrome gone
     await expect(page.getByTestId("story-live")).toBeVisible();
     await page.getByTestId("story-next").click();
     await page.waitForURL(/\/app\/wallet$/);
     await expect(page.getByTestId("story-bar")).toHaveCount(0);
+  }
+
+  test("flagship: preview beats then the real tail, day and English", async ({
+    page,
+  }) => {
+    await runFlagship(page, { lang: "en", theme: "light" });
+  });
+
+  test("flagship: the same two layers hold at night and in Shona", async ({
+    page,
+  }) => {
+    await runFlagship(page, { lang: "sn", theme: "dark" });
   });
 
   test("story: the transfer trip books both legs and returns to free roam", async ({

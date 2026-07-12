@@ -118,9 +118,9 @@ async function walkSignedInStory(browser, slug, door) {
 const STEP_PATHS = {
   "tino-town": [
     "/app",
+    "/app",
+    "/app",
     "/app/plan?from=heights&to=rezende",
-    "/app/plan?from=heights&to=rezende",
-    "/app?booked=1",
     "/app?booked=1",
     "/app/wallet",
   ],

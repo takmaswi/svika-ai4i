@@ -23,6 +23,12 @@ export type StoryActionId =
 /** A step path resolved at run time to the rider's live share link. */
 export const SHARE_PATH_SENTINEL = "@share-latest";
 
+/** A simulated preview beat. On a preview step the stage renders StoryAnimation
+ *  for this beat instead of the raw app screen, so the beat reads clean on a
+ *  360px phone and nothing waits on the database. Preview steps write nothing;
+ *  the live tail that follows carries every real write. */
+export type StoryPreviewBeat = "town-book" | "town-clear" | "town-wallet";
+
 export interface StoryStep {
   /** Real app path (may carry its own query), without the story params;
    *  or SHARE_PATH_SENTINEL, resolved server side after the share action. */
@@ -30,6 +36,9 @@ export interface StoryStep {
   captionKey: DictKey;
   /** When set, the next button runs this through the engine, then advances. */
   action?: StoryActionId;
+  /** When set, this step is a simulated preview: the stage renders the named
+   *  StoryAnimation beat and a preview badge in place of the real screen. */
+  preview?: StoryPreviewBeat;
 }
 
 export interface Story {
@@ -47,19 +56,24 @@ export interface Story {
 }
 
 export const STORIES: Record<string, Story> = {
+  // The flagship, two layers. Steps 0 to 2 are a simulated preview: clean
+  // animated beats that write nothing, so the change into wallet reads at a
+  // glance. Steps 3 to 5 are the real tail: the judge taps to book, then to let
+  // the simulated hwindi clear the code, and the live wallet shows the actual
+  // credit. Every real write lives on the tail; the preview is presentation.
   "tino-town": {
     slug: "tino-town",
     persona: "pool",
     stayPath: "/app/wallet",
     steps: [
-      { path: "/app", captionKey: "story.town.0" },
-      { path: "/app/plan?from=heights&to=rezende", captionKey: "story.town.1" },
+      { path: "/app", captionKey: "story.town.0", preview: "town-book" },
+      { path: "/app", captionKey: "story.town.1", preview: "town-clear" },
+      { path: "/app", captionKey: "story.town.2", preview: "town-wallet" },
       {
         path: "/app/plan?from=heights&to=rezende",
-        captionKey: "story.town.2",
+        captionKey: "story.town.3",
         action: "book-cash-town",
       },
-      { path: "/app?booked=1", captionKey: "story.town.3" },
       { path: "/app?booked=1", captionKey: "story.town.4", action: "hwindi-clears" },
       { path: "/app/wallet", captionKey: "story.town.5" },
     ],

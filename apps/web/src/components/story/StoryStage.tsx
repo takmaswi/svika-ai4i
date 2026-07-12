@@ -10,7 +10,9 @@
 import type { ReactNode } from "react";
 import type { AppLanguage } from "@svika/shared";
 import { resolveStoryParams } from "@/lib/stories";
+import { t } from "@/lib/i18n";
 import { StoryBar } from "./StoryBar";
+import { StoryAnimation } from "./StoryAnimation";
 
 interface StoryStageProps {
   params: Record<string, string | string[] | undefined>;
@@ -22,17 +24,31 @@ export function StoryStage({ params, lang, children }: StoryStageProps) {
   const active = resolveStoryParams(params);
   if (!active) return <>{children}</>;
 
+  const preview = active.current.preview;
+
   return (
     <div className="story-stage" data-testid="story-stage">
       <div className="story-stage-screen">
-        <div
-          className="story-stage-lock"
-          inert={!active.isLast}
-          data-testid="story-lock"
-          data-live={active.isLast ? "true" : "false"}
-        >
-          {children}
-        </div>
+        {preview ? (
+          <div className="story-stage-preview" data-testid="story-preview">
+            <span
+              className="story-preview-badge svika-meta"
+              data-testid="story-preview-badge"
+            >
+              {t(lang, "story.preview")}
+            </span>
+            <StoryAnimation beat={preview} lang={lang} />
+          </div>
+        ) : (
+          <div
+            className="story-stage-lock"
+            inert={!active.isLast}
+            data-testid="story-lock"
+            data-live={active.isLast ? "true" : "false"}
+          >
+            {children}
+          </div>
+        )}
       </div>
       <div className="story-stage-side">
         <StoryBar params={params} lang={lang} />

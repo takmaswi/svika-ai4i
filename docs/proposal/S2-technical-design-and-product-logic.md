@@ -32,13 +32,13 @@ Inference stays server side by product rule, a deliberate choice, not a gap: no 
 
 ## The data spine: integrity that a judge can test
 
-Row level security is on every table from the first migration. The service role key exists only in the seed script and CI secrets, never in a running app. An automated security test proves, using the anonymous key alone, that one rider cannot read another rider's tickets or wallet; that suite now stands at 102 checks passing, including rider isolation, ledger safety and consent scoping (`pnpm db:security-test`, evidenced in `docs/STORY-STAGE-GATE-REPORT.md`).
+Row level security is on every table from the first migration. The service role key exists only in the seed script and CI secrets, never in a running app. An automated security test proves, using the anonymous key alone, that one rider cannot read another rider's tickets or wallet; that suite now stands at 102 checks passing, including rider isolation, ledger safety and consent scoping (`pnpm db:security-test`, all green in CI).
 
 Money is a double entry, append only ledger. There are no mutable balance columns. Every movement is a pair of postings that must sum to zero, and unit tests prove money cannot be created, lost or double spent before any wallet feature merges (ledger invariant tests, 8 passing, 35 transactions balance in the phase 1 gate). Unreturned change becomes wallet credit through the same ledger, so it is a posting like any other, not a special case that could leak.
 
 Tickets are event sourced. A ticket's life is a sequence of appended `ticket_events` rows, never an update over history. This is what lets the digital ticket act as the manifest the network has never had: the record of who boarded which vehicle on which route cannot be quietly rewritten after the fact.
 
-Offline is architecture, not a feature. The conductor app holds a local ticket cache in IndexedDB and clears fares with no signal, in a moving kombi, in sunlight. Queued writes reconcile on the next sync with a first sync wins rule and conflicts flagged, and the offline settlement path is the same code as the online one, proven by a live database cycle test that settles once, replays as a no op, and credits change exactly once (34 checks passing, back to back, `docs/P2-GATE-REPORT.md`).
+Offline is architecture, not a feature. The conductor app holds a local ticket cache in IndexedDB and clears fares with no signal, in a moving kombi, in sunlight. Queued writes reconcile on the next sync with a first sync wins rule and conflicts flagged, and the offline settlement path is the same code as the online one, proven by a live database cycle test that settles once, replays as a no op, and credits change exactly once (34 checks passing, back to back, proven by the committed offline test suite).
 
 ## The three AI spines
 
@@ -61,7 +61,7 @@ The corridor dataset grows with the team's routine travel, and the arrival model
 
 ### Spine 2: commute alerts, deliberately not a model
 
-A recurring trip is a counting problem, not a learning problem, so Spine 2 trains no model, and that is the point. A plain miner groups the rider's own tickets from the last 28 days and calls a stop pair a pattern when it has at least 5 rides over at least 3 distinct weekdays (`apps/web/src/lib/commute/patterns.ts`). The named baseline is the fixed alarm clock every commute app ships: "your 07:45 kombi". The alarm knows the rider's habit but cannot know today's supply. Svika fires the alert only when Spine 1 says a real vehicle is actually near, so on a day the kombis run early or run sparse, the alarm lies and the alert stays honest. A fixed alarm cannot know today's supply; that sentence is the whole justification for the design, and it is why this spine is statistics, not machine learning (`docs/SPINE-2-COMMUTE-ALERTS.md`).
+A recurring trip is a counting problem, not a learning problem, so Spine 2 trains no model, and that is the point. A plain miner groups the rider's own tickets from the last 28 days and calls a stop pair a pattern when it has at least 5 rides over at least 3 distinct weekdays (`apps/web/src/lib/commute/patterns.ts`). The named baseline is the fixed alarm clock every commute app ships: "your 07:45 kombi". The alarm knows the rider's habit but cannot know today's supply. Svika fires the alert only when Spine 1 says a real vehicle is actually near, so on a day the kombis run early or run sparse, the alarm lies and the alert stays honest. A fixed alarm cannot know today's supply; that sentence is the whole justification for the design, and it is why this spine is statistics, not machine learning.
 
 ### Spine 3: revenue anomaly detection
 
@@ -76,4 +76,4 @@ The forest is promoted and serves. The threshold never fires because real leakag
 
 ## Honesty tiers, named on the record
 
-Svika labels every feature by how real it is, in the README and in `docs/DISCLOSURE-REGISTER.md`, on the tier scale Section 4 defines. The three spines above are Tier 1: the detectors are real and their evaluations are real. Where they stand on generated history, Section 3 and the dataset statement say exactly what is real and what is simulated.
+Svika labels every feature by how real it is, in the README and a committed disclosure register, on the tier scale Section 4 defines. The three spines above are Tier 1: the detectors are real and their evaluations are real. Where they stand on generated history, Section 3 and the dataset statement say exactly what is real and what is simulated.

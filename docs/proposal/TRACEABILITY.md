@@ -17,6 +17,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 - Typography: Avenir or Arial, 11pt, 1.15 line spacing, 1 inch margins.
 - File name: `[ProjectID]_AI4I_Proposal_Development.pdf`. The project ID stays a placeholder until Mhofu supplies it.
 - A cover page is required and is not counted in the 10 pages: project title, track name, team name, lead innovator name, date.
+- Cover eyebrow reads "TRUSTED KOMBI TRAVEL FOR HARARE" (a trust and transport forward line; ticketing is the mechanism, not the pitch). The hero promise and the rest of the cover are unchanged.
 - The rubric has four criteria, not three: C1 code quality 30, C2 AI justification 30, C3 dataset 20, and **C4 business model and edge feasibility 20**. The global rubric note omitted C4; section 5 was written to carry it.
 
 ## Section 1 statistics
@@ -69,7 +70,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | SI 155 of 2024, Tier 1 data controller licence USD 50 | Veritas Zimbabwe SI 155 text; MawereSibanda; Muvingi and Mugadza; Afriwise (all consistent) |
 | DPO required within 90 days; threshold is personal data of 50+ individuals | Same SI 155 legal analyses |
 | Breach notification to the Authority within 24 hours; affected individuals within 72 hours if high risk | Cyber and Data Protection Act [Chapter 12:07], via ZimLII and DLA Piper / Manokore guide |
-| Consent gate, append only consent records, anonymise_me, privacy notice | `docs/PHASE-C-GATE-REPORT.md`, `docs/CHECKS-FOR-MHOFU.md` item 7 |
+| Consent gate, append only consent records, anonymise_me, privacy notice | `docs/PHASE-C-GATE-REPORT.md` |
 
 ## Section 5 (sustainability)
 
@@ -80,6 +81,10 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Map tiles are a licensed MapTiler display service, no third party datasets | `docs/DATASET-STATEMENT.md` |
 | City planning as a second beneficiary, a municipality or planning agency as a natural second customer for anonymised aggregate insight, on the Nairobi precedent | Digital Matatus (see Section 1 traceability row). Echoed from S1; framed as roadmap, not a billed line today |
 | CPU only models, no phone inference, offline conductor PWA as edge resilience, inference in country on ZCHPC | Section 2 and Section 3 model and offline descriptions; National AI Strategy Pillar 2 |
+
+## Citation hygiene (final sweep)
+
+The submitted prose no longer drops raw internal file paths. The routine gate report and note references (`P2-GATE-REPORT`, `STORY-STAGE-GATE-REPORT`, `PHASE-C-GATE-REPORT`, `PHASE-D-GATE-REPORT`, `BUILD-LOG`, `SPINE-2-COMMUTE-ALERTS`, `DISCLOSURE-REGISTER`, `DATASET-STATEMENT`, `SHONA-MODEL-PLAN`) are now plain narrative ("all green in CI", "the committed offline test suite", "a committed roadmap plan", and similar). The private note `docs/CHECKS-FOR-MHOFU.md` was removed from the proposal entirely; it must never appear in a submission. One clean line in S3 points to the public repository `github.com/takmaswi/svika-ai4i` as where all committed evidence lives, which is the git link the terms of reference expect. The two AI metrics pointers stay cited inline because they prove the numbers to a judge: `services/spine/metrics/METRICS.md` and `services/spine/metrics/WATCHDOG-METRICS.md`. No statistic and no external source citation was touched. The claim-to-source rows above keep their internal file pointers as the reviewer's audit trail.
 
 ## Flags
 

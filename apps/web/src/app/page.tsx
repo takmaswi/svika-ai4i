@@ -3,7 +3,6 @@ import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { ArrowIcon } from "@/components/icons";
-import { enterDemo } from "@/lib/demo-actions";
 
 // The landing (reference screen 1): the Kombi highlight headline, the live
 // map in a drawn card as the pitch, the change story as stat cards, one
@@ -101,7 +100,7 @@ export default async function LandingPage({
           <p className="auth-error svika-body">{t(lang, "landing.demoErr")}</p>
         )}
         <div className="landing-demo-doors">
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <button
               className="landing-demo-btn touch-target"
@@ -111,7 +110,7 @@ export default async function LandingPage({
               {t(lang, "landing.demoEnter")}
             </button>
           </form>
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="owner" />
             <button className="landing-demo-btn touch-target" type="submit">
               {t(lang, "landing.demoOwner")}
@@ -126,7 +125,7 @@ export default async function LandingPage({
           {t(lang, "landing.shelfReal")}
         </p>
         <div className="landing-demo-doors">
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="tino-town" />
             <button
@@ -137,7 +136,7 @@ export default async function LandingPage({
               {t(lang, "landing.demoStory1")}
             </button>
           </form>
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="transfer-trip" />
             <button
@@ -148,7 +147,7 @@ export default async function LandingPage({
               {t(lang, "landing.demoStory2")}
             </button>
           </form>
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="rudo-night" />
             <button
@@ -167,7 +166,7 @@ export default async function LandingPage({
           {t(lang, "landing.shelfIntel")}
         </p>
         <div className="landing-demo-doors">
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="eta-knows" />
             <button
@@ -178,7 +177,7 @@ export default async function LandingPage({
               {t(lang, "landing.intelEta")}
             </button>
           </form>
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="rider" />
             <input type="hidden" name="story" value="takunda-morning" />
             <button
@@ -189,7 +188,7 @@ export default async function LandingPage({
               {t(lang, "landing.intelTakunda")}
             </button>
           </form>
-          <form action={enterDemo}>
+          <form action="/api/demo" method="post">
             <input type="hidden" name="target" value="owner" />
             <input type="hidden" name="story" value="watchdog-leak" />
             <button
@@ -228,6 +227,14 @@ export default async function LandingPage({
           </Link>
         </div>
       </div>
+
+      <footer className="landing-foot svika-animate-fade-up svika-rise-7">
+        <Link href="/register" data-testid="register-link">
+          {t(lang, "register.link")}
+        </Link>
+        <span aria-hidden>·</span>
+        <Link href="/privacy">{t(lang, "privacy.title")}</Link>
+      </footer>
     </main>
   );
 }

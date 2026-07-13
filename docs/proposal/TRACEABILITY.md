@@ -28,6 +28,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | 52,288 crashes and 2,015 deaths in 2024 | Traffic Safety Council of Zimbabwe |
 | 1,088 road deaths in H1 2025, up from 1,037 | ZRP, via The Herald |
 | 94 percent of crashes caused by human error | TSCZ, via The Herald and Africanews |
+| Road death rate about 41 per 100,000, among the highest in Africa; registered rate nearer 30; true toll higher because deaths go unrecorded | WHO Global status report on road safety, cross referenced with the primary research PDF (which cites the lower registered figure) |
 | Harare accidents rose from 12,089 (2021) to 22,670 (2022) | Harare Master Plan |
 | Kombis carry no passenger manifest | Gemini assessment and primary research PDF, section 4.1 |
 | Chitungwiza crash, 17 dead, families sent to the mortuary | AP News and ZRP statement, July 2025 |
@@ -42,7 +43,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 
 | Claim | Source |
 | --- | --- |
-| RLS security suite, 97 checks passing | `docs/PHASE-C-GATE-REPORT.md`, `pnpm db:security-test` |
+| RLS security suite, 102 checks passing | `docs/STORY-STAGE-GATE-REPORT.md`, `docs/BUILD-LOG.md`, `pnpm db:security-test` |
 | Ledger invariant tests, 8 passing, 35 transactions balance | phase 1 gate, `docs/P1-GATE-REPORT.md` |
 | Offline cycle proof, 34 checks back to back | `docs/P2-GATE-REPORT.md` |
 | Spine 1 metrics table (2 journeys, 96.4 s, insufficient_data, baseline serves) | `services/spine/metrics/METRICS.md` (read, not retyped) |
@@ -55,7 +56,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Claim | Source |
 | --- | --- |
 | Everything listed as built | `docs/BUILD-LOG.md`, phases P0 to D |
-| 250 unit tests, 37 e2e, 97 security checks green | `docs/PHASE-C-GATE-REPORT.md` |
+| 287 unit tests across the workspace, 56 full web e2e, 102 security checks, ledger 8/8, offline 34/34, all green | `docs/STORY-STAGE-GATE-REPORT.md` and `docs/BUILD-LOG.md` (latest entries) |
 | Two corridor rides recorded 7 July 2026 | `docs/DATASET-STATEMENT.md` |
 | Managed Postgres in eu-west-2, no African region offered | `docs/BUILD-LOG.md`, P0 |
 | Bootcamp Mutare 27 July to 1 August 2026 | project `CLAUDE.md` |
@@ -73,17 +74,22 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 
 | Claim | Source |
 | --- | --- |
-| ZIMRA presumptive tax USD 50 to 60 a month, collected with the ZINARA licence | In app figure, `apps/web/src/lib/dict.ts` line 470 and `apps/web/src/app/app/owner/page.tsx` line 270. See flag 5 below. |
+| Kombi presumptive tax USD 50 a month for 8 to 14 seaters, USD 60 for 15 to 24, monthly via ZINARA, no licence renewal without a tax clearance | ZIMRA Public Notice 51 of 2025, gazetted 5 September 2025. Web verified across ZimLive, NewsDay (11 September 2025) and Equity Axis; consistent with ZIMRA's own notice |
 | Conductor commission on digital fares | ledger schema `commission_rate_bps`, `packages/db/src/database.types.ts` |
 | Map tiles are a licensed MapTiler display service, no third party datasets | `docs/DATASET-STATEMENT.md` |
-| CPU only models, no GPU | Section 2 model descriptions |
+| CPU only models, no phone inference, offline conductor PWA as edge resilience, inference in country on ZCHPC | Section 2 and Section 3 model and offline descriptions; National AI Strategy Pillar 2 |
 
-## Open flags for Mhofu (close before PDF export)
+## Flags
 
-1. **WHO per capita road death rate.** Our own two sources disagree: the primary research PDF cites WHO at "nearly 30 deaths per 100,000", the Gemini assessment cites "41 deaths per 100,000" from a 2025 journal citing WHO. The S1 draft currently states "among the worst in the region" without a number and marks the spot [FLAG]. Pick one figure with its citation, or keep the qualitative wording.
-2. **Coach Rambo is omitted from S1.** The goal allowed it as a caveated illustration, but both our source documents explicitly say it originates from unverified tabloid and social media reports, has no ZRP confirmation, and is "unsuitable as a primary evidence point in a funding proposal." I left it out rather than weaken the section. Your call whether to add it back as a clearly flagged, not yet confirmed anecdote.
+### Closed in this revision
+
+1. **WHO per capita road death rate. Closed.** S1 now states about 41 per 100,000 (WHO estimate), among the highest in Africa, with an honest line that the registered count is nearer 30 and the WHO judges the real toll higher because many deaths go unrecorded. The [FLAG] is removed.
+2. **Coach Rambo. Closed by decision.** Stays out of the written proposal. Both source documents call it unverified tabloid and social media reporting with no ZRP confirmation. Kept for the live pitch only if it is confirmed before demo day.
+5. **ZIMRA presumptive tax citation. Closed.** S5 now cites ZIMRA Public Notice 51 of 2025, gazetted 5 September 2025, web verified across ZimLive, NewsDay and Equity Axis. The in app figure is confirmed correct for the kombi range.
+
+### Still open for Mhofu (close before PDF export)
+
 3. **AI4I submission deadline** is not in the terms of reference we hold. It must be read off the portal (https://bit.ly/AI4IChallenge26) and is one of the five inputs owed.
 4. **[ProjectID]** stays a placeholder in the filename and cover page until you supply it.
-5. **ZIMRA presumptive tax external citation.** The USD 50 to 60 figure is the number the product already uses on the owner card, but its external source (a ZIMRA or ZINARA notice) is not in the repository. Confirm the citation before export, or I will web verify it the way I did SI 155.
 6. **Infrastructure cost figures in S5** are described as a structure, not as specific monthly dollar amounts, because we do not yet have a costed hosting plan. Marked [FLAG] in the draft.
 7. **Team details for the cover page** (team name, lead innovator, the 2 to 5 Zimbabwean members) are owed, along with the notarised affidavit that shortlisted teams submit.

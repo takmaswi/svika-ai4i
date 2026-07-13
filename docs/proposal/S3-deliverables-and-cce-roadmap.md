@@ -15,7 +15,7 @@ Svika is not a concept. It is a working monorepo with a live database, passing t
 - **The owner surface.** Revenue dashboard, printable statement, the bilingual watchdog narrative, and the dated ZIMRA presumptive tax card. Watchdog history is labelled simulated on screen and in the register.
 - **Staged, clearly labelled Tier 2 work.** A USSD menu state machine and a rendered feature phone for the no smartphone rider, and a staged crash alert flow. These are built behind tested state machines but move no real money and call no live telco; each carries an on screen caption saying so, and each awaits a partner agreement (`docs/PHASE-D-GATE-REPORT.md`).
 
-Discipline is visible in the history. Commits are small and conventional, the lockfile is committed, dependencies are pinned, and continuous integration runs typecheck, lint and test on every push. Recent full validation stands at 250 unit tests, 37 end to end tests, and the 97 check security suite, all green (`docs/PHASE-C-GATE-REPORT.md`).
+Discipline is visible in the history. Commits are small and conventional, the lockfile is committed, dependencies are pinned, and continuous integration runs typecheck, lint and test on every push. Current validation stands at 287 unit tests across the workspace, 56 full web end to end tests, and the 102 check security suite, all green, with the ledger invariants at 8 of 8 and the offline cycle at 34 of 34 (`docs/STORY-STAGE-GATE-REPORT.md` and `docs/BUILD-LOG.md`).
 
 ## Compute requirements
 

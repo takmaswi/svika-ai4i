@@ -6,7 +6,7 @@
 
 Svika does not tax the rider to survive. The paying users are the owners and, through them, the network, because Svika produces something they cannot get today: a trustworthy record of what each kombi earns and carries.
 
-**Owner subscription.** Kombi owners pay a flat presumptive tax of USD 50 to 60 a month per vehicle, collected with the ZINARA licence, a fixed amount rather than a share of takings (owner tax card, `apps/web/src/lib/dict.ts`). Today an owner meets ZIMRA with no evidence of what a vehicle really earned. Svika's dashboard, printable statement and revenue watchdog give the owner a digital earnings record beside that fixed tax, plus an isolation forest watching for leakage the eye cannot catch. That is worth a monthly fee per vehicle, and it is the primary revenue line: a subscription priced well under the value of the leakage it surfaces and the credibility it gives the owner with the tax authority.
+**Owner subscription.** Kombi owners pay a monthly presumptive tax set by ZIMRA Public Notice 51 of 2025, gazetted on 5 September 2025 and collected through the ZINARA licence: USD 50 a month for an 8 to 14 seater and USD 60 for a 15 to 24 seater, which is the kombi range, as a fixed amount rather than a share of takings. Since that notice an operator cannot renew the licence without a tax clearance, so the earnings record an owner brings to ZIMRA now decides whether the vehicle stays on the road. Today an owner meets that demand with no evidence of what a vehicle really earned. Svika's dashboard, printable statement and revenue watchdog give the owner a digital earnings record beside the fixed tax, plus an isolation forest watching for leakage the eye cannot catch. That is worth a monthly fee per vehicle, and it is the primary revenue line: a subscription priced well under the value of the leakage it surfaces and the credibility it gives the owner with the tax authority.
 
 **Conductor commission and the wallet float.** Conductors earn a commission on digital fares, carried in the ledger as a per fare rate (`commission_rate_bps`), which gives the crew a direct reason to clear fares digitally rather than route around the system. Unreturned change becomes USD wallet credit through the same double entry ledger; the aggregate float is a second, smaller economic base and, more importantly, the hook that keeps riders in the digital record.
 
@@ -20,6 +20,10 @@ The cost side is deliberately light, which is what makes a per vehicle subscript
 - **No per ride vendor cost.** Voice audio is pre generated and cached, and every external provider sits behind an adapter, so there is no metered vendor call in the ride path to erode the margin. [FLAG: specific monthly infrastructure figures are estimates pending a costed hosting plan; see traceability note.]
 
 The unit economics are simple: revenue is per vehicle per month, the marginal cost of one more vehicle is close to zero, and the heavy costs are fixed and low. That is a model that survives on a few hundred kombis and improves with scale.
+
+## Edge posture and resilience
+
+Svika is server first by product rule, and that answers the edge question rather than dodging it. The models are small enough to run on CPU, so there is no need to shrink a model onto a handset, and no rider or conductor phone ever runs inference. Two things follow. Riders' data stays off the device and in country, on the ZCHPC national compute, which is the data sovereignty position Pillar 2 of the National AI Strategy asks for. And the real edge risk on a kombi, losing signal in traffic, is met where it actually bites: the conductor app is an offline first installable that clears fares, reads board codes and holds a local ticket cache with no network, then reconciles on the next sync. The edge resilience is in the offline product, not in a quantised model on a cheap phone, and that is the right place for it in this network.
 
 ## Licensing register
 

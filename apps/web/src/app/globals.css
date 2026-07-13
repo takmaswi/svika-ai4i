@@ -2888,3 +2888,94 @@ body:has(.home-screen) .demo-account-chip {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 }
+
+/* --- disclosure register (/register): the honesty split on screen -------- */
+.register-intro {
+  margin-top: var(--space-2);
+}
+.register-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-park);
+}
+.register-legend-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+/* the park panel is light in both themes, so its caption stays char ink */
+.register-legend .svika-meta {
+  color: var(--color-char);
+}
+/* tier chip: forest means real and live, marigold means staged (the demo
+   grammar §7). Char text on marigold, paper text on forest. */
+.tier-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.3px;
+}
+.tier-chip-1 {
+  background: var(--color-forest);
+  color: #ffffff;
+}
+.tier-chip-2 {
+  background: var(--color-marigold);
+  color: var(--color-char);
+}
+.register-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.register-row {
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-hairline);
+}
+.register-row-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.register-feature {
+  font-size: 15px;
+}
+.register-detail {
+  margin-top: 6px;
+  color: var(--color-ink-soft);
+}
+.register-updated {
+  margin-top: var(--space-4);
+}
+
+/* landing footer: quiet links to the register and the privacy notice */
+.landing-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-hairline);
+  font-size: var(--text-meta);
+  color: var(--color-ink-soft);
+}
+.landing-foot a {
+  color: var(--color-link);
+}

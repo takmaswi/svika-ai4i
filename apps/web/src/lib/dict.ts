@@ -728,6 +728,31 @@ export const dict = {
     sn: "Data rako neprivacy",
   },
 
+  // The disclosure register: what is real and what is staged, on screen for a
+  // judge to open. The feature rows themselves are the English canonical
+  // register (docs/DISCLOSURE-REGISTER.md); the Shona chrome owes the human
+  // translator pass like the rest of the app.
+  "register.title": {
+    en: "What is real, what is staged",
+    sn: "Zvechokwadi, nezvakagadzirirwa",
+  },
+  "register.intro": {
+    en: "Every feature in this demo, and exactly what is happening behind it. We never present a staged surface as live.",
+    sn: "Chimiro chega chega mudemo ino, nezviri kuitika seri kwacho. Hatimboratidzi chinhu chakagadzirirwa sechiri kushanda.",
+  },
+  "register.tier1": { en: "Real and live", sn: "Chechokwadi, chiri kushanda" },
+  "register.tier1Note": {
+    en: "Working against the live database.",
+    sn: "Chiri kushanda pane database chaiyo.",
+  },
+  "register.tier2": { en: "Staged, always labelled", sn: "Chakagadzirirwa, chinogara chakanyorwa" },
+  "register.tier2Note": {
+    en: "Clickable with a fixed or simulated backend, labelled on screen.",
+    sn: "Chinodzvanywa asi chine backend yakagadzirirwa, chakanyorwa pachikamu.",
+  },
+  "register.updated": { en: "Last updated", sn: "Yagadziridzwa" },
+  "register.link": { en: "What is real, what is staged", sn: "Zvechokwadi, nezvakagadzirirwa" },
+
   "lang.english": { en: "English", sn: "Chirungu" },
   "lang.shona": { en: "Shona", sn: "Shona" },
   "lang.ndebele": { en: "Ndebele", sn: "Ndebele" },

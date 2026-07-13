@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { deriveRideStats, type RideStatFact } from "../src/lib/ride-stats";
+import { deriveRideStats, ridesSince, type RideStatFact } from "../src/lib/ride-stats";
 
 const NOW = new Date("2026-07-10T06:00:00Z"); // 08:00 CAT
 
@@ -11,6 +11,35 @@ function ride(
 ): RideStatFact {
   return { purchasedAt: iso, fromName: from, toName: to, routeName: route };
 }
+
+describe("ridesSince", () => {
+  const history = [
+    ride("2026-07-01T06:00:00Z", "Heights", "Town"), // a previous judge
+    ride("2026-07-05T06:00:00Z", "Heights", "Town"), // a previous judge
+    ride("2026-07-10T06:30:00Z", "Heights", "Town"), // this visit
+  ];
+
+  test("a null cutoff keeps every ride (named personas, real riders)", () => {
+    expect(ridesSince(history, null)).toHaveLength(3);
+  });
+
+  test("a cutoff hides earlier visits and keeps this visit's rides", () => {
+    const since = "2026-07-10T06:00:00Z"; // when this judge claimed the persona
+    const mine = ridesSince(history, since);
+    expect(mine).toHaveLength(1);
+    expect(mine[0]!.purchasedAt).toBe("2026-07-10T06:30:00Z");
+  });
+
+  test("a ride exactly at the cutoff counts as this visit's", () => {
+    const at = "2026-07-05T06:00:00Z";
+    expect(ridesSince(history, at)).toHaveLength(2);
+  });
+
+  test("a fresh persona with only older rides shows an empty profile", () => {
+    const since = "2026-07-11T00:00:00Z";
+    expect(ridesSince(history, since)).toHaveLength(0);
+  });
+});
 
 describe("deriveRideStats", () => {
   test("empty history is all zeros with no favourite", () => {

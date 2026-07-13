@@ -5,7 +5,7 @@ import { getLang, t, type DictKey } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { greetingKey } from "@/lib/greeting";
-import { deriveRideStats } from "@/lib/ride-stats";
+import { deriveRideStats, ridesSince } from "@/lib/ride-stats";
 import {
   deleteSavedTrip,
   removeEmergencyDetails,
@@ -62,47 +62,55 @@ export default async function ProfilePage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileRes, tripsRes, ridesRes, prefsRes, emergencyRes] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("full_name, phone, demo_sim")
-      .eq("id", user.id)
-      .maybeSingle(),
-    supabase
-      .from("saved_trips")
-      .select(
-        "id, nickname, from_stop:stops!saved_trips_from_stop_id_fkey(name), to_stop:stops!saved_trips_to_stop_id_fkey(name)",
-      )
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("tickets")
-      .select(
-        "purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name)",
-      )
-      .eq("kind", "fare")
-      .order("purchased_at", { ascending: true }),
-    supabase.from("rider_prefs").select("*").maybeSingle(),
-    supabase.from("emergency_details").select("*").maybeSingle(),
-  ]);
+  const [profileRes, tripsRes, ridesRes, prefsRes, emergencyRes, sinceRes] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("full_name, phone, demo_sim")
+        .eq("id", user.id)
+        .maybeSingle(),
+      supabase
+        .from("saved_trips")
+        .select(
+          "id, nickname, from_stop:stops!saved_trips_from_stop_id_fkey(name), to_stop:stops!saved_trips_to_stop_id_fkey(name)",
+        )
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("tickets")
+        .select(
+          "purchased_at, routes(name), from_stop:stops!tickets_from_stop_id_fkey(name), to_stop:stops!tickets_to_stop_id_fkey(name)",
+        )
+        .eq("kind", "fare")
+        .order("purchased_at", { ascending: true }),
+      supabase.from("rider_prefs").select("*").maybeSingle(),
+      supabase.from("emergency_details").select("*").maybeSingle(),
+      // pooled demo personas are reused across judges; my_demo_since returns
+      // when this judge claimed the persona so their profile shows only this
+      // visit's rides, not a stranger's. Null for named personas and real
+      // riders, whose full history stands.
+      supabase.rpc("my_demo_since"),
+    ]);
 
   const profile = profileRes.data;
   const trips = (tripsRes.data ?? []) as unknown as SavedTripRow[];
-  const rides = (ridesRes.data ?? []) as unknown as RideRow[];
+  const demoSince = typeof sinceRes.data === "string" ? sinceRes.data : null;
+  const allRides = (ridesRes.data ?? []) as unknown as RideRow[];
   const prefs = prefsRes.data;
   const emergency = emergencyRes.data;
   const toWord = t(lang, "common.to");
 
   const greeting = t(lang, GREETING_KEY[greetingKey(new Date())]);
   const displayName = profile?.full_name?.trim() || t(lang, "profile.welcomeNoName");
-  const stats = deriveRideStats(
-    rides.map((r) => ({
+  const rideFacts = ridesSince(
+    allRides.map((r) => ({
       purchasedAt: r.purchased_at,
       fromName: r.from_stop?.name ?? null,
       toName: r.to_stop?.name ?? null,
       routeName: r.routes?.name ?? null,
     })),
-    new Date(),
+    demoSince,
   );
+  const stats = deriveRideStats(rideFacts, new Date());
   const faveLabel = stats.favourite
     ? "from" in stats.favourite
       ? `${stats.favourite.from} ${toWord} ${stats.favourite.to}`

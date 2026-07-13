@@ -7,6 +7,7 @@
   "scripts": {
     "security-test": "node test/rls.security.test.mjs",
     "seed": "node seed/seed.mjs",
+    "demo-reset": "node scripts/demo-reset.mjs",
     "ledger-test": "node test/ledger.invariants.test.mjs",
     "offline-test": "node test/offline.sync.test.mjs"
   },

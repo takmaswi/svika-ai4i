@@ -94,6 +94,31 @@ body {
   background: var(--color-action);
   color: var(--color-action-ink);
 }
+/* Ndebele is roadmap, not a live language: a non-interactive chip that reads
+   as coming soon and switches no strings. Park + char is the positive info
+   chip grammar, never the marigold active state, so it never reads as chosen. */
+.lang-toggle .lang-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-ink-soft);
+  cursor: not-allowed;
+}
+.lang-toggle .lang-soon:active {
+  transform: none;
+}
+.lang-soon-tag {
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-park);
+  color: var(--color-char);
+  font-family: var(--font-sans);
+  font-size: 8.5px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.3px;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
 
 /* --- primary CTA (§5: row pill, label left, 40px arrow chip right) -------- */
 .cta {

@@ -5,6 +5,11 @@ import type { AppLanguage } from "@svika/shared";
 
 export const LANG_COOKIE = "svika_lang";
 
+// The languages a rider can actually switch to today. Ndebele is roadmap, not
+// a live language, so it is deliberately absent here: the toggle renders it as
+// a disabled "coming soon" chip that switches nothing. See docs/DISCLOSURE-REGISTER.md.
+export const LIVE_LANGUAGES: readonly AppLanguage[] = ["en", "sn"];
+
 type Entry = { en: string; sn: string };
 
 export const dict = {
@@ -725,6 +730,8 @@ export const dict = {
 
   "lang.english": { en: "English", sn: "Chirungu" },
   "lang.shona": { en: "Shona", sn: "Shona" },
+  "lang.ndebele": { en: "Ndebele", sn: "Ndebele" },
+  "lang.comingSoon": { en: "coming soon", sn: "zvichauya" },
 
   "yourdata.title": {
     en: "What Svika knows about you",

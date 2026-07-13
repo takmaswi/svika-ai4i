@@ -83,6 +83,41 @@ test.describe("profile", () => {
     ).toHaveText(/Mangwanani|Masikati|Manheru/);
   });
 
+  test("Ndebele shows as a disabled coming soon option and never switches the language", async ({
+    page,
+  }) => {
+    await page.goto("/app/profile");
+
+    const toggle = page
+      .getByTestId("profile-appearance")
+      .locator(".lang-toggle");
+    const nd = toggle.getByTestId("lang-ndebele");
+
+    // the option is visible, reads clearly as coming soon, and cannot be chosen
+    await expect(nd).toBeVisible();
+    await expect(nd).toBeDisabled();
+    await expect(nd).toHaveText(/coming soon/i);
+    await expect(nd).toHaveAttribute("aria-label", /Ndebele, coming soon/i);
+    await expect(nd).not.toHaveClass(/lang-on/);
+
+    // the app is English and stays English: forcing a click switches nothing
+    const heading = page.getByRole("heading", { name: "Look and language" });
+    await expect(heading).toBeVisible();
+    await expect(toggle.locator('button[aria-pressed="true"]')).toHaveText("EN");
+
+    await nd.click({ force: true });
+    await expect(heading).toBeVisible();
+    await expect(toggle.locator('button[aria-pressed="true"]')).toHaveText("EN");
+    const lang = await page.evaluate(
+      () =>
+        document.cookie
+          .split("; ")
+          .find((c) => c.startsWith("svika_lang="))
+          ?.split("=")[1] ?? null,
+    );
+    expect(lang === null || lang === "en").toBe(true);
+  });
+
   test("emergency details need the consent tick, save, then remove without closing the app", async ({
     page,
   }) => {

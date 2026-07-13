@@ -1,0 +1,32 @@
+# Render blueprint for the Svika spine (services/spine): the server side AI that
+# serves GET /eta from the two recorded corridor rides. It is optional for the
+# demo: when the web app cannot reach it, the mock twin serves and every arrival
+# label says "demo estimate", so the demo never dies. Deploying it turns those
+# labels into real numbers from recorded rides.
+#
+# Connect this repo as a Render Blueprint; Render reads this file. Set the two
+# Supabase values in the dashboard (they are marked sync: false). No service
+# role key: the spine reads only public data with the anon key.
+services:
+  - type: web
+    name: svika-spine
+    runtime: node
+    plan: free
+    region: frankfurt # closest free Render region to Zimbabwe
+    rootDir: .
+    healthCheckPath: /health
+    buildCommand: corepack enable && pnpm install --frozen-lockfile
+    # runs the exact command local dev uses; Node strips the TypeScript types.
+    startCommand: node --experimental-strip-types services/spine/src/main.ts
+    autoDeploy: true
+    envVars:
+      # --experimental-strip-types needs Node >= 22.6
+      - key: NODE_VERSION
+        value: "22.17.0"
+      # public data only; the anon key is enough and RLS protects everything
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+    # NOTE: do not set PORT. Render assigns it and the spine binds to
+    # process.env.PORT automatically (services/spine/src/main.ts).

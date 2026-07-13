@@ -10,7 +10,7 @@ describe("i18n dictionary", () => {
   });
 
   it("t() returns the string for the chosen language", () => {
-    expect(t("en", "app.signOut")).toBe("Sign out");
-    expect(t("sn", "app.signOut")).toBe("Buda");
+    expect(t("en", "role.rider")).toBe("Rider");
+    expect(t("sn", "role.rider")).toBe("Mufambi");
   });
 });

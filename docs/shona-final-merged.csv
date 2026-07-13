@@ -1,0 +1,369 @@
+﻿key,final_sn
+brand.tagline,Ride Harare. Keep your change.
+nav.signIn,Sign in
+landing.headline1,Beyond the
+landing.headlineWord,Kombi
+landing.body,"Ronga rwendo rwako, wana mazano usati wasimuka, uye famba wakachengeteka."
+landing.cta,Tsvaga kombi yako
+landing.statChange,Chenji yakachengetwa
+landing.statWeek,svondo rino
+landing.signinHint,Hwindi or fleet owner?
+landing.signinLink,Sign in here
+landing.demoLead,"Pinda saTariro, arikungo tester system. Hapana kunyoresa."
+landing.demoEnter,Pinda mudemo
+landing.demoOwner,Dashboard yemuridzi
+landing.shelfReal,"Nyaya chaidzo, mari chaiyo pasystem iri kushanda"
+landing.shelfIntel,"Njere dzacho, misana mitatu neumbowo hwayo"
+landing.intelEta,Kuziva kunoita Svika kuti unosvika nguvai
+landing.intelTakunda,"Yeuchidzo yaTakunda, zvayakadzidza"
+landing.intelWatchdog,Murindi anobata pabiwa mari
+landing.shelfVision,"Zviratidzo zveramangwana, nezviri kuuya"
+landing.visionTinashe,"Zvekuita paita tsaona, Tinashe"
+landing.visionGogo,Mbudzi yaGogo
+landing.visionCapacity,Kuzara kwekombi
+landing.demoStory1,Chenji inova kiredhiti
+landing.demoStory2,Makombi maviri nekufamba
+landing.demoStory4,Rwendo rwaRudo rwehusiku
+landing.demoErr,Demo yakabatikana pari zvino. Edza zvakare mupfupi.
+demo.chip,Akaunti yedemo
+login.title,Sign in to Svika
+login.phoneLabel,Phone number
+login.send,Send code
+login.sending,Sending…
+login.codeLabel,Enter the 6-digit code
+login.verify,Verify
+login.verifying,Verifying…
+login.resend,Send a new code
+login.codeSentTo,We sent a code to
+login.errPhone,Enter a valid phone number.
+login.errCode,That code did not work. Try again.
+app.welcome,Titambire
+app.roleLabel,Basa rako
+app.phoneLabel,Foni
+app.signOut,Sign out
+role.rider,Mufambi
+role.owner,Muridzi
+role.conductor,Hwindi
+common.back,Back
+common.minutes,maminitsi
+common.to,kusvika
+rider.searchTitle,Where are you going?
+rider.fromLabel,Kubva
+rider.toLabel,Kuenda
+rider.fromPlaceholder,"sekuti Heights, UZ, Market Square"
+rider.toPlaceholder,"sekuti Avondale, Sam Levy's, town"
+rider.planCta,Ronga rwendo rwangu
+rider.walletBalance,Mari muWallet
+rider.tickets,Matikiti ako
+rider.noTickets,Hapana matikiti. Ronga rwendo kuti utore tikiti.
+plan.title,Your trip
+plan.sheetOpen,Wona zvikamu zverwendo urwu
+plan.ride,Kufamba
+plan.walk,Kufamba netsoka
+plan.alightAt,Burukira pa
+plan.totalFare,Mari yese
+plan.about,Inoda kukwana
+plan.boardings,makombi
+plan.payWallet,Bhadhara newallet
+plan.reserveCash,"Bhuka, bhadhara cash mukombi"
+plan.pickFrom,Sarudza paunokwirira
+plan.pickTo,Sarudza kwaukuenda
+plan.noMatch,Hatijaziva nzvimbo iyoyo. Sarudza pa stop pane list.
+plan.noRoute,Hapana route pama stop iwayo parizvino.
+plan.insufficient,Mari muWallet haikwane. Bhuka wobhadhara cash mukombi.
+ticket.title,Board code
+ticket.screenTitle,Your ticket
+ticket.showHwindi,Ratidza hwindi kodi iyi paunokwira.
+ticket.fare,Mari yekufamba
+ticket.payment,Kubhadhara
+ticket.route,Route
+ticket.validUntil,Inoshanda kusvika
+ticket.payCash,Bhadhara cash mukombi
+ticket.paidWallet,Yabhadharwa newallet
+ticket.status.issued,Wagadzirira kukwira
+ticket.status.redeemed,Yabhadharwa
+ticket.status.cancelled,Yakanzurwa
+ticket.status.expired,Yapera nguva
+ticket.status.refunded,Yadzorerwa
+ticket.legOf,Chikamu
+ticket.status.loaded,Mukombi
+ticket.status.collected,Yatorwa
+wallet.title,Your wallet
+wallet.balanceLabel,Mari yasara
+wallet.changeChip,Chenji yakachengetwa
+wallet.changeTitle,Change kept as credit
+wallet.changeTotal,Yachengetwa kusvika zvino
+wallet.changeBody,"Kana wabhadhara ne cash hwindi oshaya chenji, mari yacho inopinda muno muma credit panzvimbo pekuti iende nekombi."
+wallet.changeNone,"Hapana chenji yapinda parizvino. Hwindi akangosara nechenji yako, inopinda muno."
+wallet.open,Wallet
+wallet.history,Zvichangobva kuitika
+wallet.sendTitle,Send credit
+wallet.sendAmount,Mari yacho
+wallet.sendCta,Tumira
+wallet.sendHint,Unowana kodi yekutora mari yekushera. Mari isina kutorwa inodzoka ukaikanzura.
+wallet.claimTitle,Claim credit
+wallet.claimLabel,Kodi yekutora mari
+wallet.claimCta,Tora
+wallet.claimed,Mari yatorwa
+wallet.claimInvalid,Kodi iyoyo hairisi kushanda.
+wallet.claimAlready,Kodi iyoyo yakatoshandiswa kutora mari.
+wallet.claimRateLimited,Waedza kakawanda. Imbomirira 10 mins.
+wallet.sent,Shera kodi iyi
+wallet.pending,Iri kumirira kutorwa
+wallet.cancel,Kanzura udzose mari yako
+wallet.sendErr,Yaramba kutumirwa. Checka balance yako.
+wallet.txn.topup,Top up
+wallet.txn.ticket_purchase,Tikiti
+wallet.txn.fare_settlement,Mari yekufamba yabhadharwa
+wallet.txn.change_credit,Chenji yava macredit
+wallet.txn.transfer_send,Mari yatumirwa
+wallet.txn.transfer_claim,Mari yatorwa
+wallet.txn.transfer_cancel,Kutumira kwakanzurwa
+wallet.txn.refund,Mari yadzorerwa
+wallet.txn.adjustment,Kugadzirisa mari
+parcel.title,Send a parcel
+parcel.open,Mapasuru
+parcel.route,Route
+parcel.from,Takira pa
+parcel.to,Torera pa
+parcel.payWallet,Bhadhara newallet
+parcel.payCash,Bhadhara cash pakutakira
+parcel.loadCode,Kodi YEKUTAKIRA
+parcel.collectCode,Kodi YEKUTORA
+parcel.loadHint,Ipa hwindi Kodi YEKUTAKIRA nepasuru. Tumira Kodi YEKUTORA kune arikuigamuchira.
+parcel.yours,Mapasuru ako
+parcel.none,Hapana mapasuru parizvino.
+parcel.err,Pasuru yatadza kubhukiwa.
+parcel.errBalance,Mari muWallet haikwane. Bhadhara cash pakutakira pasuru.
+owner.title,Revenue
+owner.open,Panoonera muridzi
+owner.balance,Mari iri muWallet
+owner.day,Zuva
+owner.route,Route
+owner.tickets,Mari yekufamba
+owner.gross,Mari yese yapinda
+owner.commission,Hwindi
+owner.net,Yako
+owner.none,Hapana mari dzema digital dzati dzabhadharwa.
+owner.note,Mari yese iripano inobva mu ledger. Mari ye cash inosara nemacrew haiverengwe pano.
+owner.watchdog,Murindi wemari yapinda
+owner.watchdogSimulated,History yedemo
+owner.watchdogSummary,"Mazuva {count} e demo aongororwa, {flagged} aonekwa aine mhosho"
+owner.watchdogNone,Hapana mazuva asinganzwisisike ma history.
+owner.watchdogEmpty,Hapana history yedemo yati yaiswa.
+owner.wdForest,Sango rakadoma zuva iri
+owner.wdThresholdSilent,mutemo wakagadzikwa wakaramba wakanyarara
+owner.wdThresholdFired,mutemo wakagadzikwa wakadomawo
+owner.watchdogNote,"Zviratidzo zvinotaura maitiro, kwete munhu. Kadhi iri rinoshanda nenhoroondo yakagadzirwa kusvika network yava nemwedzi yemari chaiyo."
+owner.netToDate,Yako yese
+owner.chartTitle,"Digital fares, last 14 days"
+owner.chartNet,Yako mumazuva aya
+owner.routesTitle,By route
+owner.fares,vafambi
+owner.taxTitle,ZIMRA presumptive tax
+owner.taxBody,"Makombi anobhadhara mutero wakatarwa we$50 kusvika $60 pamwedzi, unotorwa nerezinesi reZINARA. Imari yakatarwa, kwete chikamu chemari inopinda."
+owner.taxHint,Statement yako ndiyo chinyorwa chedijitari chemari yakapinda pakombi imwe neimwe.
+owner.statementOpen,Dhinda statement
+statement.title,Revenue statement
+statement.period,Nguva
+statement.generated,Yagadzirwa
+statement.owner,Muridzi
+statement.print,Dhinda
+statement.totals,Zvese
+statement.note,Nhamba dzese dzinobva mubhuku remari reSvika risingagadziridzwe. Cash inosara nevashandi haiverengwi. Mutero wemakombi imari yakatarwa ye$50 kusvika $60 pamwedzi inotorwa nerezinesi reZINARA; statement iyi ndiyo chinyorwa chemari yakapinda parutivi pawo.
+home.sheetHint,Nyora neShona kana Chirungu.
+home.sheetOpen,Wona wallet nematikiti
+home.sheetClose,Wona zvimwe pamap
+home.peekArrives,Inosvika
+home.peekFrom,kubva
+nav.home,Home
+nav.rides,Rides
+nav.wallet,Wallet
+nav.you,You
+home.yourTrips,Nzendo dzako
+home.etaDemo,demo estimate
+home.etaFromRide,kubva parwendo 1 rwakarekodhwa
+home.etaFromRides,kubva munzendo {count} dzakarekodhwa
+eta.cardAria,Kwabva number iyi
+eta.cardTitle,Where this number comes from
+eta.cardMeasured,Inoyerwa kubva munzendo {count} chaidzo dzatakarekodha pamugwagwa uyu.
+eta.cardModel,Modhi yakadzidziswa yakamirira mutemo wekukwidziridzwa. Inoshanda chete kana nhamba dzakachengetwa dzichiratidza kuti inokunda avhareji iyi.
+eta.cardImprove,Rwendo rwega rwega rutsva rwakarekodhwa runoinatsa.
+eta.cardDemo,"Iyi ifungidziro yekuratidzira kubva kumbeu yekumira, kwete chiyero."
+eta.cardDemoWhen,Inoshanda kana injini yekusvika isingawanikwe kana rwendo rusiri munzira yakarekodhwa.
+eta.cardClose,Vhara
+eta.cardMore,Wona kuti Svika inoziva sei
+intel.title,How Svika knows your arrival
+intel.intro,Hapana kombi inofamba netimetable. Nhamba iri pascreen yako yakamira padanho raunogona kuongorora.
+intel.rung1H,"Inoyerwa, irikushanda nhasi"
+intel.rung1B,Nhamba yaunoona iavhareji yenguva dzezvikamu kubva panzendo {count} chaidzo dzakarekodhwa munzira ino. Chiratidzo chayo pascreen yega yega chinozvitaura.
+intel.rung2H,"Yadzidziswa, yakamirira"
+intel.rung2B,Modhi inodzidza mafambiro eawa rega rega yakadzidziswa nenzendo dzimwe chetedzo. Haisati yashanda.
+intel.rung3H,Mutemo umwe chete unosarudza
+intel.rung3B,Modhi inoshanda chete kana pane nzendo {min} kana kupfuura dzakarekodhwa uye ichikunda avhareji panzendo yaisati yamboona. Mutongo unogara mufaira yakachengetwa; hapana chimwe chinosarudza.
+intel.tableH,Umbowo hwakachengetwa
+intel.rowJourneys,Nzendo dzakarekodhwa
+intel.rowSegments,Zvakacherechedzwa panzira
+intel.rowBaseline,Baseline error
+intel.rowModel,Model error
+intel.rowServed,Irikushanda parizvino
+intel.verdictPromoted,"Modhi yakakunda avhareji panzendo dzayaisati yaona, saka iri kushanda."
+intel.verdictHeld,"Mutongo: nzendo hadzisati dzakwana kuvimba nechiyero (mutemo unoda {min}), saka avhareji ndiyo inoshanda uye fungidziro yega yega inotaura nzendo dzainomira padziri."
+intel.note,"Tafura iyi ifaira rakachengetwa rekudzidziswa pachako, kwete nhamba dzakanyorwazve. Inovandudzwa kana nzendo itsva dzarekodhwa."
+plan.saveTitle,Save this trip for your home map
+plan.savePlaceholder,sekuti Rwendo rwekubasa
+plan.saveCta,Save
+plan.savedNote,Yasaviwa. Yave kuoneka pamap yako.
+plan.saveErr,Zita iri harina ku saviwa. Edza zita pfupi.
+theme.toDark,Chinja kuenda ku night mode
+theme.toLight,Chinja kuenda ku day mode
+map.ariaLabel,"Mepu yenzira yeHeights kusvika Rezende ine makombi ari kufamba mumugwagwa. Kufamba kwemakombi ndekwekuratidzira, hakusi live."
+map.demoChip,Movement yedemo
+map.viewWhole,Route yese
+map.viewNear,Paukukwirira
+map.unavailable,Map yatadza kuvhurika. Nzendo dzako newallet zvichiri kushanda.
+consent.title,Before you ride
+consent.intro,"Svika inochengeta nzendo dzako, matikiti nemari yechikwama kuti chenji yako irege kurasika. Hezvino zvazvinoreva."
+consent.point1,"Zita rako, nhamba yefoni nemutauro waunosarudza zvinochengetwa neakaunti yako."
+consent.point2,Tikiti rimwe nerimwe nekufamba kwemari zvinochengetwa. Nhoroondo yemari haigadziridzwe kana kudzimwa.
+consent.point3,"Mafambiro enzendo anovandudza fungidziro dzekusvika. Varidzi vanoona huwandu hwenzira, kwete zita rako."
+consent.point4,Unogona kuona zvese zvakachengetwa neSvika nezvako uye kudzima ruzivo rwako chero nguva.
+consent.noticeLink,Verenga chiziviso chekuvanzika chizere
+consent.accept,Ndanzwisisa uye ndinobvuma
+consent.declineHint,"Kana usingabvume, buda. Hapana chinochengetwa kunze kwekupinda kwako."
+consent.err,Hazvina kuchengetedzwa. Edzazve.
+privacy.title,How Svika treats your data
+privacy.collectH,Zvinochengetwa neSvika
+privacy.collectB,"Zita rako, nhamba yefoni, mutauro, matikiti, mari yechikwama nenzendo dzaunochengeta. Hapana zvimwe."
+privacy.whyH,Sei
+privacy.whyB,Matikiti nemari zvinoda nhoroondo izere. Mafambiro enzendo anonatsiridza fungidziro dzekusvika kune wese.
+privacy.moneyH,Mutemo wemari
+privacy.moneyB,"Chikwama ibhuku remari rinongowedzerwa. Zvinyorwa zvinowedzerwa, hazvigadziridzwe, hazvidzimwe. Ndiko kuchengetedzwa kwechenji yako."
+privacy.aiH,Zvinoonekwa ne AI
+privacy.aiB,Fungidziro nekuongorora mari zvinoshanda pamaseva edu zvichishandisa mafambiro nehuwandu. Hazvidome munhu uye hapana chinoshanda pafoni yako.
+privacy.shareH,Ndiani anoona data rako
+privacy.shareB,"Hapana ari kunze kweSvika. Hakuna kutengeswa, hakuna zvishambadzo. Varidzi vanoona huwandu hwenzira, mahwindi anoona makodhi, hapana anoona kuti ndiwe ani."
+privacy.controlH,Masimba ako
+privacy.controlB,"Peji reruzivo rwako rinoratidza zvese zvakachengetwa nezvako. Kudzima kunobvisa zita, foni nenzendo dzakachengetwa; nhoroondo yematikiti nemari inosara asi haichataure kuti ndiwe ani."
+privacy.versionLabel,Notice version
+privacy.yourDataLink,Data rako neprivacy
+lang.english,Chirungu
+lang.shona,Shona
+yourdata.title,What Svika knows about you
+yourdata.profileH,Profile yako
+yourdata.name,Zita
+yourdata.language,Mutauro
+yourdata.none,Haisi setiwa
+yourdata.countsH,History yako
+yourdata.tickets,Matikiti
+yourdata.movements,Kufamba kwemari muWallet
+yourdata.savedTrips,Nzendo dzakasaviwa
+yourdata.consents,Marecords ekubvumira
+yourdata.deleteH,Dzima details ako
+yourdata.deleteB,"Nhoroondo yemari nematikiti inongowedzerwa, saka haigone kudzimwa. Kudzima kunobvisa zita nefoni yako, kunodzima nzendo dzakachengetwa, uye kunovhara app kusvika wabvumazve. Kupinda kwako kunosara kusvika mushandi akubvisa."
+yourdata.deleteCta,Dzima details angu
+yourdata.deleteConfirm,"Ehe, dzima details angu"
+yourdata.deleteCancel,Asiye
+yourdata.err,Izvi hazvina kushanda. Edza zvakare.
+profile.open,Profile uye settings
+profile.title,Your Svika
+profile.greetMorning,Mangwanani
+profile.greetAfternoon,Masikati
+profile.greetEvening,Manheru
+profile.welcomeNoName,Mawuya paSvika
+profile.statTotal,Nzendo dzese
+profile.statMonth,Mwedzi uno
+profile.statFave,Rwendo rwepamusoro
+profile.statsEmpty,Hapana nzendo parizvino. Ronga rwendo kuti dzitange kuverengwa.
+profile.statsDemo,Dzimwe nzendo idzi ndedze demo.
+profile.settingsH,Settings
+profile.appearanceH,Ratidziro nemutauro
+profile.languageH,Mutauro
+profile.themeH,Masikati kana husiku
+profile.youH,Details ako
+profile.nameLabel,Zita rako
+profile.phoneLabel,Foni
+profile.saveCta,Save
+profile.savedNote,Yasaviwa.
+profile.tripsH,Nzendo dzakasaviwa
+profile.tripsNone,Hapana nzendo dzakasaviwa. Ronga rwendo urupe zita.
+profile.renameCta,Chinja zita
+profile.removeCta,Bvisa
+profile.historyH,Nzendo dzako
+profile.historySummary,Nzendo {count} neSvika kubva {month}.
+profile.historyFirst,Rwendo rwako rwekutanga neSvika.
+profile.historyNone,Nzendo dzako dzichaoneka pano mushure merwendo rwako rwekutanga.
+profile.alertsH,Ma alerts erwendo rwako
+profile.alertsB,"Kana kombi yaunogara uchikwira yaswedera panguva yaunowanzofamba, Svika inokuudza. Zvinobva munhoroondo yenzendo dzako chete."
+profile.voiceH,Voice guide
+profile.voiceB,Inzwi rinokuudza kana chiteshi chako chaswedera uye pekuburuka. Batidza pamutauro waunoda.
+profile.voiceNote,Inzwi ririko nderekumbomira kusvika manzwi echiZimbabwe akarekodhwa asvika.
+profile.voiceEn,Izwi rechirungu
+profile.voiceSn,Izwi reShona
+profile.on,Batidza
+profile.off,Dzima
+profile.emergencyH,Details epa emergency
+profile.emergencyWhy,"Kana chimwe chikaitika murwendo, munhu waunonyora pano ndiye anofonerwa, uye ruzivo rwemedical aid rwako runokurumidzisa rubatsiro. Svika inokumbira kuti rubatsiro rive pedyo, kwete zvekushambadza. Izvi ndezvekuzvisarudzira, ndiwe wega unozviona, uye unogona kuzvibvisa chero nguva."
+profile.kinName,Zita rehama yako wepedyo
+profile.kinPhone,Foni yehama yako wepedyo
+profile.aidName,Zita re medical aid
+profile.aidNumber,Number ye medical aid
+profile.emergencyConsent,Ndinobvuma kuti Svika ichengete ruzivo urwu rwepakaoma. Ndinogona kuzvibvisa chero nguva.
+profile.emergencySave,Sava details epa emergency
+profile.emergencyRemove,Bvisa details aya
+profile.emergencySaved,Yasaviwa. Ndiwe chete unoona details aya.
+profile.emergencyRemoved,Yabviswa.
+profile.errConsent,Tika pa box rekubvumira kutanga.
+profile.errEmpty,Isa at least detail imwe usati wasava.
+profile.errGeneric,Hazvina kuchengetedzwa. Edzazve.
+voice.approaching,Stop chako chave pedyo.
+voice.getOff,Ichi ndicho stop chako. Buruka pano.
+voice.walk,Kufamba netsoka kwako kunotangira pano.
+alert.title,Your usual kombi is close
+share.sectionH,Shera rwendo rwangu
+share.sectionB,"Tumira link iyi kune anokufungira. Vanoona rwendo pamepu, kwete kodhi yako kana mari yako."
+share.createCta,Gadzira link
+share.linkLabel,Chero ane link iyi anogona kuona rwendo urwu
+share.revokeCta,Misa kushera
+share.revokedNote,Kushera kwamira. Link yafa manje.
+share.err,Izvi hazvina kushanda. Edza zvakare.
+share.expiryNote,Link inorega kushanda kana rwendo rwapera.
+share.viewerTitle,Following a trip
+share.statusWaiting,Kumirira kukwira
+share.statusOnBoard,Vari mukombi
+share.arrives,Inosvika
+share.canSeeH,Zvaunokwanisa kuona
+share.canSee1,Nzira yerwendo urwu uye pari makombi ayo izvozvi.
+share.canSee2,Chiteshi chinopera rwendo nefungidziro yekusvika.
+share.cannotSeeH,Zvausingakwanise kuona
+share.cannotSee1,"Ari kufamba, nhamba yefoni yake, kodhi yake kana chikwama chake."
+share.deadH,Link iyi haichashandi
+share.deadB,Rwendo rwapera kana kuti mufambi amisa kushera.
+vision.stamp,Demo
+vision.tin.alertH,Kumbomira kamwe kamwe mu route
+vision.tin.alertNear,pedyo ne
+vision.tin.alertSent,Meseji ine paari izvozvi iri kuenda kuna Amai Moyo.
+vision.tin.kinPhone,Foni yaAmai Moyo
+vision.tin.kinMsg,Kombi yaTinashe yamira nekukurumidza pedyo neCopacabana. Ona paari izvozvi:
+vision.tin.kinFrom,Message yega kubva kuSvika
+vision.tin.responderWhy,Zvinoonekwa nemubatsiri kuburikidza nelink yepakaoma: zvakasarudzwa naTinashe chete.
+vision.tin.responderNote,"Minda iyi inoshanda muapp nhasi. Mufambi chete ndiye anoichengeta, nemvumo yakanyorwa, uye kubvisa kuri padyo paprofile."
+vision.gogo.menu1,1. Mari yangu (Credit)
+vision.gogo.menu2,2. Bhuka rwendo rwangu rwemazuva ese
+vision.gogo.menu3,3. Kombi yangu iri kupi
+vision.gogo.menu4,4. Tora chenji yangu
+vision.gogo.invalid,Sarudzo iyoyo haipo pamenyu.
+vision.gogo.claimPrompt,Nyora kodi yema number 4 yechenji kubva parwendo rwako. 0 inodzoka.
+vision.gogo.balance,Mari yako (Credit):
+vision.gogo.booked,Yabhukiwa:
+vision.gogo.bookedCode,Ratidza hwindi kodi
+vision.gogo.eta,Kombi yako inoda kukwana
+vision.gogo.etaDemo,(demo estimate)
+vision.gogo.claimed,Chenji yachengetwa se kiredhiti. Balance itsva:
+vision.gogo.claimRejected,Kodi iyi haienderane nerwendo.
+vision.gogo.unavailable,Basa iri harisi kuwanikwa parizvino. Edza zvakare.
+vision.gogo.idleHint,Dzvanya
+vision.gogo.endedHint,Sesheni yapera. Dzvanya zvakare:
+vision.gogo.waiting,Ndapota mirira
+vision.gogo.keyOk,OK
+vision.gogo.keyClear,C

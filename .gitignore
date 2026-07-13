@@ -14,3 +14,6 @@ supabase/.temp/
 
 # pnpm temp probe files (OneDrive locks can strand them)
 _tmp_*
+
+.vercel
+.env*.local

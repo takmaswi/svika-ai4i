@@ -38,6 +38,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Informal sector workers a target for financial inclusion | National AI Strategy, page 24 |
 | NLP in local languages, AI free from imported biases, Ubuntu | National AI Strategy, pages 9 and 32 |
 | Computational sovereignty, in country data control | National AI Strategy, Pillar 2, page 22 |
+| Nairobi's informal matatu network was mapped by phone into the city's first complete transit map, released 2014, and the routes entered Google Maps as a transit option, a first for an informal system | Digital Matatus project (a University of Nairobi, MIT Civic Data Design Lab, Columbia University and Groupshot alliance). Web verified: MIT News (2015), digitalmatatus.com, World Economic Forum (2015). Framed in the draft as roadmap capability for Svika, not a built product |
 
 ## Section 2 (technical, from committed repository files)
 
@@ -77,6 +78,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Kombi presumptive tax USD 50 a month for 8 to 14 seaters, USD 60 for 15 to 24, monthly via ZINARA, no licence renewal without a tax clearance | ZIMRA Public Notice 51 of 2025, gazetted 5 September 2025. Web verified across ZimLive, NewsDay (11 September 2025) and Equity Axis; consistent with ZIMRA's own notice |
 | Conductor commission on digital fares | ledger schema `commission_rate_bps`, `packages/db/src/database.types.ts` |
 | Map tiles are a licensed MapTiler display service, no third party datasets | `docs/DATASET-STATEMENT.md` |
+| City planning as a second beneficiary, a municipality or planning agency as a natural second customer for anonymised aggregate insight, on the Nairobi precedent | Digital Matatus (see Section 1 traceability row). Echoed from S1; framed as roadmap, not a billed line today |
 | CPU only models, no phone inference, offline conductor PWA as edge resilience, inference in country on ZCHPC | Section 2 and Section 3 model and offline descriptions; National AI Strategy Pillar 2 |
 
 ## Flags

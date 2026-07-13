@@ -28,7 +28,7 @@ Svika is a monorepo of small, testable workspaces. Everything that touches money
 
 Two rules shape the whole design. Data integrity is enforced in the database, not in the application, so a bug in a screen cannot print money or leak a ticket. AI is isolated in one service behind adapters, so a model can be swapped or a vendor can go dark without touching the ride path.
 
-Inference stays server side by product rule, and that is a deliberate choice, not a gap. No model runs on a rider or conductor phone, which keeps riders' data off the device and lets the models stay in country on the ZCHPC national compute. The edge problem that matters here is not model size on a handset, it is working when the network drops in a moving kombi, and Svika answers that with the offline conductor app rather than with on device AI (Section 3 details the offline sync). Section 5 carries the full edge and cost argument.
+Inference stays server side by product rule, a deliberate choice, not a gap: no model runs on a rider or conductor phone, which keeps riders' data off the device and on the ZCHPC national compute. The edge problem here is not model size on a handset, it is working when the network drops in a moving kombi, which Svika answers with the offline conductor app, not on device AI (Section 3). Section 5 carries the full edge and cost argument.
 
 ## The data spine: integrity that a judge can test
 
@@ -76,4 +76,4 @@ The forest is promoted and serves. The threshold never fires because real leakag
 
 ## Honesty tiers, named on the record
 
-Svika labels every feature by how real it is, in the README and in `docs/DISCLOSURE-REGISTER.md`. Tier 1 is real and working against the live database. Tier 2 is clickable with a fixed or simulated backend, always labelled on screen. Tier 3 lives in slides only and never in code. We never present a Tier 2 surface to a judge as if it were live. The three spines above are Tier 1: the detectors are real and their evaluations are real. Where they stand on generated history, Section 3 and the dataset statement say exactly what is real and what is simulated.
+Svika labels every feature by how real it is, in the README and in `docs/DISCLOSURE-REGISTER.md`, on the tier scale Section 4 defines. The three spines above are Tier 1: the detectors are real and their evaluations are real. Where they stand on generated history, Section 3 and the dataset statement say exactly what is real and what is simulated.

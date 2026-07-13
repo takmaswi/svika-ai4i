@@ -336,6 +336,18 @@ export function LiveMap({
   const [ready, setReady] = useState(false);
   const [wide, setWide] = useState(false);
 
+  // Cache the corridor's MapTiler tiles so the map loads fast on a cheap phone
+  // and repeat views do not burn the MapTiler quota. The worker only ever
+  // touches MapTiler requests; Supabase, app pages and everything else pass
+  // straight through (see public/sw.js). Registered here so it only loads on
+  // map bearing screens.
+  useEffect(() => {
+    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      // no cache is fine; the map still loads straight from MapTiler
+    });
+  }, []);
+
   useEffect(() => {
     const container = containerRef.current;
     const key = process.env.NEXT_PUBLIC_MAP_TILES_URL ?? "";

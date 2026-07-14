@@ -62,6 +62,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Two corridor rides recorded 7 July 2026 | `docs/DATASET-STATEMENT.md` |
 | Managed Postgres in eu-west-2, no African region offered | `docs/BUILD-LOG.md`, P0 |
 | Bootcamp Mutare 27 July to 1 August 2026 | project `CLAUDE.md` |
+| Live demo at svika-web.vercel.app, entered through the Enter the demo door with no sign up; phone sign in limited to registered test numbers during the pilot | Deployed web app (`apps/web` on Vercel), `docs/DEPLOY.md`; demo door per `docs/DISCLOSURE-REGISTER.md` |
 
 ## Section 4 (compliance, web verified external law)
 
@@ -81,6 +82,7 @@ If Mhofu has the two named files somewhere else, point me at them and I will rec
 | Map tiles are a licensed MapTiler display service, no third party datasets | `docs/DATASET-STATEMENT.md` |
 | City planning as a second beneficiary, a municipality or planning agency as a natural second customer for anonymised aggregate insight, on the Nairobi precedent | Digital Matatus (see Section 1 traceability row). Echoed from S1; framed as roadmap, not a billed line today |
 | CPU only models, no phone inference, offline conductor PWA as edge resilience, inference in country on ZCHPC | Section 2 and Section 3 model and offline descriptions; National AI Strategy Pillar 2 |
+| Overall winner, GDG Harare Build with AI Hackathon 2026, a Google Developer Groups community event themed on localisation, 4.93 out of 5 from an independent judging panel | Official results email, 11 May 2026. GDG Harare (Google Developer Groups) is a developer community, not Google the company; the framing says so, and the prize amount is deliberately omitted |
 
 ## Citation hygiene (final sweep)
 

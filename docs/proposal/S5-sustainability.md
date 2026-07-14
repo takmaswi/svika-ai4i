@@ -2,6 +2,8 @@
 
 *AI4I Challenge 2026, Track 3 Development. Draft for review. Page budget: 1 page. Rubric anchor: C4 business model and feasibility (20).*
 
+Svika was the overall winner of the GDG Harare Build with AI Hackathon 2026, a Google Developer Groups event themed on localisation, scoring 4.93 out of 5 from an independent judging panel.
+
 ## The business model: sell the record, not the ride
 
 Svika does not tax the rider to survive. The paying users are the owners and, through them, the network, because Svika produces something they cannot get today: a trustworthy record of what each kombi earns and carries.

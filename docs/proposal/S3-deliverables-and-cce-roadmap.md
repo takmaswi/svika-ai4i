@@ -17,7 +17,7 @@ Svika is not a concept. It is a working monorepo with a live database, passing t
 
 Discipline is visible in the history. Commits are small and conventional, the lockfile is committed, dependencies are pinned, and continuous integration runs typecheck, lint and test on every push. Current validation stands at 287 unit tests across the workspace, 56 full web end to end tests, and the 102 check security suite, all green, with the ledger invariants at 8 of 8 and the offline cycle at 34 of 34, all green in CI.
 
-Every claim above is committed and inspectable. The code, migrations, tests, metrics and full commit history live in the public repository at github.com/takmaswi/svika-ai4i.
+Every claim above is committed and inspectable. The code, migrations, tests, metrics and full commit history live in the public repository at github.com/takmaswi/svika-ai4i, and the product runs live at svika-web.vercel.app. A reviewer opens it through the Enter the demo button on the home page with no sign up, because phone sign in stays limited to registered test numbers during the pilot.
 
 ## Compute requirements
 

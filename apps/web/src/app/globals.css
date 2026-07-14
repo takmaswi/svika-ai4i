@@ -3005,6 +3005,14 @@ body:has(.home-screen) .demo-account-chip {
   margin-top: var(--space-4);
 }
 
+/* disclosure register: a quiet line to the public source, under the timestamp */
+.register-repo {
+  margin-top: var(--space-2);
+}
+.register-repo a {
+  color: var(--color-link);
+}
+
 /* landing footer: quiet links to the register and the privacy notice */
 .landing-foot {
   display: flex;

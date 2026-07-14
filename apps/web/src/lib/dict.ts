@@ -752,6 +752,7 @@ export const dict = {
   },
   "register.updated": { en: "Last updated", sn: "Yagadziridzwa" },
   "register.link": { en: "What is real, what is staged", sn: "Zvechokwadi, nezvakagadzirirwa" },
+  "repo.link": { en: "View the code", sn: "Ona kodhi" },
 
   "lang.english": { en: "English", sn: "Chirungu" },
   "lang.shona": { en: "Shona", sn: "Shona" },

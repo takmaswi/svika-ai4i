@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { HomeSheet } from "@/components/home/HomeSheet";
+import { REPO_URL } from "@/lib/site";
 import { EtaBasis } from "@/components/home/EtaBasis";
 import { StoryStage } from "@/components/story/StoryStage";
 import { etaBasisCard, etaBasisLabel } from "@/lib/eta-provenance";
@@ -578,6 +579,15 @@ export default async function RiderHome({
             <Link className="auth-link touch-target" href="/app/privacy">
               {t(lang, "privacy.yourDataLink")}
             </Link>
+            <a
+              className="auth-link touch-target"
+              href={REPO_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              data-testid="repo-link"
+            >
+              {t(lang, "repo.link")}
+            </a>
             <SignOutButton label={t(lang, "app.signOut")} />
           </footer>
         </HomeSheet>

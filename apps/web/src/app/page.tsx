@@ -3,6 +3,7 @@ import { getLang, t } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { LiveMapLazy } from "@/components/map/LiveMapLazy";
 import { ArrowIcon } from "@/components/icons";
+import { REPO_URL } from "@/lib/site";
 
 // The landing (reference screen 1): the Kombi highlight headline, the live
 // map in a drawn card as the pitch, the change story as stat cards, one
@@ -234,6 +235,15 @@ export default async function LandingPage({
         </Link>
         <span aria-hidden>·</span>
         <Link href="/privacy">{t(lang, "privacy.title")}</Link>
+        <span aria-hidden>·</span>
+        <a
+          href={REPO_URL}
+          target="_blank"
+          rel="noreferrer noopener"
+          data-testid="repo-link"
+        >
+          {t(lang, "repo.link")}
+        </a>
       </footer>
     </main>
   );

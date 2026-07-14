@@ -7,6 +7,7 @@ import {
   DISCLOSURE_UPDATED,
   type DisclosureTier,
 } from "@/lib/disclosure";
+import { REPO_URL } from "@/lib/site";
 
 // The disclosure register on screen: what is real and what is staged, feature
 // by feature, for a judge to open before or during the demo. Public, readable
@@ -61,6 +62,17 @@ export default async function RegisterPage() {
         <p className="svika-meta register-updated">
           {t(lang, "register.updated")}:{" "}
           <span className="svika-mono-code">{DISCLOSURE_UPDATED}</span>
+        </p>
+
+        <p className="svika-meta register-repo">
+          <a
+            href={REPO_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            data-testid="repo-link"
+          >
+            {t(lang, "repo.link")}
+          </a>
         </p>
       </section>
     </main>

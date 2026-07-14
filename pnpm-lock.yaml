@@ -17,6 +17,9 @@ importers:
       globals:
         specifier: 15.14.0
         version: 15.14.0
+      next:
+        specifier: 15.1.12
+        version: 15.1.12(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       prettier:
         specifier: 3.4.2
         version: 3.4.2

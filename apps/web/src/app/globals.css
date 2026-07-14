@@ -2313,6 +2313,15 @@ body:has(.home-screen) .demo-account-chip {
   justify-content: flex-start;
   padding-bottom: var(--space-8);
 }
+/* Sign out: its own card in the Settings group so the demo can be re-entered
+   without hunting the home sheet. Same understated link as the sheet footer,
+   full width so the tap target reads as a clear row. */
+.profile-signout {
+  padding: var(--space-1) var(--space-3);
+}
+.profile-signout .auth-link {
+  width: 100%;
+}
 /* No checkbox exists in the references (flagged spec gap): a native box
    tinted with the day CTA colour, char track by night via the token. */
 .consent-check {
@@ -2555,11 +2564,24 @@ body:has(.home-screen) .demo-account-chip {
   flex-direction: column;
   gap: var(--space-4);
 }
+/* The title doubles as a toggle beside the grabber: a bare, full-width
+   button so the h1 keeps its own type. */
+.home-sheet-titletoggle {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
 .home-sheet-title {
   margin: 0;
 }
 .home-sheet-hint {
-  margin: calc(-1 * var(--space-3)) 0 0;
+  margin: 2px 0 0;
   color: var(--color-ink-soft);
 }
 .home-sheet-more {
@@ -2685,6 +2707,22 @@ body:has(.home-screen) .demo-account-chip {
 @media (prefers-reduced-motion: reduce) {
   .home-sheet {
     transition: none;
+  }
+}
+
+/* Short viewports (the reference cheap Android is 360x740 and real ones lose
+   height to browser chrome): fold the home peek to a compact bar so the live
+   map stays the hero. The title drops out; search and route/arrival/fare stay.
+   The peek is sized to seat the stats card above the 62px floating nav even
+   when the Shona arrival wraps to two lines (measured: content clears the nav
+   with room to spare). The grabber still toggles, and open state is untouched.
+   Scoped off the plan and share sheets, which carry their title in the peek. */
+@media (max-height: 760px) {
+  .home-sheet:not(.plan-sheet) {
+    --sheet-peek: 348px;
+  }
+  .home-sheet:not(.home-sheet-open) .home-sheet-titletoggle {
+    display: none;
   }
 }
 
@@ -2910,6 +2948,10 @@ body:has(.home-screen) .demo-account-chip {
 /* the park panel is light in both themes, so its caption stays char ink */
 .register-legend .svika-meta {
   color: var(--color-char);
+  /* the longer Shona tier notes must wrap inside the flex row, not push the
+     page 11px wide at 360 (measured on the sn register) */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 /* tier chip: forest means real and live, marigold means staged (the demo
    grammar §7). Char text on marigold, paper text on forest. */

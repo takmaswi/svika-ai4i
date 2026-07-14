@@ -4,7 +4,7 @@ Open questions and numbers that need your eyes. None of them block the build.
 Work continues on documented assumptions; you review this list when phase 1
 is done. Each item says what was assumed and what changes if you disagree.
 
-Last updated: 2026-07-10.
+Last updated: 2026-07-14.
 
 ## 1. Watchdog simulator numbers (task 5)
 
@@ -80,3 +80,23 @@ erasing. Implemented design, built on your go but check the shape:
 
 If you want the login removed in the same action, that needs a service tier
 job; flag it and it gets designed.
+
+## 8. Home top bar language toggle clips at 360 (found 2026-07-14, pre-existing)
+
+On the rider home map, the top bar packs the wordmark, theme toggle, the full
+language toggle (EN / SN / ND) and the profile chip into one 360 wide row. The
+ND option's "coming soon" (Shona "zvichauya") badge runs off the right edge and
+is clipped. EN and SN stay fully visible and tappable, so switching language in
+the demo works; only the disabled ND hint is cut. Left as is for now because
+the toggle is a shared component (landing and home) and reflowing the home top
+bar risks the landing. Flag it and it gets a compact home variant.
+
+## 9. E2E viewport is not the reference device (found 2026-07-14, pre-existing)
+
+`apps/web/playwright.config.ts` sets `viewport: 360x740` (the cheap Android)
+at the top level, but the chromium project spreads `devices["Desktop Chrome"]`,
+whose 1280x720 viewport wins. So the suite has been running desktop width, not
+the reference phone. The new mobile QA spec pins 360x740 on its own block so its
+proofs are honest. Fixing it globally would put every existing spec on 360 wide
+at once, which may surface unrelated layout failures, so that call is left to
+you: say the word and the project override gets the reference viewport back.

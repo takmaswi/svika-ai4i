@@ -19,6 +19,7 @@ import { PrefToggle } from "@/components/profile/PrefToggle";
 import { InitialAvatar } from "@/components/profile/InitialAvatar";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SignOutButton } from "@/components/SignOutButton";
 
 interface SavedTripRow {
   id: string;
@@ -441,6 +442,13 @@ export default async function ProfilePage({
             </p>
           )}
           {errKey && <p className="auth-error svika-body">{t(lang, errKey)}</p>}
+        </section>
+
+        <section
+          className="svika-card wallet-panel profile-signout"
+          data-testid="profile-signout"
+        >
+          <SignOutButton label={t(lang, "app.signOut")} />
         </section>
 
         <footer className="home-sheet-footer profile-footer">

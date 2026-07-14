@@ -388,13 +388,11 @@ export default async function RiderHome({
         <HomeSheet
           openLabel={t(lang, "home.sheetOpen")}
           closeLabel={t(lang, "home.sheetClose")}
+          title={t(lang, "rider.searchTitle")}
+          hint={t(lang, "home.sheetHint")}
           defaultOpen={justBooked || sheetOpen}
           peek={
             <>
-              <h1 className="svika-title home-sheet-title">
-                {t(lang, "rider.searchTitle")}
-              </h1>
-              <p className="svika-meta home-sheet-hint">{t(lang, "home.sheetHint")}</p>
               <form className="home-search" action="/app/plan" method="get">
                 <input
                   id="from"

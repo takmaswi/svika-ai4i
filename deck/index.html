@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/deck.css">
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
 </head>
-<body class="theme-night">
+<body>
 
 <div id="kombi-layer" aria-hidden="true">
   <img id="kombi-fallback" alt="" src="">
@@ -163,7 +163,7 @@
           <path d="M80 400 C 160 360, 180 280, 280 240 C 380 200, 420 160, 470 100" fill="none" stroke="#161D18" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 11" opacity="0.85" mask="url(#s5-route-mask)"></path>
           <circle cx="80" cy="400" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3"></circle>
           <circle id="s5-arrive-pin" cx="470" cy="100" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3" opacity="0"></circle>
-          <g id="s5-kombi-dot"><rect x="-15" y="-15" width="30" height="30" rx="10" fill="#F5B301" stroke="#161D18" stroke-width="2.5"></rect></g>
+          <g id="s5-kombi-dot"><rect x="-15" y="-15" width="30" height="30" rx="10" fill="#F5B301" stroke="#161D18" stroke-width="2.5"></rect><g transform="translate(-9.6,-10) scale(0.8)"><path fill="#161D18" fill-rule="evenodd" d="M2.4 15V9.6C2.4 8.4 3.2 7.5 4.4 7.3H15.4C16.8 7.3 18.1 7.9 19 8.9L20.9 10.9C21.4 11.4 21.7 12.1 21.7 12.8V15C21.7 15.6 21.3 16 20.7 16H3.4C2.8 16 2.4 15.6 2.4 15ZM4.8 9.1C4.4 9.1 4.2 9.4 4.2 9.7V11.6C4.2 12 4.5 12.2 4.8 12.2H13.3C13.7 12.2 13.9 12 13.9 11.6V9.7C13.9 9.4 13.7 9.1 13.3 9.1ZM15.7 9.2V11.6C15.7 12 15.9 12.2 16.3 12.2H19.9C20.3 12.2 20.5 11.8 20.2 11.5L18.8 10C18.1 9.3 17.2 9.2 16.3 9.2Z"></path><circle cx="7" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="17" cy="16.4" r="2.5" fill="#161D18"></circle><circle cx="7" cy="16.4" r="1" fill="#F5B301"></circle><circle cx="17" cy="16.4" r="1" fill="#F5B301"></circle></g></g>
         </svg>
         <div class="card-dark-feature notify-card" id="s5-notify" style="opacity:0">
           <p class="beat-label" style="color:rgba(255,255,255,.5)">Rudo's trip</p>
@@ -215,7 +215,7 @@
       </div>
       <div class="horizon-line" id="s7-horizon" style="opacity:0">
         <span class="stamp stamp-vision"><span class="stamp-dot"></span>Vision</span>
-        <p class="scene-body" style="margin:10px 0 0">A code bought in London, boarded in Chitungwiza. Real money movement waits for the licensed rails, and the register says so.</p>
+        <p class="scene-body" style="margin:10px 0 0">A code bought in London, boarded in Chitungwiza. Real money movement waits for the licensed rails, so this beat stays a slide, not a build.</p>
       </div>
     </div>
   </section>
@@ -229,20 +229,23 @@
       <p class="scene-body">An office park signs a charter. One kombi, one contract, thirty people at their desks by seven. The fare data being collected now is what prices it later.</p>
       <p class="scene-body" id="s8-caveat" style="opacity:0;font-size:clamp(13px,1.1vw,16px)">Honest line: permits, insurance class and the association agreement come first.</p>
     </div>
-    <svg id="s8-dawn" viewBox="0 0 1600 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;width:100%;height:38vh">
-      <circle id="s8-sun" cx="1180" cy="330" r="90" fill="#F5B301"></circle>
+    <svg id="s8-dawn" viewBox="0 0 1600 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;width:100%;height:32vh">
+      <circle id="s8-sun" cx="840" cy="430" r="90" fill="#F5B301"></circle>
       <g fill="#161D18" opacity="0.92">
-        <rect x="180" y="150" width="150" height="210"></rect><rect x="360" y="90" width="120" height="270"></rect><rect x="510" y="190" width="170" height="170"></rect><rect x="920" y="120" width="140" height="240"></rect><rect x="1090" y="200" width="180" height="160"></rect><rect x="1310" y="140" width="120" height="220"></rect>
+        <rect x="140" y="212" width="150" height="140"></rect><rect x="340" y="152" width="120" height="200"></rect><rect x="560" y="232" width="170" height="120"></rect><rect x="950" y="172" width="140" height="180"></rect><rect x="1140" y="222" width="180" height="130"></rect><rect x="1360" y="192" width="120" height="160"></rect>
       </g>
       <rect x="0" y="352" width="1600" height="8" fill="#161D18"></rect>
-      <g id="s8-kombi" transform="translate(-260,268)">
+      <!-- The base translate never animates; gsap only ever touches the
+           bare inner groups, since attribute transforms and gsap x/y do not
+           mix reliably on SVG. -->
+      <g transform="translate(0,268)"><g id="s8-kombi">
         <g transform="scale(1.15)">
           <path d="M6 62 L6 20 Q6 5 22 5 L130 5 Q145 5 154 14 L186 40 Q200 48 200 56 L200 62 Z" fill="#F5B301"></path>
           <path d="M156 14 L161 14 Q167 15 171 20 L182 33 L156 33 Q153 33 153 27 L153 17 Q153 14 156 14 Z" fill="#161D18" opacity="0.8"></path>
           <circle cx="35" cy="66" r="11" fill="#161D18" stroke="#FFFFFF" stroke-width="3"></circle>
           <circle cx="162" cy="66" r="11" fill="#161D18" stroke="#FFFFFF" stroke-width="3"></circle>
         </g>
-      </g>
+      </g></g>
     </svg>
   </section>
 
@@ -275,16 +278,18 @@
 
   <!-- 10 · Close -->
   <section class="scene" id="s10-close" data-theme="day" data-auto-hold="6000">
-    <div class="scene-center" style="gap:26px">
+    <div class="scene-center close-layout">
       <h1 class="scene-title" id="s10-thesis" style="text-align:center">The future of the<br>kombi is already boarding.</h1>
-      <p class="scene-body" id="s10-gdg" style="text-align:center;opacity:0">Overall winner, GDG Harare Build with AI Hackathon 2026. Built in Harare.</p>
-      <div class="qr-block" id="s10-qr" style="opacity:0">
-        <img src="assets/qr-live-app.svg" alt="QR code to the live Svika app" width="132" height="132">
-        <div>
-          <p class="beat-label">Ride it today</p>
-          <p class="mono" style="font-size:17px;margin:4px 0 0">svika-web.vercel.app</p>
-          <span class="stamp stamp-real" style="margin-top:10px"><span class="stamp-dot"></span>Real today</span>
+      <div class="close-foot">
+        <div class="qr-block" id="s10-qr" style="opacity:0">
+          <img src="assets/qr-live-app.svg" alt="QR code to the live Svika app" width="132" height="132">
+          <div>
+            <p class="beat-label">Ride it today</p>
+            <p class="mono" style="font-size:17px;margin:4px 0 0">svika-web.vercel.app</p>
+            <span class="stamp stamp-real" style="margin-top:10px"><span class="stamp-dot"></span>Real today</span>
+          </div>
         </div>
+        <p class="scene-body" id="s10-gdg" style="text-align:center;opacity:0;font-size:clamp(13px,1.1vw,16px);margin:0">Overall winner, GDG Harare Build with AI Hackathon 2026. Built in Harare.</p>
       </div>
     </div>
   </section>

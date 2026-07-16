@@ -189,14 +189,14 @@ export async function initKombi({ forceFallback = false, reduced = false } = {})
     // Scene entrance: the kombi arrives, it does not appear. The model's
     // nose sits at rotation.y = PI - 0.62 three quarter; offsets are baked
     // into the defaults so scenes speak in story terms.
-    entrance({ duration = 2.2, from = Math.PI - 2.6, to = Math.PI - 0.62 } = {}) {
+    entrance({ duration = 2.2, from = Math.PI - 2.6, to = Math.PI - 0.62, scale = 1 } = {}) {
       group.rotation.y = from;
       group.position.x = 1.6;
-      group.scale.setScalar(0.86);
+      group.scale.setScalar(scale * 0.86);
       return gsap.timeline()
         .to(group.rotation, { y: to, duration, ease: "power3.out" }, 0)
         .to(group.position, { x: 0, duration, ease: "power3.out" }, 0)
-        .to(group.scale, { x: 1, y: 1, z: 1, duration, ease: "power3.out" }, 0);
+        .to(group.scale, { x: scale, y: scale, z: scale, duration, ease: "power3.out" }, 0);
     },
     spin(delta, duration = 1.4) {
       return gsap.to(group.rotation, { y: group.rotation.y + delta, duration, ease: "power2.inOut" });

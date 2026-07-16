@@ -13,6 +13,11 @@
     params.has("reduced");
   const NO_WEBGL = params.has("nowebgl");
 
+  // ?nolag: exact-time tweens for automated capture rigs running on software
+  // WebGL, where lag smoothing would stretch every entrance. Never needed on
+  // a real GPU.
+  if (params.has("nolag")) gsap.ticker.lagSmoothing(0);
+
   // Beat hold in auto mode, per scene overridable via data-auto-hold (ms).
   const AUTO_HOLD_DEFAULT = 3600;
 

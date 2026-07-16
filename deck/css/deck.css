@@ -66,7 +66,9 @@ body.theme-day { background: var(--paper); color: var(--char); }
 .display { font-family: "DM Sans", sans-serif; font-weight: 700; letter-spacing: -0.025em; }
 
 /* ---------- Deck frame ---------- */
-#deck { position: fixed; inset: 0; }
+/* Fixed elements form their own stacking contexts in Chromium, so the deck
+   must outrank the kombi layer here, not per scene. */
+#deck { position: fixed; inset: 0; z-index: 10; }
 
 .scene {
   position: absolute;
@@ -399,13 +401,22 @@ body.theme-day { background: var(--paper); color: var(--char); }
 
 /* Scene one: the wordmark lands in the lower third, under the kombi */
 #s1-cold-open .scene-center { justify-content: flex-end; padding-bottom: 13vh; }
-/* Scene ten: keep the close content clear of the kombi's ground line */
-#s10-close .scene-center { justify-content: flex-end; padding-bottom: 9vh; }
+/* Scene ten: title up top, QR foot below the kombi's ground line */
+.close-layout { justify-content: space-between; padding-top: clamp(20px, 5vh, 64px); padding-bottom: 52px; }
+.close-foot { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+
+/* Scene eight: the copy block stays clear of the dawn skyline and the HUD */
+#s8-kombis-employed .stack { padding-top: 70px; padding-bottom: 28vh; }
+/* Scene seven runs tall: keep every beat on screen */
+#s7-send-a-ride .stack { gap: clamp(12px, 2vh, 22px); }
 
 /* Small stages: 1366x768 projector safety */
 @media (max-height: 800px) {
   .scene-title { font-size: clamp(38px, 6.4vw, 84px); }
-  .phone-frame { height: clamp(260px, 38vh, 330px); }
+  .phone-frame { height: clamp(230px, 34vh, 300px); }
+  #s7-send-a-ride .scene-title { font-size: clamp(32px, 5vw, 62px); }
+  #s8-kombis-employed .scene-title { font-size: clamp(34px, 5.4vw, 70px); }
+  .ticket-code { font-size: 24px; }
 }
 
 /* Reduced motion: the engine also collapses timelines; this kills CSS loops */

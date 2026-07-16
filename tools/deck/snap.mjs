@@ -18,7 +18,8 @@ function opt(name, dflt) {
 const QUERY = opt("query", "");
 const OUTDIR = opt("outdir", "shots");
 const LABEL = opt("label", "beat");
-const VIEW = opt("viewport", "1920x1080").split("x").map(Number);
+// 720p default: SwiftShader software WebGL cannot hold 1080p screenshots.
+const VIEW = opt("viewport", "1280x720").split("x").map(Number);
 
 // Beats per scene, engine order. Advancing past the last beat changes scene.
 const BEATS = { 1: 3, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
@@ -43,6 +44,7 @@ for (let scene = 1; scene <= 10; scene++) {
     shot++;
     await page.screenshot({
       path: join(OUTDIR, `${LABEL}-s${String(scene).padStart(2, "0")}-b${beat}.png`),
+      timeout: 60000,
     });
     console.log(`s${scene} b${beat} captured`);
   }

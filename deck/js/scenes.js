@@ -286,7 +286,9 @@
             .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body")], { stagger: 0.12 }), 0)
             .fromTo("#s8-sun", { attr: { cy: 430 } }, { attr: { cy: 250 }, duration: ctx.d(2.4), ease: "power1.out" }, 0)
             .fromTo("#s8-dawn", { opacity: 0 }, { opacity: 1, duration: ctx.d(0.8) }, 0)
-            .to("#s8-kombi", { x: 900, duration: ctx.d(2.6), ease: "power2.out" }, ctx.d(0.4));
+            // The kombi parks left of the sun gap; both are marigold and
+            // must never overlap.
+            .fromTo("#s8-kombi", { x: -260 }, { x: 430, duration: ctx.d(2.6), ease: "power2.out" }, ctx.d(0.4));
           if (!ctx.REDUCED) {
             ctx.track(gsap.to("#s8-kombi", { y: -3, duration: 1.2, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 3 }));
           }
@@ -327,7 +329,7 @@
           if (ctx.kombi) {
             ctx.kombi.show({ theme: "day", color: "marigold" });
             if (ctx.kombi.mode === "webgl") {
-              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.0), from: Math.PI + 2.4, to: Math.PI + 0.62 }), 0);
+              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.0), from: Math.PI + 1.36, to: Math.PI - 0.62, scale: 0.82 }), 0);
               tl.call(() => ctx.kombi.setFloat(true), null, ctx.d(2.0));
             }
           }

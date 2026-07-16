@@ -86,7 +86,9 @@
     el("text", { x: 1330, y: 300, fill: "#6F8F74" }, labels).textContent = "Harare Gardens";
 
     // Journey traces in three waves for the scrub beats.
-    const waveSizes = [7, 10, 14];
+    // Quiet enough that the headline always wins; the accumulation reads in
+    // the aggregate, not in any single line.
+    const waveSizes = [5, 8, 12];
     const waves = waveSizes.map((count) => {
       const g = el("g", {}, svg);
       const paths = [];
@@ -95,9 +97,9 @@
           d: tracePath(rnd),
           fill: "none",
           stroke: "#FFFFFF",
-          "stroke-width": 3.5,
+          "stroke-width": 2.5,
           "stroke-linecap": "round",
-          opacity: (0.22 + rnd() * 0.3).toFixed(2),
+          opacity: (0.13 + rnd() * 0.2).toFixed(2),
         }, g);
         paths.push(p);
       }

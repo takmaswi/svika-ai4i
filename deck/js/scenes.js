@@ -276,5 +276,25 @@
     };
   };
 
+  /* ---------- 8 · Kombis, employed ---------- */
+  B["s8-kombis-employed"] = function (el, ctx) {
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body")], { stagger: 0.12 }), 0)
+            .fromTo("#s8-sun", { attr: { cy: 430 } }, { attr: { cy: 250 }, duration: ctx.d(2.4), ease: "power1.out" }, 0)
+            .fromTo("#s8-dawn", { opacity: 0 }, { opacity: 1, duration: ctx.d(0.8) }, 0)
+            .to("#s8-kombi", { x: 900, duration: ctx.d(2.6), ease: "power2.out" }, ctx.d(0.4));
+          if (!ctx.REDUCED) {
+            ctx.track(gsap.to("#s8-kombi", { y: -3, duration: 1.2, yoyo: true, repeat: -1, ease: "sine.inOut", delay: 3 }));
+          }
+        },
+        () => { ctx.track(gsap.to("#s8-caveat", { opacity: 1, duration: ctx.d(0.7) })); },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

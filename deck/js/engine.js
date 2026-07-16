@@ -43,16 +43,80 @@
   let leaveFn = null;
   let autoTimer = null;
   let sceneTweens = [];
+  let beatTweens = []; // tweens started by the most recent beat only
+  let sfxCalls = []; // pending delayed sound cues, cancellable on settle
+  let lastNavAt = 0; // input debounce clock
 
   // Track tweens per scene so leaving a scene never leaks infinite loops.
+  // Finite tweens are also tracked per beat so a press during a running
+  // entrance completes it instead of silently firing the next beat.
+  // Guard against undefined: the fallback kombi api's spin/entrance return
+  // nothing, and scenes hand their result straight to track.
   ctx.track = function track(t) {
-    sceneTweens.push(t);
+    if (t) {
+      sceneTweens.push(t);
+      beatTweens.push(t);
+    }
     return t;
   };
+
+  function runBeat(fn) {
+    beatTweens = [];
+    sfxCalls = [];
+    fn();
+  }
+
+  // Delayed sound cue inside a beat. Settling or leaving cancels pending
+  // cues instead of firing them, so a fast press never machine-guns audio.
+  ctx.sfx = function sfx(name, delay = 0) {
+    if (REDUCED || !window.SVK_AUDIO) return;
+    if (delay <= 0) {
+      window.SVK_AUDIO.sfx(name);
+      return;
+    }
+    sfxCalls.push(gsap.delayedCall(delay, () => window.SVK_AUDIO.sfx(name)));
+  };
+
+  function killPendingSfx() {
+    sfxCalls.forEach((c) => c.kill());
+    sfxCalls = [];
+  }
+
+  // Endless ambience (caret blink, kombi bob) is never part of a beat's
+  // payload; only finite tweens count as "the beat still running".
+  function isEndless(t) {
+    return (t.repeat && t.repeat() === -1) || t.totalDuration() === Infinity;
+  }
+
+  // A press while the current beat is still animating fast-forwards it to
+  // its end state. Every press then has a visible result: first press lands
+  // the beat, next press moves on. totalProgress (not isActive) catches
+  // tweens still waiting out a delay, which isActive reports as idle.
+  function beatActive() {
+    return beatTweens.some((t) => !isEndless(t) && t.totalProgress() < 1);
+  }
+
+  function settleRunningBeat() {
+    let settled = false;
+    killPendingSfx(); // future sound cues die silently, they do not stack
+    // Index loop, not forEach: settling can fire onComplete chains that
+    // track new tweens mid-walk, and those must settle in the same press.
+    for (let i = 0; i < beatTweens.length; i++) {
+      const t = beatTweens[i];
+      if (isEndless(t)) continue;
+      if (t.totalProgress() < 1) {
+        t.totalProgress(1);
+        settled = true;
+      }
+    }
+    return settled;
+  }
 
   function killSceneAnimations() {
     sceneTweens.forEach((t) => t.kill());
     sceneTweens = [];
+    beatTweens = []; // never let a dead scene's tweens read as a running beat
+    killPendingSfx();
   }
 
   function setTheme(theme) {
@@ -71,7 +135,17 @@
     if (!AUTO) return;
     clearTimeout(autoTimer);
     const hold = Number(sceneEls[current].dataset.autoHold || AUTO_HOLD_DEFAULT);
-    autoTimer = setTimeout(() => advance(), REDUCED ? Math.min(hold, 2200) : hold);
+    autoTimer = setTimeout(() => {
+      const audio = window.SVK_AUDIO;
+      // With narration on, a scene holds until its voice line finishes or
+      // the hold elapses, whichever is longer; beats inside a scene still
+      // ride the hold alone.
+      if (!beatQueue.length && audio && audio.narrationActive()) {
+        audio.onceNarrationEnd(() => advance());
+      } else {
+        advance();
+      }
+    }, REDUCED ? Math.min(hold, 2200) : hold);
   }
 
   function go(index, viaHash) {
@@ -98,63 +172,99 @@
         // Scenes settle instantly: run every beat now, end state on screen.
         beats.forEach((fn) => fn());
       } else {
-        if (beats.length) beats[0]();
+        if (beats.length) runBeat(beats[0]);
         beatQueue = beats.slice(1);
       }
     }
 
     if (!viaHash) history.replaceState(null, "", "#" + el.id);
+    if (window.SVK_AUDIO) window.SVK_AUDIO.onScene(current);
     renderRail();
     scheduleAuto();
   }
 
+  // Debounce shared by advance and back: key auto-repeat and the ghost of a
+  // tap arriving as both pointer and click can otherwise fire twice.
+  function navReady() {
+    const now = performance.now();
+    if (now - lastNavAt < 220) return false;
+    lastNavAt = now;
+    return true;
+  }
+
   function advance() {
     if (beatQueue.length) {
-      beatQueue.shift()();
+      runBeat(beatQueue.shift());
       scheduleAuto();
     } else {
       go(current + 1);
     }
   }
 
-  function back() {
+  // User input path only: the debounce and settle-then-step never apply to
+  // the auto timer, or a press just before it fires would stall the loop.
+  function userAdvance() {
+    if (!navReady()) return;
+    if (!AUTO && settleRunningBeat()) return;
+    advance();
+  }
+
+  function userBack() {
+    if (!navReady()) return;
     go(current - 1);
+  }
+
+  // ---------- Narration toggle (N) ----------
+  const hudAudio = document.getElementById("hud-audio");
+  function renderAudioHud() {
+    if (!hudAudio) return;
+    if (REDUCED || !window.SVK_AUDIO) { hudAudio.textContent = ""; return; }
+    hudAudio.textContent = "n narration " + (window.SVK_AUDIO.narrationOn ? "on" : "off");
   }
 
   // ---------- Input ----------
   document.addEventListener("keydown", (e) => {
+    if (e.repeat) return; // holding a key must not machine-gun the deck
     if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown" || e.key === "Enter") {
+      // preventDefault also stops a focused button from re-firing its click
+      // on Space/Enter, which used to advance twice in one press.
       e.preventDefault();
-      advance();
+      userAdvance();
     } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
       e.preventDefault();
-      back();
+      userBack();
     } else if (e.key === "Home") {
       go(0);
     } else if (e.key === "End") {
       go(sceneEls.length - 1);
     } else if (e.key === "f" || e.key === "F") {
       toggleFullscreen();
+    } else if ((e.key === "n" || e.key === "N") && window.SVK_AUDIO && !REDUCED) {
+      window.SVK_AUDIO.toggleNarration();
+      renderAudioHud();
     }
   });
 
   document.getElementById("deck").addEventListener("click", (e) => {
     if (e.target.closest("#rail, #btn-full, a")) return;
-    advance();
+    userAdvance();
   });
 
   function toggleFullscreen() {
     if (document.fullscreenElement) document.exitFullscreen();
     else document.documentElement.requestFullscreen();
   }
-  document.getElementById("btn-full").addEventListener("click", toggleFullscreen);
+  document.getElementById("btn-full").addEventListener("click", (e) => {
+    e.currentTarget.blur(); // a focused button would swallow the next Space
+    toggleFullscreen();
+  });
 
   // ---------- Rail ----------
   sceneEls.forEach((el, i) => {
     const b = document.createElement("button");
     b.type = "button";
     b.setAttribute("aria-label", "Scene " + (i + 1));
-    b.addEventListener("click", () => go(i));
+    b.addEventListener("click", () => { b.blur(); go(i); });
     rail.appendChild(b);
   });
 
@@ -169,9 +279,18 @@
   });
 
   // ---------- Boot ----------
-  window.SVK_ENGINE = { go, advance, back, ctx, get current() { return current; } };
+  window.SVK_ENGINE = {
+    go,
+    advance: userAdvance,
+    back: userBack,
+    ctx,
+    beatActive,
+    get current() { return current; },
+  };
 
   function start() {
+    if (window.SVK_AUDIO) window.SVK_AUDIO.preload();
+    renderAudioHud();
     const fromHash = sceneEls.findIndex((el) => "#" + el.id === location.hash);
     go(fromHash >= 0 ? fromHash : 0, true);
   }

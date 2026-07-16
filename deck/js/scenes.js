@@ -41,6 +41,12 @@
       ease: "power4.out",
       stagger: ctx.d(0.055),
       delay: ctx.d(delay),
+      // Once the reveal lands, hand the title back to natural text: no
+      // wrappers left to clip a descender on the settled frame.
+      onComplete: () => {
+        split.revert();
+        SPLITS.delete(el);
+      },
     });
   }
 
@@ -76,6 +82,10 @@
     return {
       beats: [
         () => {
+          // Sound: the route draws, then its two stops land.
+          ctx.sfx("draw", 0.2);
+          ctx.sfx("stop-pop", 0.5);
+          ctx.sfx("stop-pop", 1.75);
           const tl = ctx.track(gsap.timeline());
           gsap.set(wordmark, { opacity: 0, y: 18 });
           gsap.set("#s1-route-sky", { opacity: 1 });
@@ -120,6 +130,7 @@
     return {
       beats: [
         () => {
+          ctx.sfx("draw", 0.6);
           const tl = ctx.track(gsap.timeline());
           // A slow camera settle gives the flat map one breath of depth.
           tl.fromTo("#s2-map", { scale: 1.03, transformOrigin: "62% 38%" }, { scale: 1, duration: ctx.d(3.4), ease: "power1.out" }, 0)
@@ -130,6 +141,7 @@
         },
         () => {
           // The long lonely walk, drawn slowly on purpose, someone on it.
+          ctx.sfx("draw");
           const tl = ctx.track(gsap.timeline());
           tl.add(drawMask(ctx, "#s2-walk-reveal", 2.4))
             .set("#s2-walker", { opacity: 1 }, ctx.d(0.05))
@@ -154,6 +166,7 @@
     gsap.set(cards, { opacity: 0, y: 34, rotation: (i) => TILT[i] * 3 });
     function popCard(i) {
       return () => {
+        ctx.sfx("card-deal");
         const tl = ctx.track(gsap.timeline());
         tl.to(cards[i], { opacity: 1, y: 0, rotation: TILT[i], duration: ctx.d(0.65), ease: "back.out(1.4)" });
         if (i === 2) {
@@ -192,6 +205,7 @@
           tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
             .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body"), el.querySelector("#s4-search")], { stagger: 0.12 }), 0);
           if (!ctx.REDUCED) ctx.track(gsap.to(caret, { opacity: 0, duration: 0.5, yoyo: true, repeat: -1, ease: "steps(1)" }));
+          ctx.sfx("type-tick", 0.5);
           const text = "Westgate turn off";
           const chars = { n: 0 };
           tl.to(chars, {
@@ -215,6 +229,7 @@
     return {
       beats: [
         () => {
+          ctx.sfx("draw", 0.5);
           const tl = ctx.track(gsap.timeline());
           tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
             .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body"), el.querySelector("#s5-map")], { stagger: 0.12 }), 0)
@@ -226,6 +241,8 @@
           }, ctx.d(0.7));
         },
         () => {
+          // It is literally a notification.
+          ctx.sfx("chime", 0.4);
           const tl = ctx.track(gsap.timeline());
           tl.to("#s5-arrive-pin", { opacity: 1, duration: ctx.d(0.35) })
             .fromTo("#s5-notify", { opacity: 0, y: 18, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: ctx.d(0.6), ease: "back.out(1.5)" })
@@ -268,6 +285,7 @@
     }
 
     function wave(i, counts) {
+      ctx.sfx("odometer", 1.0); // the counters click over as they land
       const tl = ctx.track(gsap.timeline());
       art.waves[i].forEach((p, j) => {
         tl.add(drawPath(ctx, p, 1.4), ctx.d(j * 0.12));
@@ -319,6 +337,7 @@
         },
         () => {
           // Flip carries the real ticket node from one phone to the other.
+          ctx.sfx("swoosh", 0.1);
           const state = Flip.getState(ticket);
           landing.appendChild(ticket);
           ticket.style.margin = "0";
@@ -381,6 +400,7 @@
     return {
       beats: [
         () => {
+          ctx.sfx("swell");
           const tl = ctx.track(gsap.timeline());
           if (ctx.kombi) {
             ctx.kombi.show({ theme: "day", color: "marigold" });

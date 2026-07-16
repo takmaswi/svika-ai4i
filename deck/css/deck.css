@@ -74,7 +74,9 @@ body.theme-day { background: var(--paper); color: var(--char); }
   position: absolute;
   inset: 0;
   display: none;
-  padding: clamp(28px, 5vh, 64px) clamp(28px, 6vw, 96px);
+  /* The bottom edge is a reserved lane: rail, counter and hint live there,
+     so scene content gets a deeper bottom pad and never sits under them. */
+  padding: clamp(28px, 5vh, 64px) clamp(28px, 6vw, 96px) clamp(76px, 10vh, 116px);
 }
 .scene.is-active { display: block; }
 
@@ -215,6 +217,19 @@ body.theme-day { background: var(--paper); color: var(--char); }
   z-index: 90;
 }
 .theme-day #hud-hint { color: rgba(22, 29, 24, .35); }
+/* Narration state, same quiet mono voice as the hint, one line above it */
+#hud-audio {
+  position: fixed;
+  bottom: 40px;
+  left: clamp(20px, 3vw, 44px);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: .6px;
+  color: rgba(255, 255, 255, .35);
+  z-index: 90;
+}
+.theme-day #hud-audio { color: rgba(22, 29, 24, .35); }
 #btn-full {
   position: fixed;
   top: 20px;
@@ -275,8 +290,15 @@ body.theme-day { background: var(--paper); color: var(--char); }
 /* Ghost numerals are prepended, so every later (positioned) sibling paints
    above them by DOM order; no z-index juggling needed. */
 
-/* Masked line reveals: each split line clips its own words as they rise. */
-.line-mask { overflow: hidden !important; }
+/* Masked line reveals: each split line clips its own words as they rise.
+   The pad/negative-margin pair gives descenders (g, y, p) room inside the
+   clip without changing the visual line spacing; the tight 1.02 title
+   line-height was otherwise slicing them off. */
+.line-mask {
+  overflow: hidden !important;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
 
 /* ---------- 3D layer ---------- */
 #kombi-layer {
@@ -346,6 +368,9 @@ body.theme-day { background: var(--paper); color: var(--char); }
   position: absolute;
   inset: 0;
   padding: inherit;
+  /* Tall stacks push their kicker toward the top edge; keep it clear of the
+     fullscreen button (bottom edge ~68px). */
+  padding-top: clamp(76px, 9vh, 96px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -400,7 +425,7 @@ body.theme-day { background: var(--paper); color: var(--char); }
   border-radius: 999px; padding: 10px 18px;
 }
 .notify-card {
-  position: absolute; right: 6%; bottom: 8%;
+  position: absolute; right: 6%; bottom: clamp(76px, 12%, 140px);
   padding: 18px 24px; min-width: 190px;
 }
 .notify-strong { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 22px; color: #FFFFFF; margin: 6px 0 0; letter-spacing: -0.02em; }
@@ -464,11 +489,11 @@ body.theme-day { background: var(--paper); color: var(--char); }
 /* Scene one: the wordmark lands in the lower third, under the kombi */
 #s1-cold-open .scene-center { justify-content: flex-end; padding-bottom: 13vh; }
 /* Scene ten: title up top, QR foot below the kombi's ground line */
-.close-layout { justify-content: space-between; padding-top: clamp(20px, 5vh, 64px); padding-bottom: 52px; }
+.close-layout { justify-content: space-between; padding-top: clamp(20px, 5vh, 64px); padding-bottom: clamp(80px, 10vh, 116px); }
 .close-foot { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 
 /* Scene eight: the copy block stays clear of the dawn skyline and the HUD */
-#s8-kombis-employed .stack { padding-top: 70px; padding-bottom: 28vh; }
+#s8-kombis-employed .stack { padding-top: 76px; padding-bottom: 28vh; }
 /* Scene seven runs tall: keep every beat on screen */
 #s7-send-a-ride .stack { gap: clamp(12px, 2vh, 22px); }
 

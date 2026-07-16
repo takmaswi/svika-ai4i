@@ -17,6 +17,40 @@ choice taken, or a decision Mhofu may want to overrule.
   and the progress rail restyled as a dashed route with a glowing marigold
   kombi pill for the current scene. Nothing here migrates into the app.
 
+## Polish round 2 (Mhofu's review, 2026-07-16)
+
+- **Settle then step input model.** A press during a running beat fast
+  forwards it to its end state; the next press advances. Every press has
+  a visible result. Auto mode is untouched. Implementation detail that
+  matters: GSAP's isActive() reports false for tweens still waiting out a
+  delay, so the settle walks totalProgress instead, and pending sound
+  cues are cancelled on settle rather than fired. A 220ms debounce and a
+  key repeat guard stop double advances; rail and fullscreen buttons blur
+  after click so Space or Enter cannot fire twice. The capture rigs wait
+  for the beat to finish before pressing.
+- **Bottom safe lane.** Scene content keeps clamp(76px, 10vh, 116px)
+  clear at the bottom for the rail, counter and hint, and tall stacks
+  keep their kicker below the fullscreen button. Full bleed background
+  art (the dawn skyline, the flywheel canvas, ghost numerals) still runs
+  under the lane on purpose.
+- **Descender room.** Line masks carry 0.16em of padding pulled back with
+  a negative margin, and titles revert to natural text when the reveal
+  completes, so g, y and p are whole both mid flight and settled.
+- **Audio layer.** All local, WebAudio mixed, generated once by
+  tools/deck/make-audio.mjs from ELEVENLABS_API_KEY in .env.local (never
+  in the repo). N toggles narration, off by default; ?auto and ?narrate
+  start with it on, because the booth loop is the narrated surface and
+  the Mutare stage stays silent. SFX play in both modes, ducked under the
+  voice; reduced motion means no audio at all. Autoplay holds a scene
+  until its narration ends or the hold elapses, whichever is longer. A
+  booth machine should launch Chromium with
+  --autoplay-policy=no-user-gesture-required or click once, since
+  browsers gate sound behind a first gesture.
+- **Awaiting Mhofu:** the voice pick (two samples in
+  deck/assets/audio/samples) and the narration script sign off
+  (tools/deck/narration.mjs). Narration audio is not generated until
+  both land.
+
 ## Copy and content gaps
 
 1. **Illustrative numbers.** The flywheel counters (412 journeys, 118 places,

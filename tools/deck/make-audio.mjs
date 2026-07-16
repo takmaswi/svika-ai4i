@@ -101,6 +101,12 @@ if (mode === "samples") {
     writeFileSync(file, buf);
     console.log("wrote", file, `(${(buf.length / 1024).toFixed(0)}kb)`);
   }
+  // The runtime reads this manifest and only fetches what exists.
+  writeFileSync(
+    join(dir, "index.json"),
+    JSON.stringify({ files: NARRATION.map((n) => n.scene + ".mp3") }, null, 2) + "\n",
+  );
+  console.log("wrote", join(dir, "index.json"));
 } else {
   console.error("usage: node make-audio.mjs <samples|sfx|narration>");
   process.exit(1);

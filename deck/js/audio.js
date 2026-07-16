@@ -58,7 +58,17 @@
   function preload() {
     if (REDUCED) return;
     SFX_NAMES.forEach((n) => load("sfx:" + n, "assets/audio/sfx/" + n + ".mp3"));
-    NARR_KEYS.forEach((k) => load("narr:" + k, "assets/audio/narration/" + k + ".mp3"));
+    // The manifest lists which narration files exist (make-audio.mjs keeps
+    // it current), so a not yet generated set never spams 404s on stage.
+    fetch("assets/audio/narration/index.json")
+      .then((r) => (r.ok ? r.json() : { files: [] }))
+      .then((m) => {
+        (m.files || []).forEach((f) => {
+          const k = f.replace(/\.mp3$/, "");
+          if (NARR_KEYS.includes(k)) load("narr:" + k, "assets/audio/narration/" + f);
+        });
+      })
+      .catch(() => {});
   }
 
   function unlocked() {

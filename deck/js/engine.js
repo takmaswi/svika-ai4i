@@ -158,6 +158,16 @@
     rail.appendChild(b);
   });
 
+  // ---------- Ghost numerals: the editorial scene count ----------
+  sceneEls.forEach((el, i) => {
+    if (el.id === "s1-cold-open") return; // the cold open stays wordless
+    const n = document.createElement("span");
+    n.className = "mono ghost-num";
+    n.setAttribute("aria-hidden", "true");
+    n.textContent = String(i + 1).padStart(2, "0");
+    el.prepend(n);
+  });
+
   // ---------- Boot ----------
   window.SVK_ENGINE = { go, advance, back, ctx, get current() { return current; } };
 

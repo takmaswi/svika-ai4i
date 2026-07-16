@@ -151,27 +151,44 @@ body.theme-day { background: var(--paper); color: var(--char); }
 }
 .wordmark-pill svg { display: block; margin-right: -2px; overflow: visible; }
 
-/* ---------- Progress rail and HUD ---------- */
+/* ---------- Progress rail: the deck is a route, scenes are its stops ---------- */
 #rail {
   position: fixed;
   bottom: 22px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 9px;
+  align-items: center;
+  gap: 14px;
   z-index: 90;
 }
+#rail::before {
+  content: "";
+  position: absolute;
+  left: 4px; right: 4px; top: 50%;
+  border-top: 2px dashed rgba(255, 255, 255, .18);
+  transform: translateY(-50%);
+}
+.theme-day #rail::before { border-top-color: rgba(22, 29, 24, .18); }
 #rail button {
-  width: 8px; height: 8px;
+  position: relative;
+  width: 9px; height: 9px;
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .28);
+  background: rgba(255, 255, 255, .32);
   cursor: pointer;
-  transition: width .35s cubic-bezier(.2, .7, .3, 1), background-color .35s;
+  transition: width .35s cubic-bezier(.2, .7, .3, 1), height .35s cubic-bezier(.2, .7, .3, 1),
+    border-radius .35s, background-color .35s;
 }
-.theme-day #rail button { background: rgba(22, 29, 24, .22); }
-#rail button.is-current { width: 26px; background: var(--marigold); }
+.theme-day #rail button { background: rgba(22, 29, 24, .26); }
+#rail button.is-current {
+  width: 24px; height: 16px;
+  border-radius: 6px;
+  background: var(--marigold);
+  box-shadow: 0 0 10px rgba(245, 179, 1, .45);
+}
+.theme-day #rail button.is-current { box-shadow: 0 4px 10px rgba(22, 29, 24, .25); }
 #rail button:active { transform: scale(0.99); }
 
 #hud-counter {
@@ -215,6 +232,51 @@ body.theme-day { background: var(--paper); color: var(--char); }
 }
 .theme-day #btn-full { background: #FFFFFF; border: 1.5px solid var(--char); color: var(--char); }
 #btn-full:active { transform: scale(0.99); }
+
+/* ---------- Atmosphere (deliberate DESIGN.md breaks, ruled by Mhofu) ---------- */
+/* Film grain: a whisper of texture so flat surfaces read filmic, not vector. */
+#grain {
+  position: fixed;
+  inset: -60px;
+  z-index: 60;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+.theme-day #grain { opacity: .035; }
+/* Night vignette: char pooling at the edges pushes the eye to the light. */
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  background: radial-gradient(ellipse 120% 95% at 50% 42%, transparent 55%, rgba(9, 13, 10, .55) 100%);
+  opacity: 1;
+  transition: opacity .8s ease;
+}
+.theme-day #vignette { opacity: 0; }
+
+/* Ghost numerals: an editorial scene count living behind the content. */
+.ghost-num {
+  position: absolute;
+  right: clamp(10px, 2vw, 40px);
+  bottom: -7vh;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: clamp(180px, 34vh, 360px);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, .045);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.theme-day .ghost-num { color: rgba(22, 29, 24, .05); }
+/* Ghost numerals are prepended, so every later (positioned) sibling paints
+   above them by DOM order; no z-index juggling needed. */
+
+/* Masked line reveals: each split line clips its own words as they rise. */
+.line-mask { overflow: hidden !important; }
 
 /* ---------- 3D layer ---------- */
 #kombi-layer {

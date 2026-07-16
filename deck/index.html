@@ -18,8 +18,15 @@
 
 <main id="deck">
 
-  <!-- 1 · Cold open: char night, beam sweep, the kombi rotates in, the wordmark lands. No words yet. -->
-  <section class="scene" id="s1-cold-open" data-theme="night" data-auto-hold="4200">
+  <!-- 1 · Cold open: char night, the logo's route draws itself, beam sweep, the kombi rotates in, the wordmark lands. No words yet. -->
+  <section class="scene" id="s1-cold-open" data-theme="night" data-auto-hold="6200">
+    <svg class="beam" id="s1-route-sky" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style="inset:auto;left:50%;top:44%;transform:translate(-50%,-50%);width:min(56vh,44vw);height:min(56vh,44vw)">
+      <g id="s1-route-g">
+        <path id="s1-route-path" d="M 76 26 C 76 18, 68 14, 56 14 C 38 14, 28 22, 28 32 C 28 44, 42 48, 56 50 C 70 52, 76 58, 76 68 C 76 80, 64 86, 50 86 C 36 86, 26 80, 24 70" pathLength="1" fill="none" stroke="#F5B301" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1" stroke-dashoffset="1"></path>
+        <circle id="s1-route-a" cx="76" cy="26" r="4.5" fill="#E84C30" opacity="0"></circle>
+        <circle id="s1-route-b" cx="24" cy="70" r="4.5" fill="#E84C30" opacity="0"></circle>
+      </g>
+    </svg>
     <svg class="beam" id="s1-beam" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <g id="s1-beam-group" opacity="0">
         <path d="M130 -50 L680 -280 L680 280 L130 50 Z" fill="#F5B301" opacity="0.12"></path>
@@ -71,6 +78,7 @@
           <!-- The long lonely walk -->
           <path d="M340 120 C 380 140, 440 150, 470 200 C 500 250, 480 330, 520 400" fill="none" stroke="#F5B301" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 13" opacity="0.85" mask="url(#s2-walk-mask)"></path>
           <g id="s2-home" opacity="0"><circle cx="520" cy="400" r="10" fill="none" stroke="#F5B301" stroke-width="3"></circle><circle cx="520" cy="400" r="3" fill="#F5B301"></circle></g>
+          <circle id="s2-walker" r="6" fill="#FFFFFF" opacity="0"></circle>
         </svg>
       </div>
     </div>
@@ -131,7 +139,7 @@
         </div>
         <div class="voice-chip" id="s4-voice" style="opacity:0">
           <p class="beat-label" style="color:rgba(22,29,24,.6)">Voice guide</p>
-          <p class="mono voice-line">Wakusvika pa turn off, chiburuka</p>
+          <p class="mono voice-line">You are at the turn off. Get off here.</p>
         </div>
       </div>
     </div>
@@ -289,12 +297,15 @@
             <span class="stamp stamp-real" style="margin-top:10px"><span class="stamp-dot"></span>Real today</span>
           </div>
         </div>
-        <p class="scene-body" id="s10-gdg" style="text-align:center;opacity:0;font-size:clamp(13px,1.1vw,16px);margin:0">Overall winner, GDG Harare Build with AI Hackathon 2026. Built in Harare.</p>
+        <p class="scene-body" id="s10-gdg" style="text-align:center;opacity:0;font-size:clamp(13px,1.1vw,16px);margin:0">Team Svika. Overall winner, GDG Harare Build with AI Hackathon 2026. Built in Harare.</p>
       </div>
     </div>
   </section>
 
 </main>
+
+<div id="vignette" aria-hidden="true"></div>
+<div id="grain" aria-hidden="true"></div>
 
 <button id="btn-full" type="button" aria-label="Toggle fullscreen">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9"></path><path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9"></path><path d="M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15"></path><path d="M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"></path></svg>
@@ -315,9 +326,12 @@
   import { initKombi } from "./js/kombi3d.js";
   const params = new URLSearchParams(location.search);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches || params.has("reduced");
-  initKombi({ forceFallback: params.has("nowebgl"), reduced })
-    .then((api) => window.SVK_BOOT(api))
-    .catch(() => window.SVK_BOOT(null));
+  // Fonts must be measured before SplitText slices the titles into masked
+  // lines, or every reveal is cut at the wrong height.
+  Promise.all([
+    document.fonts.ready,
+    initKombi({ forceFallback: params.has("nowebgl"), reduced }).catch(() => null),
+  ]).then(([, api]) => window.SVK_BOOT(api));
 </script>
 </body>
 </html>

@@ -124,12 +124,12 @@
       shortcuts.push(p);
     }
 
-    // Nickname chips, map place chip grammar. Names come from the plan
-    // document, never invented.
+    // Nickname chips, map place chip grammar. English only in this deck by
+    // Mhofu's ruling; the crowd names stay generic, never invented places.
     const chips = [];
     const chipDefs = [
-      { x: 470, y: 640, name: "pa turn off" },
-      { x: 1010, y: 380, name: "pamusika" },
+      { x: 470, y: 640, name: "the turn off" },
+      { x: 1010, y: 380, name: "the market" },
     ];
     for (const c of chipDefs) {
       const g = el("g", { opacity: 0 }, svg);

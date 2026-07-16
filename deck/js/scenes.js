@@ -25,14 +25,21 @@
     });
   }
 
+  // Masked line reveal: every line clips its own words as they rise, the
+  // award site grammar. Splits are reverted before a rerun so revisiting a
+  // scene never nests wrappers.
+  const SPLITS = new WeakMap();
   function titleReveal(ctx, el, delay = 0) {
-    const split = new SplitText(el, { type: "words" });
+    if (ctx.REDUCED) return gsap.set(el, { opacity: 1 });
+    const prev = SPLITS.get(el);
+    if (prev) prev.revert();
+    const split = new SplitText(el, { type: "lines,words", mask: "lines", linesClass: "line-mask" });
+    SPLITS.set(el, split);
     return gsap.from(split.words, {
-      opacity: 0,
-      y: 26,
-      duration: ctx.d(0.7),
-      ease: EASE_DRIVE,
-      stagger: ctx.d(0.05),
+      yPercent: 125,
+      duration: ctx.d(0.9),
+      ease: "power4.out",
+      stagger: ctx.d(0.055),
       delay: ctx.d(delay),
     });
   }
@@ -71,19 +78,32 @@
         () => {
           const tl = ctx.track(gsap.timeline());
           gsap.set(wordmark, { opacity: 0, y: 18 });
-          // Headlight sweep across the char night before anything exists.
-          tl.set(beamG, { opacity: 0, transformOrigin: "130px 0px", rotation: -6, x: -140, y: 430 })
-            .to(beamG, { opacity: 1, duration: ctx.d(0.5), ease: "power1.in" })
-            .to(beamG, { x: 1500, rotation: 8, duration: ctx.d(2.1), ease: "power2.inOut" }, "<")
+          gsap.set("#s1-route-sky", { opacity: 1 });
+          gsap.set(["#s1-route-a", "#s1-route-b"], { opacity: 0, transformOrigin: "center", scale: 0.4 });
+          gsap.set("#s1-route-path", { strokeDashoffset: 1 });
+          // The brand gesture first: the logo's own route draws itself
+          // across the dark, its two signal stops land, then the light
+          // arrives and the mark you just watched becomes the wordmark.
+          tl.to("#s1-route-path", { strokeDashoffset: 0, duration: ctx.d(1.5), ease: "power2.inOut" }, ctx.d(0.2))
+            .to("#s1-route-a", { opacity: 1, scale: 1, duration: ctx.d(0.35), ease: "back.out(2)" }, ctx.d(0.35))
+            .to("#s1-route-b", { opacity: 1, scale: 1, duration: ctx.d(0.35), ease: "back.out(2)" }, ctx.d(1.6))
+            // Scale rides the inner group; gsap must never touch the svg's
+            // own centering transform.
+            .to("#s1-route-sky", { opacity: 0, duration: ctx.d(0.6), ease: "power1.in" }, ctx.d(2.2))
+            .to("#s1-route-g", { scale: 0.94, transformOrigin: "50% 50%", duration: ctx.d(0.6), ease: "power1.in" }, ctx.d(2.2))
+            // Headlight sweep across the char night.
+            .set(beamG, { opacity: 0, transformOrigin: "130px 0px", rotation: -6, x: -140, y: 430 }, ctx.d(2.2))
+            .to(beamG, { opacity: 1, duration: ctx.d(0.5), ease: "power1.in" }, ctx.d(2.3))
+            .to(beamG, { x: 1500, rotation: 8, duration: ctx.d(2.1), ease: "power2.inOut" }, ctx.d(2.3))
             .to(beamG, { opacity: 0, duration: ctx.d(0.4) }, ">-0.4");
           if (ctx.kombi) {
-            tl.call(() => ctx.kombi.show({ theme: "night", color: "white" }), null, ctx.d(1.1));
+            tl.call(() => ctx.kombi.show({ theme: "night", color: "white" }), null, ctx.d(3.0));
             if (ctx.kombi.mode === "webgl") {
-              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.2) }), ctx.d(1.2));
-              tl.call(() => ctx.kombi.setFloat(true), null, ctx.d(3.2));
+              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.2) }), ctx.d(3.1));
+              tl.call(() => ctx.kombi.setFloat(true), null, ctx.d(5.1));
             }
           }
-          tl.to(wordmark, { opacity: 1, y: 0, duration: ctx.d(0.7), ease: EASE_DRIVE }, ctx.d(2.6));
+          tl.to(wordmark, { opacity: 1, y: 0, duration: ctx.d(0.7), ease: EASE_DRIVE }, ctx.d(4.6));
         },
         // Turntable: repeated advance walks the kombi around.
         () => { if (ctx.kombi) ctx.track(ctx.kombi.spin(Math.PI * 2 / 3, ctx.d(1.4))); },
@@ -101,16 +121,25 @@
       beats: [
         () => {
           const tl = ctx.track(gsap.timeline());
-          tl.add(titleReveal(ctx, el.querySelector("#s2-title")))
+          // A slow camera settle gives the flat map one breath of depth.
+          tl.fromTo("#s2-map", { scale: 1.03, transformOrigin: "62% 38%" }, { scale: 1, duration: ctx.d(3.4), ease: "power1.out" }, 0)
+            .add(titleReveal(ctx, el.querySelector("#s2-title")), 0)
             .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector("#s2-body"), el.querySelector("#s2-map")], { stagger: 0.12 }), 0)
             .add(drawMask(ctx, "#s2-route-reveal", 1.5), ctx.d(0.6))
             .to("#s2-drop-pin", { opacity: 1, duration: ctx.d(0.4) }, ">-0.1");
         },
         () => {
-          // The long lonely walk, drawn slowly on purpose.
+          // The long lonely walk, drawn slowly on purpose, someone on it.
           const tl = ctx.track(gsap.timeline());
           tl.add(drawMask(ctx, "#s2-walk-reveal", 2.4))
-            .to("#s2-home", { opacity: 1, duration: ctx.d(0.5) }, ">-0.2")
+            .set("#s2-walker", { opacity: 1 }, ctx.d(0.05))
+            .to("#s2-walker", {
+              motionPath: { path: "#s2-walk-reveal", align: "#s2-walk-reveal", alignOrigin: [0.5, 0.5] },
+              duration: ctx.d(2.4),
+              ease: "power1.inOut",
+            }, 0)
+            .to("#s2-walker", { opacity: 0, duration: ctx.d(0.4) }, ">-0.1")
+            .to("#s2-home", { opacity: 1, duration: ctx.d(0.5) }, ">-0.3")
             .to("#s2-caption", { opacity: 1, duration: ctx.d(0.6) }, ">-0.1");
         },
       ],
@@ -120,11 +149,13 @@
   /* ---------- 3 · What Svika already does ---------- */
   B["s3-real-today"] = function (el, ctx) {
     const cards = ["#s3-card-code", "#s3-card-change", "#s3-card-eta"].map((s) => el.querySelector(s));
-    gsap.set(cards, { opacity: 0, y: 22 });
+    // A hand dealt fan: each card keeps a degree of its own posture.
+    const TILT = [-1.3, 0.9, -0.7];
+    gsap.set(cards, { opacity: 0, y: 34, rotation: (i) => TILT[i] * 3 });
     function popCard(i) {
       return () => {
         const tl = ctx.track(gsap.timeline());
-        tl.to(cards[i], { opacity: 1, y: 0, duration: ctx.d(0.55), ease: EASE_DRIVE });
+        tl.to(cards[i], { opacity: 1, y: 0, rotation: TILT[i], duration: ctx.d(0.65), ease: "back.out(1.4)" });
         if (i === 2) {
           // The reference screen's 5 min to 4 min swap: the estimate lives.
           const eta = el.querySelector("#s3-eta");
@@ -217,12 +248,37 @@
     });
     art.shortcuts.forEach((p) => { p.style.opacity = 0; });
 
+    // A marigold head rides the front of a drawing trace, so accumulation
+    // reads as journeys happening, not lines appearing.
+    function traceHead(tl, pathEl, at, dur) {
+      if (ctx.REDUCED) return;
+      const head = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      head.setAttribute("r", "5");
+      head.setAttribute("fill", "#F5B301");
+      head.setAttribute("opacity", "0");
+      head.style.filter = "drop-shadow(0 0 6px rgba(245,179,1,.6))";
+      svg.appendChild(head);
+      tl.set(head, { opacity: 1 }, at)
+        .to(head, {
+          motionPath: { path: pathEl, align: pathEl, alignOrigin: [0.5, 0.5] },
+          duration: dur,
+          ease: "power1.inOut",
+        }, at)
+        .to(head, { opacity: 0, duration: 0.3, onComplete: () => head.remove() }, at + dur - 0.15);
+    }
+
     function wave(i, counts) {
       const tl = ctx.track(gsap.timeline());
-      art.waves[i].forEach((p, j) => tl.add(drawPath(ctx, p, 1.4), ctx.d(j * 0.12)));
-      tl.add(countTo(ctx, nums[0], counts[0]), 0);
-      tl.add(countTo(ctx, nums[1], counts[1]), 0);
-      tl.add(countTo(ctx, nums[2], counts[2]), 0);
+      art.waves[i].forEach((p, j) => {
+        tl.add(drawPath(ctx, p, 1.4), ctx.d(j * 0.12));
+        if (j % 2 === 0) traceHead(tl, p, ctx.d(j * 0.12), ctx.d(1.4));
+      });
+      [0, 1, 2].forEach((k) => {
+        tl.add(countTo(ctx, nums[k], counts[k]), 0);
+        // The counter lands with a pulse, an odometer clicking over.
+        tl.fromTo(nums[k], { scale: 1.12, transformOrigin: "right center" },
+          { scale: 1, duration: ctx.d(0.35), ease: "power2.out" }, ctx.d(1.1));
+      });
       return tl;
     }
 

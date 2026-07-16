@@ -47,7 +47,9 @@ export async function initKombi({ forceFallback = false, reduced = false } = {})
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // 1.25 caps the canvas near 2K on high DPR laptops; the van is soft
+    // studio lit, so extra pixels buy nothing and cost the 60fps gate.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
   } catch (_e) {
     return fallbackApi();
   }
@@ -68,7 +70,7 @@ export async function initKombi({ forceFallback = false, reduced = false } = {})
   const key = new THREE.DirectionalLight(0xffe2a8, 2.6);
   key.position.set(-3.4, 5.2, 4.2);
   key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.mapSize.set(512, 512);
   key.shadow.camera.left = -4; key.shadow.camera.right = 4;
   key.shadow.camera.top = 4; key.shadow.camera.bottom = -4;
   key.shadow.radius = 6;

@@ -24,6 +24,9 @@ export default tseslint.config(
       "assets/**",
       // Isolated field tool: outside the pnpm workspace, own tsconfig/vitest.
       "tools/**",
+      // Showcase deck: presentation artifact outside the workspace, vendored
+      // libraries inside, never linted as app source.
+      "deck/**",
     ],
   },
   js.configs.recommended,

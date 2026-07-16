@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 268 100" aria-label="Svika wordmark">
+  <path d="M76 26C76 18 68 14 56 14C38 14 28 22 28 32C28 44 42 48 56 50C70 52 76 58 76 68C76 80 64 86 50 86C36 86 26 80 24 70" fill="none" stroke="#1F4D2E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"></path>
+  <circle cx="76" cy="26" r="7.5" fill="#E84C30"></circle>
+  <circle cx="24" cy="70" r="7.5" fill="#E84C30"></circle>
+  <text x="84" y="75" font-family="&#39;Baloo 2&#39;, ui-rounded, sans-serif" font-weight="700" font-size="80" letter-spacing="-2" fill="#1F4D2E">vika</text>
+</svg>

@@ -1,0 +1,414 @@
+/* Svika showcase deck — Mbare Sun law, values verbatim from
+   Svika Mbare Sun/DESIGN.md. Token values are copied in as constants on
+   purpose: the deck imports nothing from packages/ui. */
+
+/* ---------- Fonts (vendored, zero network at runtime) ---------- */
+@font-face { font-family: "DM Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("../fonts/dm-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "DM Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/dm-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "DM Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/dm-sans-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-sans-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 600; font-style: normal; font-display: swap; src: url("../fonts/ibm-plex-mono-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Baloo 2"; font-weight: 700; font-style: normal; font-display: swap; src: url("../fonts/baloo-2-latin-700-normal.woff2") format("woff2"); }
+
+/* ---------- Tokens (DESIGN.md section 2, verbatim) ---------- */
+:root {
+  --paper: #FFFFFF;
+  --marigold: #F5B301;
+  --marigold-hover: #E3A600;
+  --char: #161D18;
+  --forest: #1F4D2E;
+  --forest-hover: #143D22;
+  --signal: #E84C30;
+  --park: #D9E8CC;
+  --soft-ink: #575F53;
+  --street-label: #6E766A;
+  --map-base-day: #F4F5F1;
+  --road-casing-day: #E1E3DA;
+  --building-day: #EAECE5;
+  --map-base-night: #121710;
+  --building-night: #1B211A;
+  --road-casing-night: #222B22;
+  --road-night: #333E33;
+  --minor-road-night: #2A342B;
+  --park-night: #1B3423;
+  --surface-dark: #10150F;
+  --overlay-card: rgba(255, 255, 255, .06);
+  --night-border: rgba(255, 255, 255, .10);
+  --night-secondary: rgba(255, 255, 255, .62);
+  --night-label: rgba(255, 255, 255, .5);
+  --street-label-night: #7E877E;
+  --park-label-night: #6F8F74;
+  --shadow-card-day: 0 10px 28px rgba(22, 29, 24, .12);
+  --shadow-dark-card-day: 0 14px 32px rgba(22, 29, 24, .25);
+  --shadow-cta-day: 0 10px 26px rgba(31, 77, 46, .30);
+  --shadow-card-night: 0 14px 34px rgba(0, 0, 0, .45);
+  --shadow-cta-night: 0 10px 26px rgba(0, 0, 0, .4);
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", sans-serif;
+  background: var(--char);
+  color: #FFFFFF;
+  overflow: hidden;
+  transition: background-color .8s ease, color .8s ease;
+}
+body.theme-day { background: var(--paper); color: var(--char); }
+
+.mono { font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+.display { font-family: "DM Sans", sans-serif; font-weight: 700; letter-spacing: -0.025em; }
+
+/* ---------- Deck frame ---------- */
+#deck { position: fixed; inset: 0; }
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: none;
+  padding: clamp(28px, 5vh, 64px) clamp(28px, 6vw, 96px);
+}
+.scene.is-active { display: block; }
+
+.scene-title {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  font-size: clamp(44px, 7.2vw, 118px);
+  margin: 0;
+}
+.scene-kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--night-label);
+  margin: 0 0 18px;
+}
+.theme-day .scene-kicker { color: var(--soft-ink); }
+.scene-body {
+  font-size: clamp(15px, 1.35vw, 21px);
+  line-height: 1.55;
+  color: var(--night-secondary);
+  max-width: 34em;
+}
+.theme-day .scene-body { color: var(--soft-ink); }
+
+/* ---------- Stamp chips: one consistent system ---------- */
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.stamp .stamp-dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+.stamp-real { background: var(--forest); color: #FFFFFF; }
+.stamp-roadmap { background: var(--marigold); color: var(--char); }
+.stamp-vision { background: transparent; border: 1.5px solid rgba(255, 255, 255, .45); color: #FFFFFF; }
+.theme-day .stamp-vision { border-color: rgba(22, 29, 24, .45); color: var(--char); }
+.scene > .stamp, .scene .stamp-corner {
+  position: absolute;
+  top: clamp(28px, 5vh, 64px);
+  right: clamp(28px, 6vw, 96px);
+  z-index: 40;
+}
+
+/* ---------- Wordmark pill (reference screen pattern, used as is) ---------- */
+.wordmark-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .4);
+}
+.theme-day .wordmark-pill { border: 1.5px solid var(--char); box-shadow: none; }
+.wordmark-pill .wordmark-lockup {
+  display: inline-flex;
+  align-items: center;
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--forest);
+}
+.wordmark-pill svg { display: block; margin-right: -2px; overflow: visible; }
+
+/* ---------- Progress rail and HUD ---------- */
+#rail {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+  z-index: 90;
+}
+#rail button {
+  width: 8px; height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .28);
+  cursor: pointer;
+  transition: width .35s cubic-bezier(.2, .7, .3, 1), background-color .35s;
+}
+.theme-day #rail button { background: rgba(22, 29, 24, .22); }
+#rail button.is-current { width: 26px; background: var(--marigold); }
+#rail button:active { transform: scale(0.99); }
+
+#hud-counter {
+  position: fixed;
+  bottom: 20px;
+  right: clamp(20px, 3vw, 44px);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--night-label);
+  z-index: 90;
+}
+.theme-day #hud-counter { color: var(--soft-ink); }
+#hud-hint {
+  position: fixed;
+  bottom: 20px;
+  left: clamp(20px, 3vw, 44px);
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: .6px;
+  color: rgba(255, 255, 255, .35);
+  z-index: 90;
+}
+.theme-day #hud-hint { color: rgba(22, 29, 24, .35); }
+#btn-full {
+  position: fixed;
+  top: 20px;
+  left: clamp(20px, 3vw, 44px);
+  z-index: 95;
+  width: 44px; height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .15);
+  background: var(--surface-dark);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-day #btn-full { background: #FFFFFF; border: 1.5px solid var(--char); color: var(--char); }
+#btn-full:active { transform: scale(0.99); }
+
+/* ---------- 3D layer ---------- */
+#kombi-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+}
+#kombi-layer.is-live { opacity: 1; }
+#kombi-layer canvas, #kombi-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
+#kombi-fallback { object-fit: contain; display: none; }
+#kombi-layer.is-fallback canvas { display: none; }
+#kombi-layer.is-fallback #kombi-fallback { display: block; }
+.scene { z-index: 10; }
+
+/* ---------- Shared scene furniture ---------- */
+.scene-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 22px;
+  padding: inherit;
+}
+.beam {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Card grammar (DESIGN.md section 8) */
+.card-night {
+  background: var(--overlay-card);
+  border: 1px solid var(--night-border);
+  border-radius: 16px;
+}
+.card-day {
+  background: #FFFFFF;
+  border: 1.5px solid var(--char);
+  border-radius: 16px;
+}
+.card-dark-feature {
+  background: var(--char);
+  border-radius: 20px;
+  box-shadow: var(--shadow-dark-card-day);
+}
+
+/* ---------- Scene layouts ---------- */
+.split {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 90px);
+  align-items: center;
+}
+.split-copy { max-width: 620px; }
+.split-art { position: relative; }
+.split-art-stack { display: flex; flex-direction: column; gap: 18px; justify-content: center; }
+.stack {
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 2.6vh, 30px);
+}
+
+/* Beat cards (day bordered card grammar, section 8) */
+.beat-row { display: flex; gap: clamp(14px, 1.8vw, 26px); margin-top: clamp(8px, 2vh, 22px); }
+.beat-card { flex: 1; display: flex; overflow: hidden; max-width: 430px; box-shadow: var(--shadow-card-day); }
+.beat-card-night { box-shadow: var(--shadow-card-night); }
+.beat-card-body { padding: clamp(16px, 1.8vw, 26px); min-width: 0; }
+.stub { width: 13px; flex-shrink: 0; background: var(--marigold); border-right: 1.5px dashed var(--char); }
+.beat-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase;
+  color: var(--soft-ink); margin: 0;
+}
+.beat-value {
+  font-family: "IBM Plex Mono", monospace; font-weight: 600;
+  font-size: clamp(24px, 2.4vw, 36px); color: var(--char); margin: 8px 0 0;
+}
+.beat-unit { font-family: "IBM Plex Sans", sans-serif; font-size: 13px; font-weight: 500; color: var(--soft-ink); }
+.beat-sub { font-size: 13.5px; line-height: 1.5; color: var(--soft-ink); margin: 10px 0 0; }
+.beat-value-night { font-size: 15px; font-weight: 600; color: #FFFFFF; margin: 10px 0 0; }
+
+/* Search pill and plan card (scene 4, trip plan grammar) */
+.search-pill {
+  display: flex; align-items: center; gap: 10px;
+  height: 58px; padding: 0 22px;
+  border-radius: 999px; background: #FFFFFF; border: 1.5px solid var(--char);
+  font-size: 17px; color: var(--char);
+}
+.search-pill .mono { font-weight: 600; font-size: 16px; }
+.type-caret { width: 2px; height: 22px; background: var(--forest); }
+.plan-card {
+  display: grid; grid-template-columns: 1fr 1.2fr 0.9fr; gap: 12px;
+  padding: 18px 22px; box-shadow: var(--shadow-card-day);
+}
+.plan-strong { font-size: 15.5px; font-weight: 600; color: var(--char); margin: 6px 0 0; }
+.plan-mono { font-size: 16px; color: var(--char); margin: 6px 0 0; }
+.voice-chip {
+  align-self: flex-start;
+  background: var(--marigold); color: var(--char);
+  border-radius: 18px; padding: 14px 20px;
+  box-shadow: var(--shadow-dark-card-day);
+}
+.voice-line { font-size: clamp(16px, 1.5vw, 22px); margin: 6px 0 0; }
+
+/* Guardian (scene 5) */
+.guardian-chip {
+  display: inline-flex; margin-top: 22px;
+  background: var(--marigold); color: var(--char);
+  border-radius: 999px; padding: 10px 18px;
+}
+.notify-card {
+  position: absolute; right: 6%; bottom: 8%;
+  padding: 18px 24px; min-width: 190px;
+}
+.notify-strong { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 22px; color: #FFFFFF; margin: 6px 0 0; letter-spacing: -0.02em; }
+
+/* Flywheel counters (scene 6) */
+.counter-row {
+  position: absolute;
+  right: clamp(28px, 6vw, 96px);
+  bottom: clamp(70px, 12vh, 120px);
+  display: flex; gap: clamp(20px, 3vw, 48px);
+  z-index: 5;
+}
+.counter-block { text-align: right; }
+.counter-num {
+  font-size: clamp(30px, 3.4vw, 52px); color: var(--marigold); margin: 0;
+}
+.counter-label { color: var(--night-label); margin: 6px 0 0; }
+
+/* Phones (scene 7) */
+.phones-row { display: flex; align-items: center; gap: clamp(20px, 4vw, 70px); margin-top: 10px; }
+.phone-frame {
+  position: relative;
+  width: clamp(200px, 19vw, 280px); height: clamp(300px, 40vh, 400px);
+  border: 1.5px solid var(--char); border-radius: 28px; background: #FFFFFF;
+  box-shadow: var(--shadow-card-day); overflow: hidden;
+}
+.ticket-mini {
+  display: flex; margin: 14px 16px 0; border-radius: 16px; overflow: hidden;
+  background: var(--char); box-shadow: var(--shadow-dark-card-day);
+}
+.ticket-mini > div:last-child { padding: 14px 16px; }
+.ticket-mini-stub { width: 12px; flex-shrink: 0; background: var(--marigold); border-right: 1.5px dashed rgba(255, 255, 255, .3); }
+.ticket-code { font-size: 30px; letter-spacing: 2px; color: #FFFFFF; margin: 2px 0 0; }
+.ticket-route { font-size: 12px; color: rgba(255, 255, 255, .62); margin: 6px 0 0; }
+.ticket-landing { position: absolute; inset: 46px 16px 16px; }
+.send-arrow { color: var(--forest); flex-shrink: 0; }
+.horizon-line { margin-top: clamp(14px, 3vh, 28px); }
+
+/* Live pill (scene 9, reference grammar) */
+.live-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 999px;
+  background: var(--surface-dark); border: 1px solid rgba(255, 255, 255, .12);
+}
+.live-dot-wrap { position: relative; display: inline-flex; width: 7px; height: 7px; }
+.live-ripple { position: absolute; inset: 0; border-radius: 999px; background: var(--signal); animation: svk-ripple 1.8s ease-out infinite; }
+.live-dot { position: relative; width: 7px; height: 7px; border-radius: 999px; background: var(--signal); animation: svk-pulse 1.6s ease-in-out infinite; }
+@keyframes svk-pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: .5; } }
+@keyframes svk-ripple { 0% { transform: scale(.5); opacity: .5; } 100% { transform: scale(2.8); opacity: 0; } }
+
+/* Close (scene 10) */
+.qr-block {
+  display: flex; align-items: center; gap: 26px;
+  background: #FFFFFF; border: 1.5px solid var(--char); border-radius: 20px;
+  padding: 22px 30px;
+  box-shadow: var(--shadow-card-day);
+  text-align: left;
+}
+.qr-block img { display: block; }
+
+/* Scene one: the wordmark lands in the lower third, under the kombi */
+#s1-cold-open .scene-center { justify-content: flex-end; padding-bottom: 13vh; }
+/* Scene ten: keep the close content clear of the kombi's ground line */
+#s10-close .scene-center { justify-content: flex-end; padding-bottom: 9vh; }
+
+/* Small stages: 1366x768 projector safety */
+@media (max-height: 800px) {
+  .scene-title { font-size: clamp(38px, 6.4vw, 84px); }
+  .phone-frame { height: clamp(260px, 38vh, 330px); }
+}
+
+/* Reduced motion: the engine also collapses timelines; this kills CSS loops */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; }
+}

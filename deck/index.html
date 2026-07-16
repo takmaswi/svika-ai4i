@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Svika, the future of the kombi</title>
+<link rel="preload" href="fonts/dm-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-mono-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/deck.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body class="theme-night">
+
+<main id="deck">
+
+
+
+</main>
+
+<button id="btn-full" type="button" aria-label="Toggle fullscreen">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5.5A1.5 1.5 0 0 1 5.5 4H9"></path><path d="M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9"></path><path d="M20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15"></path><path d="M9 20H5.5A1.5 1.5 0 0 1 4 18.5V15"></path></svg>
+</button>
+<nav id="rail" aria-label="Scenes"></nav>
+<p id="hud-counter" aria-hidden="true"></p>
+<p id="hud-hint">space advances · f fullscreen</p>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/SplitText.min.js"></script>
+<script src="vendor/Flip.min.js"></script>
+<script src="vendor/MotionPathPlugin.min.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>

@@ -318,5 +318,30 @@
     };
   };
 
+  /* ---------- 10 · Close ---------- */
+  B["s10-close"] = function (el, ctx) {
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          if (ctx.kombi) {
+            ctx.kombi.show({ theme: "day", color: "marigold" });
+            if (ctx.kombi.mode === "webgl") {
+              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.0), from: Math.PI + 2.4, to: Math.PI + 0.62 }), 0);
+              tl.call(() => ctx.kombi.setFloat(true), null, ctx.d(2.0));
+            }
+          }
+          tl.add(titleReveal(ctx, el.querySelector("#s10-thesis"), 0.7), 0);
+        },
+        () => { ctx.track(gsap.to("#s10-gdg", { opacity: 1, duration: ctx.d(0.6) })); },
+        () => { ctx.track(gsap.fromTo("#s10-qr", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: ctx.d(0.6), ease: EASE_DRIVE })); },
+      ],
+      onLeave: () => {
+        if (ctx.kombi) { ctx.kombi.setFloat(false); ctx.kombi.hide(); }
+      },
+    };
+  };
+
+
   window.SVK_BUILDERS = B;
 })();

@@ -38,6 +38,12 @@ let shot = 0;
 for (let scene = 1; scene <= 10; scene++) {
   for (let beat = 0; beat < BEATS[scene]; beat++) {
     if (!(scene === 1 && beat === 0)) {
+      // The engine now settles a still-running beat on the first press
+      // (manual driving feel); the rig must wait for the beat to finish so
+      // a press always *advances* and frame labels stay deterministic.
+      await page
+        .waitForFunction(() => !window.SVK_ENGINE?.beatActive?.(), null, { timeout: 12000 })
+        .catch(() => {});
       await page.keyboard.press("Space");
     }
     await page.waitForTimeout(scene === 1 && beat === 0 ? 4200 : 3200);

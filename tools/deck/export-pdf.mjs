@@ -22,7 +22,13 @@ await page.goto("http://localhost:4173/", { waitUntil: "networkidle" });
 await page.waitForTimeout(5000);
 for (let scene = 1; scene <= 10; scene++) {
   for (let beat = 0; beat < BEATS[scene]; beat++) {
-    if (!(scene === 1 && beat === 0)) await page.keyboard.press("Space");
+    if (!(scene === 1 && beat === 0)) {
+      // Settle-then-step: wait the beat out so the press advances, never settles.
+      await page
+        .waitForFunction(() => !window.SVK_ENGINE?.beatActive?.(), null, { timeout: 12000 })
+        .catch(() => {});
+      await page.keyboard.press("Space");
+    }
     await page.waitForTimeout(2600);
   }
   await page.screenshot({ path: join(FRAMES, `frame-${String(scene).padStart(2, "0")}.png`) });

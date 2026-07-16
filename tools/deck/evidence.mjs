@@ -18,11 +18,23 @@ mkdirSync(OUT, { recursive: true });
 const BEATS = { 1: 3, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
 const mode = process.argv[2] || "run";
 
+// The engine settles a still-running beat on the first press, so the rig
+// waits the beat out before pressing; otherwise every press would land one
+// beat behind and the run would end short.
+async function beatIdle(page) {
+  await page
+    .waitForFunction(() => !window.SVK_ENGINE?.beatActive?.(), null, { timeout: 12000 })
+    .catch(() => {});
+}
+
 async function fullRun(page, holdMs, onBeat) {
   await page.waitForTimeout(4500);
   for (let scene = 1; scene <= 10; scene++) {
     for (let beat = 0; beat < BEATS[scene]; beat++) {
-      if (!(scene === 1 && beat === 0)) await page.keyboard.press("Space");
+      if (!(scene === 1 && beat === 0)) {
+        await beatIdle(page);
+        await page.keyboard.press("Space");
+      }
       await page.waitForTimeout(holdMs);
       if (onBeat) await onBeat(scene, beat);
     }
@@ -106,7 +118,9 @@ if (mode === "nowebgl") {
   await page.goto("http://localhost:4173/?nowebgl&nolag#s10-close", { waitUntil: "networkidle" });
   await page.reload({ waitUntil: "networkidle" });
   await page.waitForTimeout(4000);
+  await beatIdle(page);
   await page.keyboard.press("Space"); await page.waitForTimeout(700);
+  await beatIdle(page);
   await page.keyboard.press("Space"); await page.waitForTimeout(1000);
   await page.screenshot({ path: join(OUT, "nowebgl-s10.png"), timeout: 60000 });
   console.log("nowebgl drill: kombi mode =", mode3d, "(expect fallback), screenshots written");

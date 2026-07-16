@@ -250,5 +250,31 @@
     };
   };
 
+  /* ---------- 7 · Send a ride, not money ---------- */
+  B["s7-send-a-ride"] = function (el, ctx) {
+    const ticket = el.querySelector("#s7-ticket");
+    const landing = el.querySelector("#s7-landing");
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector("#s7-phone-a"), el.querySelector("#s7-phone-b")], { stagger: 0.14 }), 0);
+        },
+        () => {
+          // Flip carries the real ticket node from one phone to the other.
+          const state = Flip.getState(ticket);
+          landing.appendChild(ticket);
+          ticket.style.margin = "0";
+          const tl = ctx.track(gsap.timeline());
+          tl.add(Flip.from(state, { duration: ctx.d(1.1), ease: "power3.inOut", absolute: true }))
+            .to("#s7-arrow", { opacity: 1, duration: ctx.d(0.4) }, ctx.d(0.15))
+            .to("#s7-arrow", { x: 14, duration: ctx.d(0.7), ease: EASE_DRIVE }, "<");
+        },
+        () => { ctx.track(gsap.fromTo("#s7-horizon", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: ctx.d(0.65), ease: EASE_DRIVE })); },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

@@ -1,6 +1,6 @@
 // Narration script for the showcase deck, one entry per scene, written to
-// match the on screen copy and beats. AWAITING MHOFU'S SIGN OFF: no
-// narration audio is generated until he approves or edits these lines.
+// match the on screen copy and beats. APPROVED by Mhofu 2026-07-17 exactly
+// as drafted; voice is takunda-man (see the rulings in deck/NOTES.md).
 // Consumed by make-audio.mjs; file names follow the scene ids.
 
 export const SAMPLE_LINE =

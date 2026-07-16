@@ -95,5 +95,27 @@
     };
   };
 
+  /* ---------- 2 · The ride that started it ---------- */
+  B["s2-founding-ride"] = function (el, ctx) {
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector("#s2-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector("#s2-body"), el.querySelector("#s2-map")], { stagger: 0.12 }), 0)
+            .add(drawMask(ctx, "#s2-route-reveal", 1.5), ctx.d(0.6))
+            .to("#s2-drop-pin", { opacity: 1, duration: ctx.d(0.4) }, ">-0.1");
+        },
+        () => {
+          // The long lonely walk, drawn slowly on purpose.
+          const tl = ctx.track(gsap.timeline());
+          tl.add(drawMask(ctx, "#s2-walk-reveal", 2.4))
+            .to("#s2-home", { opacity: 1, duration: ctx.d(0.5) }, ">-0.2")
+            .to("#s2-caption", { opacity: 1, duration: ctx.d(0.6) }, ">-0.1");
+        },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

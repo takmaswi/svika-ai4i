@@ -36,6 +36,46 @@
     </div>
   </section>
 
+  <!-- 2 · The ride that started it -->
+  <section class="scene" id="s2-founding-ride" data-theme="night" data-auto-hold="5200">
+    <span class="stamp stamp-vision"><span class="stamp-dot"></span>A true ride</span>
+    <div class="split">
+      <div class="split-copy">
+        <p class="scene-kicker">The ride that started it</p>
+        <h1 class="scene-title" id="s2-title">You were given<br>an address.</h1>
+        <p class="scene-body" id="s2-body">Nobody told you where to get off. The kombi passed the turn off, and the walk home was long, dark and one stop too late to fix.</p>
+        <p class="mono" id="s2-caption" style="font-size:clamp(13px,1.2vw,17px);color:#F5B301;opacity:0">One stop early. The rest on foot.</p>
+      </div>
+      <div class="split-art">
+        <svg id="s2-map" viewBox="0 0 560 620" aria-hidden="true" style="width:100%;max-height:76vh;display:block">
+          <defs>
+            <mask id="s2-route-mask" maskUnits="userSpaceOnUse"><path id="s2-route-reveal" d="M96 540 C 150 470, 130 400, 230 340 C 320 288, 330 210, 340 120" pathLength="1" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"></path></mask>
+            <mask id="s2-walk-mask" maskUnits="userSpaceOnUse"><path id="s2-walk-reveal" d="M340 120 C 380 140, 440 150, 470 200 C 500 250, 480 330, 520 400" pathLength="1" fill="none" stroke="#FFFFFF" stroke-width="16" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"></path></mask>
+          </defs>
+          <rect width="560" height="620" rx="24" fill="#121710"></rect>
+          <path d="M420 40 C500 26 548 62 552 128 L554 220 C494 226 450 210 434 168 C420 130 414 82 420 40 Z" fill="#1B3423"></path>
+          <g fill="#1B211A"><rect x="40" y="60" width="110" height="84" rx="7"></rect><rect x="200" y="50" width="130" height="92" rx="7"></rect><rect x="44" y="210" width="100" height="88" rx="7"></rect><rect x="200" y="200" width="96" height="96" rx="7"></rect><rect x="40" y="360" width="104" height="76" rx="7"></rect><rect x="200" y="356" width="92" height="80" rx="7"></rect><rect x="380" y="360" width="120" height="80" rx="7"></rect><rect x="44" y="490" width="116" height="84" rx="7"></rect><rect x="220" y="486" width="96" height="82" rx="7"></rect><rect x="390" y="470" width="110" height="96" rx="7"></rect></g>
+          <g stroke="#222B22" stroke-width="17" stroke-linecap="round" fill="none"><path d="M-10 170 L570 162"></path><path d="M-10 330 L570 336"></path><path d="M172 -10 L180 630"></path><path d="M352 -10 L344 630"></path><path d="M-10 460 L570 468"></path></g>
+          <g stroke="#333E33" stroke-width="11" stroke-linecap="round" fill="none"><path d="M-10 170 L570 162"></path><path d="M-10 330 L570 336"></path><path d="M172 -10 L180 630"></path><path d="M352 -10 L344 630"></path><path d="M-10 460 L570 468"></path></g>
+          <g stroke="#2A342B" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.9"><path d="M-10 250 L570 256"></path><path d="M262 -10 L266 630"></path><path d="M450 -10 L446 630"></path></g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#7E877E" letter-spacing="0.6">
+            <text x="196" y="152">Samora Machel Ave</text>
+            <text x="196" y="320">Jason Moyo Ave</text>
+            <text transform="translate(166,600) rotate(-90)">Julius Nyerere Way</text>
+          </g>
+          <!-- The ride -->
+          <path d="M96 540 C 150 470, 130 400, 230 340 C 320 288, 330 210, 340 120" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 11" opacity="0.75" mask="url(#s2-route-mask)"></path>
+          <circle cx="96" cy="540" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3"></circle>
+          <!-- Dropped one stop early -->
+          <circle id="s2-drop-pin" cx="340" cy="120" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3" opacity="0"></circle>
+          <!-- The long lonely walk -->
+          <path d="M340 120 C 380 140, 440 150, 470 200 C 500 250, 480 330, 520 400" fill="none" stroke="#F5B301" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 13" opacity="0.85" mask="url(#s2-walk-mask)"></path>
+          <g id="s2-home" opacity="0"><circle cx="520" cy="400" r="10" fill="none" stroke="#F5B301" stroke-width="3"></circle><circle cx="520" cy="400" r="3" fill="#F5B301"></circle></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
 
 </main>
 

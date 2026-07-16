@@ -296,5 +296,27 @@
     };
   };
 
+  /* ---------- 9 · Rank pulse and last kombi ---------- */
+  B["s9-rank-pulse"] = function (el, ctx) {
+    const pulse = el.querySelector("#s9-pulse");
+    const last = el.querySelector("#s9-last");
+    gsap.set([pulse, last], { opacity: 0, y: 22 });
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, el.querySelector(".scene-kicker")), 0)
+            .to(pulse, { opacity: 1, y: 0, duration: ctx.d(0.55), ease: EASE_DRIVE }, ctx.d(0.5));
+          const seats = el.querySelector("#s9-seats");
+          tl.to(seats, { opacity: 0, duration: ctx.d(0.3), delay: ctx.d(1.1) })
+            .call(() => { seats.textContent = "3 seats left"; })
+            .to(seats, { opacity: 1, duration: ctx.d(0.3) });
+        },
+        () => { ctx.track(gsap.to(last, { opacity: 1, y: 0, duration: ctx.d(0.55), ease: EASE_DRIVE })); },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

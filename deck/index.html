@@ -12,6 +12,10 @@
 </head>
 <body class="theme-night">
 
+<div id="kombi-layer" aria-hidden="true">
+  <img id="kombi-fallback" alt="" src="">
+</div>
+
 <main id="deck">
 
 
@@ -30,6 +34,15 @@
 <script src="vendor/SplitText.min.js"></script>
 <script src="vendor/Flip.min.js"></script>
 <script src="vendor/MotionPathPlugin.min.js"></script>
+<script src="js/scenes.js"></script>
 <script src="js/engine.js"></script>
+<script type="module">
+  import { initKombi } from "./js/kombi3d.js";
+  const params = new URLSearchParams(location.search);
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches || params.has("reduced");
+  initKombi({ forceFallback: params.has("nowebgl"), reduced })
+    .then((api) => window.SVK_BOOT(api))
+    .catch(() => window.SVK_BOOT(null));
+</script>
 </body>
 </html>

@@ -21,3 +21,4 @@ _tmp_*
 # deck tooling scratch (screenshots, canonical slices)
 tools/deck/shots*/
 tools/deck/.canonical/
+tools/deck/pdf-frames/

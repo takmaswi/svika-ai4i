@@ -62,6 +62,38 @@
 
   const B = {};
 
+  /* ---------- 1 · Cold open ---------- */
+  B["s1-cold-open"] = function (el, ctx) {
+    const beamG = el.querySelector("#s1-beam-group");
+    const wordmark = el.querySelector("#s1-wordmark");
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          gsap.set(wordmark, { opacity: 0, y: 18 });
+          // Headlight sweep across the char night before anything exists.
+          tl.set(beamG, { opacity: 0, transformOrigin: "130px 0px", rotation: -6, x: -140, y: 430 })
+            .to(beamG, { opacity: 1, duration: ctx.d(0.5), ease: "power1.in" })
+            .to(beamG, { x: 1500, rotation: 8, duration: ctx.d(2.1), ease: "power2.inOut" }, "<")
+            .to(beamG, { opacity: 0, duration: ctx.d(0.4) }, ">-0.4");
+          if (ctx.kombi) {
+            tl.call(() => ctx.kombi.show({ theme: "night", color: "white" }), null, ctx.d(1.1));
+            if (ctx.kombi.mode === "webgl") {
+              tl.add(ctx.kombi.entrance({ duration: ctx.d(2.2) }), ctx.d(1.2));
+              tl.call(() => ctx.kombi.setFloat(true), null, ctx.d(3.2));
+            }
+          }
+          tl.to(wordmark, { opacity: 1, y: 0, duration: ctx.d(0.7), ease: EASE_DRIVE }, ctx.d(2.6));
+        },
+        // Turntable: repeated advance walks the kombi around.
+        () => { if (ctx.kombi) ctx.track(ctx.kombi.spin(Math.PI * 2 / 3, ctx.d(1.4))); },
+        () => { if (ctx.kombi) ctx.track(ctx.kombi.spin(Math.PI * 2 / 3, ctx.d(1.4))); },
+      ],
+      onLeave: () => {
+        if (ctx.kombi) { ctx.kombi.setFloat(false); ctx.kombi.hide(); }
+      },
+    };
+  };
 
   window.SVK_BUILDERS = B;
 })();

@@ -149,5 +149,34 @@
     };
   };
 
+  /* ---------- 4 · Take me there ---------- */
+  B["s4-take-me-there"] = function (el, ctx) {
+    const typed = el.querySelector("#s4-typed");
+    const caret = el.querySelector("#s4-caret");
+    typed.textContent = "";
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body"), el.querySelector("#s4-search")], { stagger: 0.12 }), 0);
+          if (!ctx.REDUCED) ctx.track(gsap.to(caret, { opacity: 0, duration: 0.5, yoyo: true, repeat: -1, ease: "steps(1)" }));
+          const text = "Westgate turn off";
+          const chars = { n: 0 };
+          tl.to(chars, {
+            n: text.length,
+            duration: ctx.d(1.4),
+            ease: "none",
+            delay: ctx.d(0.5),
+            onUpdate: () => { typed.textContent = text.slice(0, Math.round(chars.n)); },
+          });
+          if (ctx.REDUCED) typed.textContent = text;
+        },
+        () => { ctx.track(gsap.fromTo("#s4-plan", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: ctx.d(0.55), ease: EASE_DRIVE })); },
+        () => { ctx.track(gsap.fromTo("#s4-voice", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: ctx.d(0.6), ease: "back.out(1.6)" })); },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

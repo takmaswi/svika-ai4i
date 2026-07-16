@@ -137,6 +137,43 @@
     </div>
   </section>
 
+  <!-- 5 · Guardian mode -->
+  <section class="scene" id="s5-guardian" data-theme="day" data-auto-hold="4600">
+    <span class="stamp stamp-roadmap"><span class="stamp-dot"></span>Roadmap</span>
+    <div class="split">
+      <div class="split-copy">
+        <p class="scene-kicker">Guardian mode</p>
+        <h1 class="scene-title">She gets there.<br>You see it.</h1>
+        <p class="scene-body">A linked trip shows the guardian each step: boarded, en route, arrived. The child always sees the guardian chip on their own screen. No silent tracking, ever.</p>
+        <div class="guardian-chip" id="s5-dignity" style="opacity:0">
+          <span class="mono" style="font-size:11.5px;letter-spacing:.8px">GUARDIAN SEES YOUR TRIPS</span>
+        </div>
+      </div>
+      <div class="split-art">
+        <svg id="s5-map" viewBox="0 0 560 480" aria-hidden="true" style="width:100%;max-height:60vh;display:block">
+          <defs>
+            <mask id="s5-route-mask" maskUnits="userSpaceOnUse"><path d="M80 400 C 160 360, 180 280, 280 240 C 380 200, 420 160, 470 100" pathLength="1" id="s5-route-reveal" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-dasharray="1" stroke-dashoffset="1"></path></mask>
+          </defs>
+          <rect width="560" height="480" rx="24" fill="#F4F5F1"></rect>
+          <path d="M430 30 C505 18 548 50 552 112 L554 190 C498 196 458 182 444 146 C432 114 426 72 430 30 Z" fill="#D9E8CC"></path>
+          <g fill="#EAECE5"><rect x="40" y="50" width="110" height="80" rx="7"></rect><rect x="210" y="44" width="120" height="88" rx="7"></rect><rect x="44" y="190" width="96" height="80" rx="7"></rect><rect x="210" y="186" width="90" height="88" rx="7"></rect><rect x="40" y="320" width="100" height="72" rx="7"></rect><rect x="210" y="316" width="88" height="76" rx="7"></rect><rect x="380" y="320" width="116" height="76" rx="7"></rect></g>
+          <g stroke="#E1E3DA" stroke-width="17" stroke-linecap="round" fill="none"><path d="M-10 156 L570 150"></path><path d="M-10 300 L570 306"></path><path d="M178 -10 L184 490"></path><path d="M356 -10 L350 490"></path></g>
+          <g stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" fill="none"><path d="M-10 156 L570 150"></path><path d="M-10 300 L570 306"></path><path d="M178 -10 L184 490"></path><path d="M356 -10 L350 490"></path></g>
+          <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#6E766A" letter-spacing="0.6"><text x="200" y="140">Samora Machel Ave</text><text x="60" y="290">Jason Moyo Ave</text></g>
+          <path d="M80 400 C 160 360, 180 280, 280 240 C 380 200, 420 160, 470 100" fill="none" stroke="#161D18" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 11" opacity="0.85" mask="url(#s5-route-mask)"></path>
+          <circle cx="80" cy="400" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3"></circle>
+          <circle id="s5-arrive-pin" cx="470" cy="100" r="7" fill="#E84C30" stroke="#FFFFFF" stroke-width="3" opacity="0"></circle>
+          <g id="s5-kombi-dot"><rect x="-15" y="-15" width="30" height="30" rx="10" fill="#F5B301" stroke="#161D18" stroke-width="2.5"></rect></g>
+        </svg>
+        <div class="card-dark-feature notify-card" id="s5-notify" style="opacity:0">
+          <p class="beat-label" style="color:rgba(255,255,255,.5)">Rudo's trip</p>
+          <p class="notify-strong">Arrived safe</p>
+          <p class="mono" style="font-size:15px;color:#F5B301;margin:2px 0 0">17:42</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
 </main>
 

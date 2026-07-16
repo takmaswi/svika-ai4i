@@ -178,5 +178,31 @@
     };
   };
 
+  /* ---------- 5 · Guardian mode ---------- */
+  B["s5-guardian"] = function (el, ctx) {
+    const kombiDot = el.querySelector("#s5-kombi-dot");
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector(".scene-body"), el.querySelector("#s5-map")], { stagger: 0.12 }), 0)
+            .add(drawMask(ctx, "#s5-route-reveal", 1.5), ctx.d(0.5));
+          tl.to(kombiDot, {
+            motionPath: { path: "#s5-route-reveal", align: "#s5-route-reveal", alignOrigin: [0.5, 0.5] },
+            duration: ctx.d(2.6),
+            ease: "power1.inOut",
+          }, ctx.d(0.7));
+        },
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.to("#s5-arrive-pin", { opacity: 1, duration: ctx.d(0.35) })
+            .fromTo("#s5-notify", { opacity: 0, y: 18, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: ctx.d(0.6), ease: "back.out(1.5)" })
+            .to("#s5-dignity", { opacity: 1, duration: ctx.d(0.5) }, ">-0.2");
+        },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

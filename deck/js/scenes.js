@@ -117,5 +117,37 @@
     };
   };
 
+  /* ---------- 3 · What Svika already does ---------- */
+  B["s3-real-today"] = function (el, ctx) {
+    const cards = ["#s3-card-code", "#s3-card-change", "#s3-card-eta"].map((s) => el.querySelector(s));
+    gsap.set(cards, { opacity: 0, y: 22 });
+    function popCard(i) {
+      return () => {
+        const tl = ctx.track(gsap.timeline());
+        tl.to(cards[i], { opacity: 1, y: 0, duration: ctx.d(0.55), ease: EASE_DRIVE });
+        if (i === 2) {
+          // The reference screen's 5 min to 4 min swap: the estimate lives.
+          const eta = el.querySelector("#s3-eta");
+          tl.to(eta, { opacity: 0, duration: ctx.d(0.3), delay: ctx.d(0.9) })
+            .call(() => { eta.textContent = "4 min"; })
+            .to(eta, { opacity: 1, duration: ctx.d(0.3) });
+        }
+      };
+    }
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector("#s3-title")))
+            .add(rise(ctx, el.querySelector(".scene-kicker")), 0);
+          popCard(0)();
+        },
+        popCard(1),
+        popCard(2),
+        () => { ctx.track(gsap.to("#s3-honest", { opacity: 1, duration: ctx.d(0.7) })); },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

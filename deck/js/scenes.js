@@ -204,5 +204,51 @@
     };
   };
 
+  /* ---------- 6 · The city maps itself (scrub) ---------- */
+  B["s6-city-maps"] = function (el, ctx) {
+    const svg = el.querySelector("#s6-canvas");
+    const art = window.SVK_ART.buildFlywheel(svg);
+    const nums = el.querySelectorAll(".counter-num");
+    nums.forEach((n) => { n.textContent = "0"; });
+    art.waves.flat().forEach((p) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+    });
+    art.shortcuts.forEach((p) => { p.style.opacity = 0; });
+
+    function wave(i, counts) {
+      const tl = ctx.track(gsap.timeline());
+      art.waves[i].forEach((p, j) => tl.add(drawPath(ctx, p, 1.4), ctx.d(j * 0.12)));
+      tl.add(countTo(ctx, nums[0], counts[0]), 0);
+      tl.add(countTo(ctx, nums[1], counts[1]), 0);
+      tl.add(countTo(ctx, nums[2], counts[2]), 0);
+      return tl;
+    }
+
+    return {
+      beats: [
+        () => {
+          const tl = ctx.track(gsap.timeline());
+          tl.add(titleReveal(ctx, el.querySelector(".scene-title")))
+            .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector("#s6-counters")], { stagger: 0.15 }), 0);
+          wave(0, [12, 3, 1]);
+        },
+        () => { wave(1, [87, 26, 9]); },
+        () => {
+          wave(2, [412, 118, 37]);
+          const tl = ctx.track(gsap.timeline({ delay: ctx.d(0.8) }));
+          art.shortcuts.forEach((p, j) => {
+            tl.to(p, { opacity: 0.9, duration: ctx.d(0.5) }, ctx.d(j * 0.2));
+            tl.add(drawPath(ctx, p, 0.9), "<");
+          });
+          art.chips.forEach((c, j) => {
+            tl.to(c, { opacity: 1, duration: ctx.d(0.45) }, ctx.d(0.4 + j * 0.35));
+          });
+        },
+      ],
+    };
+  };
+
   window.SVK_BUILDERS = B;
 })();

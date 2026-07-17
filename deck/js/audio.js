@@ -30,8 +30,14 @@
   const NARR_FADE_S = 0.18; // scene exit fades the voice, never chops it
   const NARR_TAIL_MS = 600; // silence owed after a line before autoplay moves on
 
+  // Master headroom: voice true peak (-1.5 dBTP) plus a coinciding ducked
+  // cue peak sums past 0 dBFS and clips the destination; -2 dB on the master
+  // keeps the worst measured stack under -1 dBTP.
+  const MASTER_GAIN = 0.8;
+
   const buffers = new Map(); // url key -> AudioBuffer
   let ctx = null;
+  let masterBus = null;
   let sfxBus = null;
   let narrBus = null;
   let narrSource = null;
@@ -46,12 +52,15 @@
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
     ctx = new AC();
+    masterBus = ctx.createGain();
+    masterBus.gain.value = MASTER_GAIN;
+    masterBus.connect(ctx.destination);
     sfxBus = ctx.createGain();
     sfxBus.gain.value = 1.0;
-    sfxBus.connect(ctx.destination);
+    sfxBus.connect(masterBus);
     narrBus = ctx.createGain();
     narrBus.gain.value = 1.0;
-    narrBus.connect(ctx.destination);
+    narrBus.connect(masterBus);
     return ctx;
   }
 
@@ -68,8 +77,10 @@
     }
   }
 
+  let preloaded = false;
   function preload() {
-    if (REDUCED) return;
+    if (REDUCED || preloaded) return;
+    preloaded = true;
     SFX_NAMES.forEach((n) => load("sfx:" + n, "assets/audio/sfx/" + n + ".mp3"));
     // The manifest lists which narration files exist (make-audio.mjs keeps
     // it current), so a not yet generated set never spams 404s on stage.
@@ -218,4 +229,9 @@
       return Math.max(0, NARR_TAIL_MS - (performance.now() - narrEndedAt));
     },
   };
+
+  // Decode starts now, not at engine boot: the engine waits on the 3D model,
+  // and scene 1's first cue lands 0.65s in, before a boot time decode would
+  // finish. A cue with no buffer skips silently, so warm the cache early.
+  preload();
 })();

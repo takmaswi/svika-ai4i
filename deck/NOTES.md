@@ -161,6 +161,34 @@ choice taken, or a decision Mhofu may want to overrule.
   unlock. The -3 dB master stays; the tape re-measure below is the proof it
   still holds.
 
+## Round 3: one action cold open (2026-07-17)
+
+- **The turntable is dead.** Scene 1 is two beats (26 total in the deck).
+  Beat 1 is the unchanged entrance with the open-hit sting landing on the
+  route draw. Beat 2 is one press: the kombi performs one full spin while
+  scaling up and away, wordmark and sky fall under it, and at 0.45s the
+  scene calls the engine over to scene 2, whose entrance holds a 0.4s
+  breath so the founding map draws in beneath the departing van. The kombi
+  layer rides `is-front` (above scene content, below chrome) for the length
+  of the swirl and the exit tween cleans itself up on completion, settle
+  and kill alike.
+- **Engine mechanics that make it hold:** the exit tween is beat-only
+  tracked (`ctx.trackBeat`), so the scene switch's kill sweep cannot freeze
+  it mid air, while a settle press still completes it; the settle walk is
+  now a fixpoint rescan, so the one press that settles the swirl also runs
+  the handover and settles scene 2's entrance behind it, with pending cues
+  killed again after the walk (cancelled, never burst). Scene 1's onLeave
+  skips the kombi hide only when the handoff flag is up; re-entering scene
+  1 (or rail jumping to the close) reclaims the layer by killing any live
+  exit first. Under reduced motion the swirl beat is inert and a press is a
+  plain scene change.
+- **Rigs re-derived for 26:** snap and the evidence run press nothing to
+  enter scene 2 (the handoff does it), and the PDF export counts scene 1 as
+  one beat so its insurance page stays the settled wordmark frame. The
+  press drill grew three handoff cases: handoff lands scene 2 by itself,
+  settle mid swirl lands scene 2 settled, and back mid handoff re-enters
+  scene 1 clean.
+
 ## Copy and content gaps
 
 1. **Illustrative numbers.** The flywheel counters (412 journeys, 118 places,

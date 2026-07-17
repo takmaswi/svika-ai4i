@@ -76,15 +76,24 @@
   const B = {};
 
   /* ---------- 1 · Cold open ---------- */
+  // The departing swirl's tween lives here so a re-entry (back into scene 1,
+  // or a rail jump to the close) can always reclaim a clean kombi layer.
+  let kombiExit = null;
+  function killKombiExit() {
+    if (kombiExit) { kombiExit.kill(); kombiExit = null; }
+  }
+
   B["s1-cold-open"] = function (el, ctx) {
     const beamG = el.querySelector("#s1-beam-group");
     const wordmark = el.querySelector("#s1-wordmark");
     return {
       beats: [
         () => {
-          // Sound: the route draws, then its two stops land.
-          // Cues sit on the motion: the whoosh with the path draw at 0.2,
-          // each pop on its stop's landing frame (back.out impact, not start).
+          killKombiExit(); // re-entering mid handoff reclaims the layer
+          // Sound: the open-hit sting lands with the route draw, the pen
+          // whoosh rides under it, then the two stops land. Cues sit on the
+          // motion: each pop on its stop's landing frame (back.out impact).
+          ctx.sfx("open-hit", 0.2);
           ctx.sfx("draw", 0.2);
           ctx.sfx("stop-pop", 0.55);
           ctx.sfx("stop-pop", 1.8);
@@ -117,11 +126,28 @@
           }
           tl.to(wordmark, { opacity: 1, y: 0, duration: ctx.d(0.7), ease: EASE_DRIVE }, ctx.d(4.6));
         },
-        // Turntable: repeated advance walks the kombi around.
-        () => { if (ctx.kombi) ctx.track(ctx.kombi.spin(Math.PI * 2 / 3, ctx.d(1.4))); },
-        () => { if (ctx.kombi) ctx.track(ctx.kombi.spin(Math.PI * 2 / 3, ctx.d(1.4))); },
+        // One press: the swirl IS the transition. The kombi spins once while
+        // scaling up and away (a beat-only tween, so it survives the scene
+        // switch), the wordmark and sky fall away under it, and mid swirl
+        // the engine hands over to scene 2, whose map draws in beneath the
+        // departing van.
+        () => {
+          // Reduced motion has no swirl: the beat is inert and the next
+          // press changes scene the plain way.
+          if (ctx.REDUCED) return;
+          if (ctx.kombi) kombiExit = ctx.trackBeat(ctx.kombi.exit({ duration: ctx.d(1.7) }));
+          const tl = ctx.track(gsap.timeline());
+          tl.to(wordmark, { opacity: 0, y: -12, duration: ctx.d(0.4), ease: "power1.in" }, 0)
+            .to(["#s1-beam", "#s1-route-sky"], { opacity: 0, duration: ctx.d(0.35), ease: "power1.in" }, 0)
+            .call(() => {
+              ctx.handoff = "s1-swirl";
+              window.SVK_ENGINE.go(1);
+            }, null, ctx.d(0.45));
+        },
       ],
       onLeave: () => {
+        if (ctx.handoff) return; // the exit tween owns the kombi through the handover
+        killKombiExit();
         if (ctx.kombi) { ctx.kombi.setFloat(false); ctx.kombi.hide(); }
       },
     };
@@ -129,11 +155,15 @@
 
   /* ---------- 2 · The ride that started it ---------- */
   B["s2-founding-ride"] = function (el, ctx) {
+    // Arriving mid swirl: hold the entrance a breath so the map draws in
+    // under the departing kombi and the two motions read as one gesture.
+    const lead = ctx.handoff === "s1-swirl" ? 0.4 : 0;
+    ctx.handoff = null;
     return {
       beats: [
         () => {
-          ctx.sfx("draw", 0.6);
-          const tl = ctx.track(gsap.timeline());
+          ctx.sfx("draw", 0.6 + lead);
+          const tl = ctx.track(gsap.timeline({ delay: ctx.d(lead) }));
           // A slow camera settle gives the flat map one breath of depth.
           tl.fromTo("#s2-map", { scale: 1.03, transformOrigin: "62% 38%" }, { scale: 1, duration: ctx.d(3.4), ease: "power1.out" }, 0)
             .add(titleReveal(ctx, el.querySelector("#s2-title")), 0)
@@ -405,6 +435,7 @@
       beats: [
         () => {
           ctx.sfx("swell");
+          killKombiExit(); // a rail jump mid handoff must not fight the entrance
           const tl = ctx.track(gsap.timeline());
           if (ctx.kombi) {
             ctx.kombi.show({ theme: "day", color: "marigold" });

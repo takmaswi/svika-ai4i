@@ -37,6 +37,21 @@ export async function initKombi({ forceFallback = false, reduced = false } = {})
       setColor() {},
       spin() {},
       entrance() {},
+      // Poster stand-in for the cold open swirl: a card-flip spin while the
+      // layer scales up and fades, same shape and duration as the 3D exit
+      // so the engine's handoff timing is identical on both paths.
+      exit({ duration = 1.7 } = {}) {
+        layer.classList.add("is-front");
+        const done = () => {
+          layer.classList.remove("is-front");
+          layer.classList.remove("is-live");
+          gsap.set([layer, posterEl], { clearProps: "opacity,transform,scale,rotationY" });
+        };
+        const tl = gsap.timeline({ onComplete: done, onInterrupt: done });
+        tl.to(posterEl, { rotationY: 360, scale: 2.2, transformPerspective: 900, duration, ease: "power2.inOut" }, 0)
+          .to(layer, { opacity: 0, duration: duration * 0.4, ease: "power1.in" }, duration * 0.6);
+        return tl;
+      },
       setFloat() {},
       fps: () => 0,
     };
@@ -202,6 +217,28 @@ export async function initKombi({ forceFallback = false, reduced = false } = {})
     },
     spin(delta, duration = 1.4) {
       return gsap.to(group.rotation, { y: group.rotation.y + delta, duration, ease: "power2.inOut" });
+    },
+    // The cold open swirl: one full spin while scaling up and away, the
+    // layer fading late so the van leaves over whatever draws in beneath it.
+    // Cleanup runs on completion, settle and kill alike, so re-entering
+    // scene 1 (or landing on scene 10) always starts from a clean layer.
+    exit({ duration = 1.7 } = {}) {
+      if (floatTween) { floatTween.kill(); floatTween = null; }
+      layer.classList.add("is-front");
+      const done = () => {
+        layer.classList.remove("is-front");
+        visible = false;
+        layer.classList.remove("is-live");
+        gsap.set(layer, { clearProps: "opacity" });
+        group.position.set(0, 0, 0);
+        group.scale.setScalar(1);
+      };
+      const tl = gsap.timeline({ onComplete: done, onInterrupt: done });
+      tl.to(group.rotation, { y: group.rotation.y + Math.PI * 2, duration, ease: "power2.inOut" }, 0)
+        .to(group.scale, { x: 2.5, y: 2.5, z: 2.5, duration, ease: "power2.in" }, 0)
+        .to(group.position, { y: 2.1, duration, ease: "power2.in" }, 0)
+        .to(layer, { opacity: 0, duration: duration * 0.35, ease: "power1.in" }, duration * 0.65);
+      return tl;
     },
     setFloat(on) {
       if (floatTween) { floatTween.kill(); floatTween = null; }

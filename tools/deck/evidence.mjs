@@ -15,7 +15,10 @@ const { chromium } = require("@playwright/test");
 const OUT = "../../docs/deck-evidence";
 mkdirSync(OUT, { recursive: true });
 
-const BEATS = { 1: 3, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
+// 26 beats since the one action cold open: scene 1's second beat is the
+// swirl handoff, which navigates to scene 2 by itself, so entering scene 2
+// costs no press.
+const BEATS = { 1: 2, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
 const mode = process.argv[2] || "run";
 
 // The engine settles a still-running beat on the first press, so the rig
@@ -31,7 +34,7 @@ async function fullRun(page, holdMs, onBeat) {
   await page.waitForTimeout(4500);
   for (let scene = 1; scene <= 10; scene++) {
     for (let beat = 0; beat < BEATS[scene]; beat++) {
-      if (!(scene === 1 && beat === 0)) {
+      if (!(scene === 1 && beat === 0) && !(scene === 2 && beat === 0)) {
         await beatIdle(page);
         await page.keyboard.press("Space");
       }
@@ -77,7 +80,7 @@ if (mode === "run") {
     ...fpsSamples.map((s) => `scene ${s.scene} beat ${s.beat}: ${s.fps} fps`),
     "",
     "## Run",
-    "All 27 beats of the 10 scenes advanced by keyboard; video beside this file.",
+    "All 26 beats of the 10 scenes advanced by keyboard; video beside this file.",
   ].join("\n");
   writeFileSync(join(OUT, "run-report.md"), report);
   await context.close();

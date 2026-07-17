@@ -21,8 +21,10 @@ const LABEL = opt("label", "beat");
 // 720p default: SwiftShader software WebGL cannot hold 1080p screenshots.
 const VIEW = opt("viewport", "1280x720").split("x").map(Number);
 
-// Beats per scene, engine order. Advancing past the last beat changes scene.
-const BEATS = { 1: 3, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
+// Beats per scene, engine order (26 total). Advancing past scene 1's first
+// beat runs the swirl handoff, which navigates to scene 2 by itself: the
+// rig treats scene 1 as one pressed beat and lets the handoff land.
+const BEATS = { 1: 2, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
 
 mkdirSync(OUTDIR, { recursive: true });
 
@@ -37,7 +39,10 @@ await page.waitForTimeout(4000);
 let shot = 0;
 for (let scene = 1; scene <= 10; scene++) {
   for (let beat = 0; beat < BEATS[scene]; beat++) {
-    if (!(scene === 1 && beat === 0)) {
+    // No press on the very first state, and none entering scene 2: the
+    // swirl handoff (scene 1, beat 1) navigates there by itself, so its
+    // settled end state IS scene 2's entrance.
+    if (!(scene === 1 && beat === 0) && !(scene === 2 && beat === 0)) {
       // The engine now settles a still-running beat on the first press
       // (manual driving feel); the rig must wait for the beat to finish so
       // a press always *advances* and frame labels stay deterministic.

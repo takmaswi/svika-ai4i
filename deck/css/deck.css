@@ -309,6 +309,10 @@ body.theme-day { background: var(--paper); color: var(--char); }
   opacity: 0;
 }
 #kombi-layer.is-live { opacity: 1; }
+/* During the cold open handoff the departing kombi finishes its exit OVER
+   scene 2's entrance, so the layer rides above scene content (10) and below
+   chrome for the length of the swirl. */
+#kombi-layer.is-front { z-index: 20; }
 #kombi-layer canvas, #kombi-fallback { position: absolute; inset: 0; width: 100%; height: 100%; }
 #kombi-fallback { object-fit: contain; display: none; }
 #kombi-layer.is-fallback canvas { display: none; }

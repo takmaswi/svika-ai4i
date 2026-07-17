@@ -60,6 +60,19 @@
     return t;
   };
 
+  // Beat-only tracking for the cold open handoff: the kombi exit tween must
+  // survive the scene switch (killSceneAnimations would freeze it mid air)
+  // yet still settle under a press like any beat payload.
+  ctx.trackBeat = function trackBeat(t) {
+    if (t) beatTweens.push(t);
+    return t;
+  };
+
+  // Scene 1 sets this just before handing the engine to scene 2 mid swirl;
+  // scene 2's builder consumes it to delay its entrance a breath so the two
+  // motions read as one continuous gesture.
+  ctx.handoff = null;
+
   function runBeat(fn) {
     beatTweens = [];
     sfxCalls = [];
@@ -99,16 +112,18 @@
   function settleRunningBeat() {
     let settled = false;
     killPendingSfx(); // future sound cues die silently, they do not stack
-    // Index loop, not forEach: settling can fire onComplete chains that
-    // track new tweens mid-walk, and those must settle in the same press.
-    for (let i = 0; i < beatTweens.length; i++) {
-      const t = beatTweens[i];
-      if (isEndless(t)) continue;
-      if (t.totalProgress() < 1) {
-        t.totalProgress(1);
-        settled = true;
-      }
+    // Fixpoint walk, not an index loop: settling can fire onComplete chains
+    // that track new tweens mid-walk, and the cold open handoff even
+    // replaces the whole beat list (its call() navigates to scene 2, whose
+    // entrance then tracks fresh tweens). Rescanning until nothing is mid
+    // flight lands the entire transition, scene 2 settled, in one press.
+    for (let guard = 0; guard < 64; guard++) {
+      const t = beatTweens.find((x) => !isEndless(x) && x.totalProgress() < 1);
+      if (!t) break;
+      t.totalProgress(1);
+      settled = true;
     }
+    killPendingSfx(); // cues queued by beats settled mid walk die silently too
     return settled;
   }
 

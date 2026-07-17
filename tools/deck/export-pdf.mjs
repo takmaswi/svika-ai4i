@@ -13,7 +13,10 @@ const { chromium } = require("@playwright/test");
 const FRAMES = resolve("pdf-frames");
 mkdirSync(FRAMES, { recursive: true });
 
-const BEATS = { 1: 3, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
+// Scene 1 counts one beat here on purpose: its page is the settled entrance
+// (wordmark landed), and the press that would be its second beat runs the
+// swirl handoff, which is exactly the press that enters scene 2's beat 0.
+const BEATS = { 1: 1, 2: 2, 3: 4, 4: 3, 5: 2, 6: 3, 7: 3, 8: 2, 9: 2, 10: 3 };
 
 // Headed pass on the real GPU: capture the settled last beat per scene.
 const headed = await chromium.launch({ headless: false, args: ["--window-size=1600,900"] });

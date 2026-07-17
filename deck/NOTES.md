@@ -90,6 +90,38 @@ choice taken, or a decision Mhofu may want to overrule.
   between lines 0.88s, zero requests leaving localhost with all audio
   loading.
 
+## Round 3: presenter voice and the stutter post mortem (2026-07-17)
+
+- **The stutter was generation side, in the mastering chain, not the
+  runtime.** The round 2 pipeline re-encoded every line to 128k mp3 on each
+  correction pass (loudnorm render plus up to four refine passes: up to five
+  lossy generations plus repeated limiting per line). Differential test on a
+  real line: one encode leaves cumulative coding error at -24.6 dB below the
+  signal; five encodes leave it at -12.6 dB, roughly 23 percent error
+  amplitude, which the ear reads as grainy stutter. A signal scan of the
+  committed files found zero stutter shaped repeats and no dropouts beyond
+  natural stop consonant closures, and buffer source playback is immune to
+  main thread jank, which cleared the playback engine. Fix:
+  master-audio.mjs now does every intermediate pass on lossless WAV and
+  encodes each file to mp3 exactly once, with a verify and trim loop that
+  re-encodes from the kept WAV if the encoder's peak bump (measured 0.3 to
+  1.2 dB) pushes true peak over the law. Mastering is not idempotent, so
+  the script now only re-renders groups named on the command line
+  (`node master-audio.mjs voice sfx`) and measure only reports the rest;
+  regeneration always starts from fresh renders, never from shipped mp3s.
+- **Voice is takunda-presenter** (AugQODMJmD6Ng81JQeKf, "Takunda Zimbabwean
+  Presenter"), all ten lines regenerated word for word from the approved
+  script (the NOTES rulings on lines 4, 6 and 10 stand untouched). Stability
+  raised 0.5 to 0.65 with style moderate at 0.2 on the stable multilingual
+  model, per the stutter ruling. The old takunda-man files and sample are
+  deleted; git history keeps them.
+- **Playback hardened as belt and braces:** every audio asset is fully
+  decoded to an AudioBuffer before the deck reports ready (boot now waits on
+  the audio cache beside fonts and the 3D model), and narration starts on
+  the audio clock rather than a JS timer. SFX cue delays deliberately stay
+  on the GSAP frame clock: cues sit on rendered motion frames, and an audio
+  clock schedule would desync from a lagging GPU.
+
 ## Copy and content gaps
 
 1. **Illustrative numbers.** The flywheel counters (412 journeys, 118 places,

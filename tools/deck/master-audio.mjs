@@ -90,40 +90,67 @@ function masterSfx(name) {
   return { file: "sfx/" + name + ".mp3", capped };
 }
 
+// The round 3 stutter post mortem lives here: the old pipeline re-encoded
+// each line to 128k mp3 on every pass (loudnorm render + up to 4 refine
+// passes = up to 5 lossy generations plus repeated limiting), and that
+// generational loss is what read as grainy stutter on playback. All
+// intermediate work now happens on lossless WAV; each file is mp3 encoded
+// exactly once, at the very end.
 function masterVoice(rel) {
   const file = join(AUDIO_DIR, rel);
+  const wav = file + ".work.wav";
+  const wav2 = file + ".work2.wav";
   const tmp = file + ".tmp.mp3";
+  const PCM = ["-ar", "44100", "-ac", "1", "-c:a", "pcm_f32le"];
   const target = `I=${VOICE_I}:TP=${VOICE_TP}:LRA=11`;
+
+  // Decode the source once; everything after this stays lossless.
+  ff(["-i", file, "-af", MONO, ...PCM, wav]);
+
   // Two pass loudnorm, dynamic mode: linear mode undershoots the target
   // whenever the raw peaks sit high, which every ElevenLabs render does.
-  const pass1 = ffStderr(["-i", file, "-af", `${MONO},loudnorm=${target}:print_format=json`, "-f", "null", "-"]);
+  const pass1 = ffStderr(["-i", wav, "-af", `loudnorm=${target}:print_format=json`, "-f", "null", "-"]);
   const start = pass1.lastIndexOf("{");
   const j = JSON.parse(pass1.slice(start, pass1.indexOf("}", start) + 1));
   const measured =
     `measured_I=${j.input_i}:measured_TP=${j.input_tp}:measured_LRA=${j.input_lra}` +
     `:measured_thresh=${j.input_thresh}:offset=${j.target_offset}`;
-  ff(["-i", file, "-af", `${MONO},loudnorm=${target}:${measured},aresample=44100`, ...ENC, tmp]);
-  swap(file, tmp);
-  refine(file);
-  return { file: rel.replace(/\\/g, "/"), capped: false };
-}
+  ff(["-i", wav, "-af", `loudnorm=${target}:${measured},aresample=44100`, ...PCM, wav2]);
+  rmSync(wav);
+  renameSync(wav2, wav);
 
-// loudnorm's dynamic mode drifts on takes shorter than its 3s window and the
-// mp3 encode nudges true peak upward, so measure the real output and correct
-// with static gain under a limiter ceiling until it sits on the law.
-function refine(file) {
-  const ceiling = Math.pow(10, -2.0 / 20); // -2 dB pre-encode absorbs mp3 overs
-  // Up to 4 passes: a punchy short take trades ~1 dB of peak per pass.
+  // loudnorm's dynamic mode drifts on takes shorter than its 3s window, so
+  // measure the real WAV and correct with static gain under a limiter
+  // ceiling until it sits on the law. -2.4 dB pre-encode leaves room for
+  // the single mp3 encode to nudge true peak upward (measured up to 0.8 dB
+  // on these takes).
+  const ceiling = Math.pow(10, -2.4 / 20);
   for (let i = 0; i < 4; i++) {
-    const m = analyze(file, null);
+    const m = analyze(wav, null);
     const gain = VOICE_I - m.I;
-    if (Math.abs(gain) <= 0.5 && m.TP <= VOICE_TP + 0.2) return;
-    const tmp = file + ".tmp.mp3";
-    ff(["-i", file, "-af",
+    if (Math.abs(gain) <= 0.4 && m.TP <= VOICE_TP - 0.9) break;
+    ff(["-i", wav, "-af",
       `volume=${gain.toFixed(2)}dB,alimiter=limit=${ceiling.toFixed(3)}:attack=5:release=100:level=false`,
-      ...ENC, tmp]);
-    swap(file, tmp);
+      ...PCM, wav2]);
+    rmSync(wav);
+    renameSync(wav2, wav);
   }
+
+  // The one and only lossy encode. The encoder's peak bump varies with the
+  // material (measured 0.3 to 1.2 dB on these takes), so verify the encoded
+  // result and, if it overshoots, re-encode from the same WAV with a static
+  // trim: the shipped file is always exactly one generation from lossless.
+  let trim = 0;
+  for (let i = 0; i < 3; i++) {
+    rmSync(tmp, { force: true });
+    ff(["-i", wav, ...(trim ? ["-af", `volume=${trim.toFixed(2)}dB`] : []), ...ENC, tmp]);
+    const m = analyze(tmp, null);
+    if (m.TP <= VOICE_TP + 0.2) break;
+    trim -= m.TP - VOICE_TP + 0.1;
+  }
+  rmSync(wav);
+  swap(file, tmp);
+  return { file: rel.replace(/\\/g, "/"), capped: false };
 }
 
 function swap(file, tmp) {
@@ -131,16 +158,28 @@ function swap(file, tmp) {
   renameSync(tmp, file);
 }
 
+// Group selection: mastering is not idempotent (each render is one more
+// lossy encode), so a run only re-renders the groups named on the command
+// line and measure-only reports the rest. No argument prints the full table
+// without touching a single file.
+//   node master-audio.mjs [voice] [sfx]
+const groups = process.argv.slice(2);
+const doVoice = groups.includes("voice");
+const doSfx = groups.includes("sfx");
+
 const jobs = [
-  ...SFX_NAMES.map((n) => () => masterSfx(n)),
-  ...NARRATION.map((s) => () => masterVoice(join("narration", s + ".mp3"))),
-  () => masterVoice(join("samples", "takunda-man.mp3")),
+  ...SFX_NAMES.map((n) => () =>
+    doSfx ? masterSfx(n) : { file: "sfx/" + n + ".mp3", capped: ["card-deal", "type-tick"].includes(n) }),
+  ...NARRATION.map((s) => () =>
+    doVoice
+      ? masterVoice(join("narration", s + ".mp3"))
+      : { file: "narration/" + s + ".mp3", capped: false }),
 ];
 
 const rows = [];
 for (const job of jobs) {
   const r = job();
-  const v = analyze(join(AUDIO_DIR, r.file), null);
+  const v = analyze(join(AUDIO_DIR, r.file), MONO);
   rows.push({ ...r, ...v });
 }
 

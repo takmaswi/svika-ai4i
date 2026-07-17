@@ -37,18 +37,20 @@ function apiKey() {
 const KEY = apiKey();
 
 const VOICES = {
-  "takunda-shona-man": "qBHYpnF7IndeZmja6FII", // "Takunda Zimbabwean Shona Man"
-  "takunda-man": "wRW2mPeN6V5fVfWsUQjX", // "Takunda Zimbabwean Man"
+  "takunda-presenter": "AugQODMJmD6Ng81JQeKf", // "Takunda Zimbabwean Presenter"
 };
 
 async function tts(voiceId, text) {
+  // Stable multilingual model, stability raised over the round 2 settings so
+  // the clone never chops; style stays moderate (the stutter post mortem in
+  // deck/NOTES.md rules these settings).
   const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
     method: "POST",
     headers: { "xi-api-key": KEY, "content-type": "application/json" },
     body: JSON.stringify({
       text,
       model_id: "eleven_multilingual_v2",
-      voice_settings: { stability: 0.5, similarity_boost: 0.8, style: 0.2 },
+      voice_settings: { stability: 0.65, similarity_boost: 0.8, style: 0.2 },
     }),
   });
   if (!res.ok) throw new Error(`tts ${res.status}: ${(await res.text()).slice(0, 300)}`);
@@ -76,7 +78,7 @@ if (mode === "samples") {
     writeFileSync(file, buf);
     console.log("wrote", file, `(${(buf.length / 1024).toFixed(0)}kb)`);
   }
-  console.log("play both, pick one, then: node make-audio.mjs narration <takunda-shona-man|takunda-man>");
+  console.log("play the sample, then: node make-audio.mjs narration takunda-presenter");
 } else if (mode === "sfx") {
   const dir = join(AUDIO_DIR, "sfx");
   mkdirSync(dir, { recursive: true });
@@ -90,7 +92,7 @@ if (mode === "samples") {
   const pick = process.argv[3];
   const voiceId = VOICES[pick] || pick;
   if (!voiceId || voiceId.length < 12) {
-    console.error("usage: node make-audio.mjs narration <takunda-shona-man|takunda-man|voiceId>");
+    console.error("usage: node make-audio.mjs narration <takunda-presenter|voiceId>");
     process.exit(1);
   }
   const dir = join(AUDIO_DIR, "narration");

@@ -1,7 +1,7 @@
 // Narration script for the showcase deck, one entry per scene, written to
 // match the on screen copy and beats. APPROVED by Mhofu 2026-07-17 exactly
-// as drafted; voice is takunda-man (see the rulings in deck/NOTES.md).
-// Consumed by make-audio.mjs; file names follow the scene ids.
+// as drafted; voice is takunda-presenter since round 3 (see the rulings in
+// deck/NOTES.md). Consumed by make-audio.mjs; file names follow scene ids.
 
 export const SAMPLE_LINE =
   "You were given an address. Nobody told you where to get off. That ride is why Svika exists.";

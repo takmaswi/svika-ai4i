@@ -329,10 +329,12 @@
   const params = new URLSearchParams(location.search);
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches || params.has("reduced");
   // Fonts must be measured before SplitText slices the titles into masked
-  // lines, or every reveal is cut at the wrong height.
+  // lines, or every reveal is cut at the wrong height. Audio must be fully
+  // decoded before the deck reports ready, so no decode happens mid run.
   Promise.all([
     document.fonts.ready,
     initKombi({ forceFallback: params.has("nowebgl"), reduced }).catch(() => null),
+    window.SVK_AUDIO ? window.SVK_AUDIO.ready : null,
   ]).then(([, api]) => window.SVK_BOOT(api));
 </script>
 </body>

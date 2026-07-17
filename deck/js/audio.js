@@ -77,22 +77,34 @@
     }
   }
 
+  // The deck reports ready only after every asset is fully decoded to an
+  // AudioBuffer: no decode ever happens during a run (the stutter ruling).
   let preloaded = false;
+  let readyResolve;
+  const ready = new Promise((r) => { readyResolve = r; });
   function preload() {
-    if (REDUCED || preloaded) return;
+    if (preloaded) return ready;
     preloaded = true;
-    SFX_NAMES.forEach((n) => load("sfx:" + n, "assets/audio/sfx/" + n + ".mp3"));
+    if (REDUCED) { readyResolve(); return ready; }
+    const jobs = SFX_NAMES.map((n) => load("sfx:" + n, "assets/audio/sfx/" + n + ".mp3"));
     // The manifest lists which narration files exist (make-audio.mjs keeps
     // it current), so a not yet generated set never spams 404s on stage.
-    fetch("assets/audio/narration/index.json")
-      .then((r) => (r.ok ? r.json() : { files: [] }))
-      .then((m) => {
-        (m.files || []).forEach((f) => {
-          const k = f.replace(/\.mp3$/, "");
-          if (NARR_KEYS.includes(k)) load("narr:" + k, "assets/audio/narration/" + f);
-        });
-      })
-      .catch(() => {});
+    jobs.push(
+      fetch("assets/audio/narration/index.json")
+        .then((r) => (r.ok ? r.json() : { files: [] }))
+        .then((m) =>
+          Promise.all(
+            (m.files || []).map((f) => {
+              const k = f.replace(/\.mp3$/, "");
+              if (NARR_KEYS.includes(k)) return load("narr:" + k, "assets/audio/narration/" + f);
+              return null;
+            }),
+          ),
+        )
+        .catch(() => {}),
+    );
+    Promise.allSettled(jobs).then(() => readyResolve());
+    return ready;
   }
 
   function unlocked() {
@@ -100,18 +112,29 @@
   }
 
   function unlock() {
-    if (REDUCED) return;
+    if (REDUCED) return Promise.resolve();
     const c = ensureContext();
-    if (c && c.state === "suspended") c.resume().catch(() => {});
+    if (c && c.state === "suspended") {
+      return c.resume().then(onUnlocked).catch(() => {});
+    }
+    return Promise.resolve();
+  }
+  // A line whose scene entered while the context was still locked starts on
+  // the unlocking gesture instead of staying silent for the whole scene.
+  function onUnlocked() {
+    if (narrationOn && currentSceneIndex >= 0 && !narrPlaying && narrTimer === null) {
+      scheduleNarration(currentSceneIndex);
+    }
   }
   // Browsers gate audio behind the first gesture; any press or click frees it.
   document.addEventListener("keydown", unlock, { capture: true });
   document.addEventListener("pointerdown", unlock, { capture: true });
 
-  // SFX sit lower while the voice speaks, documentary style.
-  function duck() {
+  // SFX sit lower while the voice speaks, documentary style. `at` lets the
+  // duck ramp ride the audio clock beside a scheduled narration start.
+  function duck(at) {
     if (!sfxBus) return;
-    const t = ctx.currentTime;
+    const t = at || ctx.currentTime;
     sfxBus.gain.cancelScheduledValues(t);
     sfxBus.gain.setTargetAtTime(
       narrPlaying ? DUCK_LEVEL : 1.0,
@@ -156,10 +179,26 @@
 
   let currentSceneIndex = -1;
 
-  function playNarration(index) {
-    if (REDUCED || !narrationOn || !unlocked()) return;
+  // The voice never lands on the exact frame of a visual pop: it starts a
+  // breath after the scene's entrance begins, scheduled on the audio clock
+  // (a JS timer start can land late under main thread load; the audio
+  // thread never does). Stopping the source cancels the schedule.
+  function scheduleNarration(index) {
+    stopNarration(true);
+    if (REDUCED || !narrationOn) return;
     const buf = buffers.get("narr:" + NARR_KEYS[index]);
-    if (!buf) return;
+    if (!buf || !unlocked()) {
+      // The line cannot start (file missing, context locked): anyone
+      // waiting on the end must not wait forever. Same breath, then flush.
+      narrTimer = setTimeout(() => {
+        narrTimer = null;
+        const cbs = narrEndCbs;
+        narrEndCbs = [];
+        cbs.forEach((cb) => { try { cb(); } catch (_e) { /* stays local */ } });
+      }, NARR_DELAY_MS);
+      return;
+    }
+    const at = ctx.currentTime + NARR_DELAY_MS / 1000;
     narrSource = ctx.createBufferSource();
     narrSource.buffer = buf;
     narrGain = ctx.createGain();
@@ -168,30 +207,13 @@
     narrSource.onended = fireNarrEnd;
     narrPlaying = true;
     narrEndedAt = 0;
-    duck();
-    narrSource.start();
-  }
-
-  // The voice never lands on the exact frame of a visual pop: it starts a
-  // breath after the scene's entrance begins. The timer dies with the scene.
-  function scheduleNarration(index) {
-    stopNarration(true);
-    if (REDUCED || !narrationOn) return;
-    narrTimer = setTimeout(() => {
-      narrTimer = null;
-      playNarration(index);
-      if (!narrPlaying) {
-        // The line could not start (file missing, context locked): anyone
-        // waiting on the end must not wait forever.
-        const cbs = narrEndCbs;
-        narrEndCbs = [];
-        cbs.forEach((cb) => { try { cb(); } catch (_e) { /* stays local */ } });
-      }
-    }, NARR_DELAY_MS);
+    duck(at);
+    narrSource.start(at);
   }
 
   window.SVK_AUDIO = {
     preload,
+    ready,
     sfx(name) {
       if (REDUCED || !unlocked()) return;
       const buf = buffers.get("sfx:" + name);
@@ -209,8 +231,9 @@
     toggleNarration() {
       narrationOn = !narrationOn;
       if (narrationOn) {
-        unlock();
-        if (currentSceneIndex >= 0) scheduleNarration(currentSceneIndex);
+        // A locked context reschedules from onUnlocked once resume lands.
+        if (unlocked() && currentSceneIndex >= 0) scheduleNarration(currentSceneIndex);
+        else unlock();
       } else {
         stopNarration(true);
       }

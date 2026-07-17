@@ -17,16 +17,29 @@
   let narrationOn = params.has("auto") || params.has("narrate");
 
   const SFX_NAMES = ["draw", "stop-pop", "card-deal", "type-tick", "chime", "odometer", "swoosh", "swell"];
-  const SFX_GAIN = { "stop-pop": 0.5, "type-tick": 0.45, odometer: 0.5, chime: 0.6, "card-deal": 0.55, draw: 0.5, swoosh: 0.55, swell: 0.7 };
   const NARR_KEYS = Array.from({ length: 10 }, (_, i) => "s" + String(i + 1).padStart(2, "0"));
+
+  // The mix law. Assets are mastered to one loudness target by
+  // tools/deck/master-audio.mjs, so no per file gain lives in code. SFX duck
+  // to 40 percent under the voice with a soft ramp: fast down, slow back up
+  // (setTargetAtTime reaches ~95 percent at 3 time constants).
+  const DUCK_LEVEL = 0.4;
+  const DUCK_DOWN_TC = 0.027; // ~80ms down
+  const DUCK_UP_TC = 0.13; // ~400ms back up
+  const NARR_DELAY_MS = 300; // breathing space after a scene's entrance begins
+  const NARR_FADE_S = 0.18; // scene exit fades the voice, never chops it
+  const NARR_TAIL_MS = 600; // silence owed after a line before autoplay moves on
 
   const buffers = new Map(); // url key -> AudioBuffer
   let ctx = null;
   let sfxBus = null;
   let narrBus = null;
   let narrSource = null;
+  let narrGain = null;
+  let narrTimer = null;
   let narrEndCbs = [];
   let narrPlaying = false;
+  let narrEndedAt = 0;
 
   function ensureContext() {
     if (ctx) return ctx;
@@ -34,7 +47,7 @@
     if (!AC) return null;
     ctx = new AC();
     sfxBus = ctx.createGain();
-    sfxBus.gain.value = 0.8;
+    sfxBus.gain.value = 1.0;
     sfxBus.connect(ctx.destination);
     narrBus = ctx.createGain();
     narrBus.gain.value = 1.0;
@@ -89,13 +102,32 @@
     if (!sfxBus) return;
     const t = ctx.currentTime;
     sfxBus.gain.cancelScheduledValues(t);
-    sfxBus.gain.setTargetAtTime(narrPlaying ? 0.35 : 0.8, t, 0.12);
+    sfxBus.gain.setTargetAtTime(
+      narrPlaying ? DUCK_LEVEL : 1.0,
+      t,
+      narrPlaying ? DUCK_DOWN_TC : DUCK_UP_TC,
+    );
   }
 
-  function stopNarration() {
+  function stopNarration(fade) {
+    if (narrTimer) { clearTimeout(narrTimer); narrTimer = null; }
     if (narrSource) {
-      try { narrSource.onended = null; narrSource.stop(); } catch (_e) { /* already done */ }
+      const src = narrSource;
+      const g = narrGain;
+      src.onended = null;
+      try {
+        if (fade && g) {
+          const t = ctx.currentTime;
+          g.gain.cancelScheduledValues(t);
+          g.gain.setValueAtTime(g.gain.value, t);
+          g.gain.linearRampToValueAtTime(0, t + NARR_FADE_S);
+          src.stop(t + NARR_FADE_S);
+        } else {
+          src.stop();
+        }
+      } catch (_e) { /* already done */ }
       narrSource = null;
+      narrGain = null;
     }
     narrPlaying = false;
     narrEndCbs = [];
@@ -104,6 +136,7 @@
 
   function fireNarrEnd() {
     narrPlaying = false;
+    narrEndedAt = performance.now();
     duck();
     const cbs = narrEndCbs;
     narrEndCbs = [];
@@ -113,17 +146,37 @@
   let currentSceneIndex = -1;
 
   function playNarration(index) {
-    stopNarration();
     if (REDUCED || !narrationOn || !unlocked()) return;
     const buf = buffers.get("narr:" + NARR_KEYS[index]);
     if (!buf) return;
     narrSource = ctx.createBufferSource();
     narrSource.buffer = buf;
-    narrSource.connect(narrBus);
+    narrGain = ctx.createGain();
+    narrSource.connect(narrGain);
+    narrGain.connect(narrBus);
     narrSource.onended = fireNarrEnd;
     narrPlaying = true;
+    narrEndedAt = 0;
     duck();
     narrSource.start();
+  }
+
+  // The voice never lands on the exact frame of a visual pop: it starts a
+  // breath after the scene's entrance begins. The timer dies with the scene.
+  function scheduleNarration(index) {
+    stopNarration(true);
+    if (REDUCED || !narrationOn) return;
+    narrTimer = setTimeout(() => {
+      narrTimer = null;
+      playNarration(index);
+      if (!narrPlaying) {
+        // The line could not start (file missing, context locked): anyone
+        // waiting on the end must not wait forever.
+        const cbs = narrEndCbs;
+        narrEndCbs = [];
+        cbs.forEach((cb) => { try { cb(); } catch (_e) { /* stays local */ } });
+      }
+    }, NARR_DELAY_MS);
   }
 
   window.SVK_AUDIO = {
@@ -134,31 +187,35 @@
       if (!buf) return;
       const src = ctx.createBufferSource();
       src.buffer = buf;
-      const g = ctx.createGain();
-      g.gain.value = SFX_GAIN[name] ?? 0.6;
-      src.connect(g);
-      g.connect(sfxBus);
+      src.connect(sfxBus);
       src.start();
     },
     onScene(index) {
       currentSceneIndex = index;
-      playNarration(index);
+      narrEndedAt = 0; // a finished line's tail never leaks into the next scene
+      scheduleNarration(index);
     },
     toggleNarration() {
       narrationOn = !narrationOn;
       if (narrationOn) {
         unlock();
-        if (currentSceneIndex >= 0) playNarration(currentSceneIndex);
+        if (currentSceneIndex >= 0) scheduleNarration(currentSceneIndex);
       } else {
-        stopNarration();
+        stopNarration(true);
       }
       return narrationOn;
     },
     get narrationOn() { return narrationOn; },
-    narrationActive() { return narrPlaying; },
+    narrationActive() { return narrPlaying || narrTimer !== null; },
     onceNarrationEnd(cb) {
-      if (!narrPlaying) { cb(); return; }
+      if (!narrPlaying && narrTimer === null) { cb(); return; }
       narrEndCbs.push(cb);
+    },
+    // How much of the post line silence autoplay still owes before it may
+    // change the scene. Zero when no line played or the breath has passed.
+    narrationTailRemaining() {
+      if (!narrEndedAt) return 0;
+      return Math.max(0, NARR_TAIL_MS - (performance.now() - narrEndedAt));
     },
   };
 })();

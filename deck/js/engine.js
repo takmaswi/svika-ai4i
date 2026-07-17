@@ -138,10 +138,16 @@
     autoTimer = setTimeout(() => {
       const audio = window.SVK_AUDIO;
       // With narration on, a scene holds until its voice line finishes or
-      // the hold elapses, whichever is longer; beats inside a scene still
-      // ride the hold alone.
-      if (!beatQueue.length && audio && audio.narrationActive()) {
-        audio.onceNarrationEnd(() => advance());
+      // the hold elapses, whichever is longer, then leaves a breath of
+      // silence before the cut so lines never feel clipped; beats inside a
+      // scene still ride the hold alone.
+      const sceneDone = !beatQueue.length;
+      if (sceneDone && audio && audio.narrationActive()) {
+        audio.onceNarrationEnd(() => {
+          autoTimer = setTimeout(() => advance(), audio.narrationTailRemaining());
+        });
+      } else if (sceneDone && audio && audio.narrationTailRemaining() > 0) {
+        autoTimer = setTimeout(() => advance(), audio.narrationTailRemaining());
       } else {
         advance();
       }

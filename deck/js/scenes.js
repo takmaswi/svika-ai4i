@@ -83,9 +83,11 @@
       beats: [
         () => {
           // Sound: the route draws, then its two stops land.
+          // Cues sit on the motion: the whoosh with the path draw at 0.2,
+          // each pop on its stop's landing frame (back.out impact, not start).
           ctx.sfx("draw", 0.2);
-          ctx.sfx("stop-pop", 0.5);
-          ctx.sfx("stop-pop", 1.75);
+          ctx.sfx("stop-pop", 0.55);
+          ctx.sfx("stop-pop", 1.8);
           const tl = ctx.track(gsap.timeline());
           gsap.set(wordmark, { opacity: 0, y: 18 });
           gsap.set("#s1-route-sky", { opacity: 1 });
@@ -241,8 +243,9 @@
           }, ctx.d(0.7));
         },
         () => {
-          // It is literally a notification.
-          ctx.sfx("chime", 0.4);
+          // It is literally a notification. The chime hits as the card
+          // springs in (pin lands at 0.35, the spring pops right after).
+          ctx.sfx("chime", 0.5);
           const tl = ctx.track(gsap.timeline());
           tl.to("#s5-arrive-pin", { opacity: 1, duration: ctx.d(0.35) })
             .fromTo("#s5-notify", { opacity: 0, y: 18, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: ctx.d(0.6), ease: "back.out(1.5)" })
@@ -285,7 +288,7 @@
     }
 
     function wave(i, counts) {
-      ctx.sfx("odometer", 1.0); // the counters click over as they land
+      ctx.sfx("odometer"); // 1.2s of ticks riding the 1.1s count to its pulse
       const tl = ctx.track(gsap.timeline());
       art.waves[i].forEach((p, j) => {
         tl.add(drawPath(ctx, p, 1.4), ctx.d(j * 0.12));
@@ -336,8 +339,9 @@
             .add(rise(ctx, [el.querySelector(".scene-kicker"), el.querySelector("#s7-phone-a"), el.querySelector("#s7-phone-b")], { stagger: 0.14 }), 0);
         },
         () => {
-          // Flip carries the real ticket node from one phone to the other.
-          ctx.sfx("swoosh", 0.1);
+          // Flip carries the real ticket node from one phone to the other;
+          // the whoosh starts with the motion, its build is its own attack.
+          ctx.sfx("swoosh");
           const state = Flip.getState(ticket);
           landing.appendChild(ticket);
           ticket.style.margin = "0";

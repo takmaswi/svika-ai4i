@@ -32,8 +32,9 @@
 
   // Master headroom: voice true peak (-1.5 dBTP) plus a coinciding ducked
   // cue peak sums past 0 dBFS and clips the destination; -2 dB on the master
-  // keeps the worst measured stack under -1 dBTP.
-  const MASTER_GAIN = 0.8;
+  // keeps the worst measured stack (resampling and capture overs included)
+  // comfortably under -1 dBTP; 0.8 still grazed 0 dBFS on tape.
+  const MASTER_GAIN = 0.7;
 
   const buffers = new Map(); // url key -> AudioBuffer
   let ctx = null;

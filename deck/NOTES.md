@@ -158,8 +158,16 @@ choice taken, or a decision Mhofu may want to overrule.
   grammar; a firing cue dips the bed another step (0.65) for half a second,
   so when a cue and the bed fight, the bed loses level, never the cue.
   Silent under reduced motion; starts with the existing first gesture
-  unlock. The -3 dB master stays; the tape re-measure below is the proof it
-  still holds.
+  unlock. The -3 dB master stays and holds.
+- **Round 3 listening evidence.** docs/deck-evidence/deck-narrated-run.webm
+  retaped with narration and music both on: integrated -16.7 LUFS, LRA
+  10.0, true peak -4.2 dBFS, scene path a full wrap (0..9, back past 0),
+  zero requests leaving localhost. The one loudness table covers all 24
+  shipped assets (9 SFX incl. the sting, 10 lines, 5 stems) and passes;
+  every loop's three cycle tape sits in docs/deck-evidence/music-loops/.
+  Full snap passes at 1280x720 and 1366x768 (26 frames each, both themes
+  are inherent in the scene set), press drill 13/13, deck-frames.pdf
+  re-exported on the real GPU.
 
 ## Round 3: one action cold open (2026-07-17)
 

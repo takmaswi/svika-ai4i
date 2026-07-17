@@ -22,3 +22,6 @@ _tmp_*
 tools/deck/shots*/
 tools/deck/.canonical/
 tools/deck/pdf-frames/
+
+# deck music raw renders (studio intermediates, credits already spent; cut+master reads these)
+tools/deck/music-raw/

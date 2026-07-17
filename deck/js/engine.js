@@ -220,12 +220,14 @@
     go(current - 1);
   }
 
-  // ---------- Narration toggle (N) ----------
+  // ---------- Audio toggles (N narration, M music) ----------
   const hudAudio = document.getElementById("hud-audio");
   function renderAudioHud() {
     if (!hudAudio) return;
     if (REDUCED || !window.SVK_AUDIO) { hudAudio.textContent = ""; return; }
-    hudAudio.textContent = "n narration " + (window.SVK_AUDIO.narrationOn ? "on" : "off");
+    hudAudio.textContent =
+      "n narration " + (window.SVK_AUDIO.narrationOn ? "on" : "off") +
+      " · m music " + (window.SVK_AUDIO.musicOn ? "on" : "off");
   }
 
   // ---------- Input ----------
@@ -247,6 +249,9 @@
       toggleFullscreen();
     } else if ((e.key === "n" || e.key === "N") && window.SVK_AUDIO && !REDUCED) {
       window.SVK_AUDIO.toggleNarration();
+      renderAudioHud();
+    } else if ((e.key === "m" || e.key === "M") && window.SVK_AUDIO && !REDUCED) {
+      window.SVK_AUDIO.toggleMusic();
       renderAudioHud();
     }
   });

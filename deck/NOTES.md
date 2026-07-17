@@ -122,6 +122,45 @@ choice taken, or a decision Mhofu may want to overrule.
   on the GSAP frame clock: cues sit on rendered motion frames, and an audio
   clock schedule would desync from a lagging GPU.
 
+## Round 3: the music bed (2026-07-17)
+
+- **Architecture: loopable intensity stems, not one timed track.** Manual
+  driving makes scene timing unpredictable, so the bed is five stems cut
+  from one ElevenLabs composition plan (the /v1/music/plan endpoint), one
+  dark minor key and one BPM (140, halftime) so any pair can crossfade:
+  bed-low (scenes 1-2), bed-mid (3-5), bed-rise (6-8), bed-pull (9) and
+  close-swell (10, the peak, allowed to resolve, never loops). A short
+  open-hit sting from the same plan lands with the cold open's route draw;
+  it ships as an SFX cue on the sfx bus (mono, the SFX law) so the bed can
+  never mask it and settle cancels it like any cue.
+- **Loops are found, not trusted.** tools/deck/make-music.mjs generates 42s
+  raw renders (music-raw/, gitignored, credits spent once), then finds each
+  loop: whole bars at 140 BPM scored for musical continuity across three
+  windows, then a joint micro-shift of both cut points (a few ms, inaudible
+  against the bar grid) to the zero crossing alignment that minimises the
+  discontinuity the runtime actually plays. No edge fades on loop points.
+  `verify` re-decodes every shipped file, measures the seam jump against the
+  file's typical sample step, and cuts three cycle tapes to
+  docs/deck-evidence/music-loops/; all four loops pass. bed-rise was
+  regenerated once: a build that climbs forever cannot loop, so its styles
+  ask for rolling waves over a consistent energy floor.
+- **Music ships stereo ogg.** Two deliberate breaks from the mono mp3 room:
+  vorbis is sample exact end to end so the file loops where the WAV loops
+  (mp3 padding breaks seams), and a bed earns its stereo width. Mastering is
+  static gain only to -28 LUFS integrated (~12 dB under the voice when
+  solo); loudnorm's dynamic riding would bend a loop's ends apart.
+  master-audio.mjs measures the stems into the one table and polices the
+  law but never re-renders them.
+- **Mix behaviour.** M toggles music, on by default, independent of N, both
+  states in the HUD. The bed runs continuously across scene changes inside
+  a group; group boundaries crossfade equal power over 1.8s. Under
+  narration the bus ducks a further 6 dB (~-34) on the 80/400ms ramp
+  grammar; a firing cue dips the bed another step (0.65) for half a second,
+  so when a cue and the bed fight, the bed loses level, never the cue.
+  Silent under reduced motion; starts with the existing first gesture
+  unlock. The -3 dB master stays; the tape re-measure below is the proof it
+  still holds.
+
 ## Copy and content gaps
 
 1. **Illustrative numbers.** The flywheel counters (412 journeys, 118 places,

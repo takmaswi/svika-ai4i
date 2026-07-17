@@ -15,8 +15,29 @@
   // narrate. ?narrate forces it on for a manual showcase drive.
   let narrationOn = params.has("auto") || params.has("narrate");
 
-  const SFX_NAMES = ["draw", "stop-pop", "card-deal", "type-tick", "chime", "odometer", "swoosh", "swell"];
+  const SFX_NAMES = ["draw", "stop-pop", "card-deal", "type-tick", "chime", "odometer", "swoosh", "swell", "open-hit"];
   const NARR_KEYS = Array.from({ length: 10 }, (_, i) => "s" + String(i + 1).padStart(2, "0"));
+
+  // The music bed: loopable intensity stems from one composition plan (one
+  // key, one BPM), cut seamless by tools/deck/make-music.mjs. Scene groups
+  // share a stem so the bed runs continuously across scene changes; group
+  // boundaries crossfade equal power. M toggles, independent of narration.
+  const MUSIC_BY_SCENE = [
+    "bed-low", "bed-low",
+    "bed-mid", "bed-mid", "bed-mid",
+    "bed-rise", "bed-rise", "bed-rise",
+    "bed-pull",
+    "close-swell",
+  ];
+  const MUSIC_LOOPS = { "bed-low": true, "bed-mid": true, "bed-rise": true, "bed-pull": true, "close-swell": false };
+  const MUSIC_XFADE_S = 1.8;
+  // Mastered ~12 dB under the voice when solo (-28 LUFS); under narration it
+  // ducks a further 6 dB (~-34), and a firing cue dips it besides: when a
+  // cue and the bed fight, the bed loses level, never the cue.
+  const MUSIC_DUCK = 0.5;
+  const MUSIC_CUE_DIP = 0.65;
+  const MUSIC_CUE_HOLD_S = 0.55;
+  let musicOn = true;
 
   // The mix law. Assets are mastered to one loudness target by
   // tools/deck/master-audio.mjs, so no per file gain lives in code. SFX duck
@@ -40,6 +61,8 @@
   let masterBus = null;
   let sfxBus = null;
   let narrBus = null;
+  let musicBus = null;
+  let curMusic = null; // { key, src, gain }
   let narrSource = null;
   let narrGain = null;
   let narrTimer = null;
@@ -61,6 +84,9 @@
     narrBus = ctx.createGain();
     narrBus.gain.value = 1.0;
     narrBus.connect(masterBus);
+    musicBus = ctx.createGain();
+    musicBus.gain.value = 1.0;
+    musicBus.connect(masterBus);
     return ctx;
   }
 
@@ -87,6 +113,18 @@
     preloaded = true;
     if (REDUCED) { readyResolve(); return ready; }
     const jobs = SFX_NAMES.map((n) => load("sfx:" + n, "assets/audio/sfx/" + n + ".mp3"));
+    jobs.push(
+      fetch("assets/audio/music/index.json")
+        .then((r) => (r.ok ? r.json() : { files: [] }))
+        .then((m) =>
+          Promise.all(
+            (m.files || []).map((f) =>
+              load("mus:" + f.file.replace(/\.ogg$/, ""), "assets/audio/music/" + f.file),
+            ),
+          ),
+        )
+        .catch(() => {}),
+    );
     // The manifest lists which narration files exist (make-audio.mjs keeps
     // it current), so a not yet generated set never spams 404s on stage.
     jobs.push(
@@ -120,18 +158,21 @@
     return Promise.resolve();
   }
   // A line whose scene entered while the context was still locked starts on
-  // the unlocking gesture instead of staying silent for the whole scene.
+  // the unlocking gesture instead of staying silent for the whole scene; the
+  // music bed starts with the same first gesture.
   function onUnlocked() {
     if (narrationOn && currentSceneIndex >= 0 && !narrPlaying && narrTimer === null) {
       scheduleNarration(currentSceneIndex);
     }
+    if (currentSceneIndex >= 0) setMusicScene(currentSceneIndex);
   }
   // Browsers gate audio behind the first gesture; any press or click frees it.
   document.addEventListener("keydown", unlock, { capture: true });
   document.addEventListener("pointerdown", unlock, { capture: true });
 
   // SFX sit lower while the voice speaks, documentary style. `at` lets the
-  // duck ramp ride the audio clock beside a scheduled narration start.
+  // duck ramp ride the audio clock beside a scheduled narration start. The
+  // music bus rides the same grammar, one duck deeper than the cues.
   function duck(at) {
     if (!sfxBus) return;
     const t = at || ctx.currentTime;
@@ -141,6 +182,70 @@
       t,
       narrPlaying ? DUCK_DOWN_TC : DUCK_UP_TC,
     );
+    musicBus.gain.cancelScheduledValues(t);
+    musicBus.gain.setTargetAtTime(
+      narrPlaying ? MUSIC_DUCK : 1.0,
+      t,
+      narrPlaying ? DUCK_DOWN_TC : DUCK_UP_TC,
+    );
+  }
+
+  // A firing cue briefly takes the bed down a step further, then the bed
+  // recovers on the slow ramp. Both moves are scheduled ramps, never steps.
+  function musicCueDip() {
+    if (!musicBus || !curMusic) return;
+    const t = ctx.currentTime;
+    const base = narrPlaying ? MUSIC_DUCK : 1.0;
+    musicBus.gain.cancelScheduledValues(t);
+    musicBus.gain.setTargetAtTime(base * MUSIC_CUE_DIP, t, DUCK_DOWN_TC);
+    musicBus.gain.setTargetAtTime(base, t + MUSIC_CUE_HOLD_S, DUCK_UP_TC);
+  }
+
+  // ---------- The music bed ----------
+  function stopMusic(fadeS) {
+    if (!curMusic) return;
+    const { src, gain } = curMusic;
+    curMusic = null;
+    const t = ctx.currentTime;
+    gain.gain.cancelScheduledValues(t);
+    gain.gain.setValueAtTime(gain.gain.value, t);
+    gain.gain.linearRampToValueAtTime(0, t + fadeS);
+    try { src.stop(t + fadeS); } catch (_e) { /* already ended */ }
+  }
+
+  function setMusicScene(index) {
+    if (REDUCED || !musicOn || !unlocked()) return;
+    const key = MUSIC_BY_SCENE[index];
+    if (!key) return;
+    if (curMusic && curMusic.key === key) return; // continuity is the point
+    const buf = buffers.get("mus:" + key);
+    if (!buf) return;
+    const t = ctx.currentTime;
+
+    // Equal power handover: outgoing tips through the -3 dB midpoint on its
+    // way down while the incoming stem climbs the mirror curve.
+    if (curMusic) {
+      const out = curMusic;
+      curMusic = null;
+      const g = out.gain.gain;
+      g.cancelScheduledValues(t);
+      g.setValueAtTime(g.value, t);
+      g.linearRampToValueAtTime(g.value * 0.707, t + MUSIC_XFADE_S / 2);
+      g.linearRampToValueAtTime(0, t + MUSIC_XFADE_S);
+      try { out.src.stop(t + MUSIC_XFADE_S); } catch (_e) { /* already ended */ }
+    }
+
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = !!MUSIC_LOOPS[key];
+    const gain = ctx.createGain();
+    src.connect(gain);
+    gain.connect(musicBus);
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.707, t + MUSIC_XFADE_S / 2);
+    gain.gain.linearRampToValueAtTime(1, t + MUSIC_XFADE_S);
+    src.start(t);
+    curMusic = { key, src, gain };
   }
 
   function stopNarration(fade) {
@@ -222,12 +327,25 @@
       src.buffer = buf;
       src.connect(sfxBus);
       src.start();
+      musicCueDip();
     },
     onScene(index) {
       currentSceneIndex = index;
       narrEndedAt = 0; // a finished line's tail never leaks into the next scene
       scheduleNarration(index);
+      setMusicScene(index);
     },
+    toggleMusic() {
+      musicOn = !musicOn;
+      if (musicOn) {
+        if (unlocked() && currentSceneIndex >= 0) setMusicScene(currentSceneIndex);
+        else unlock();
+      } else {
+        stopMusic(0.35);
+      }
+      return musicOn;
+    },
+    get musicOn() { return musicOn; },
     toggleNarration() {
       narrationOn = !narrationOn;
       if (narrationOn) {

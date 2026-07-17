@@ -1,0 +1,98 @@
+{
+  "positive_global_styles": [
+    "epic cinematic trap",
+    "halftime groove",
+    "140 bpm",
+    "dark minor key",
+    "deep 808 sub bass",
+    "sparse hard hitting drums",
+    "dark brass swells",
+    "low choir",
+    "tense string ostinato",
+    "hybrid film score texture",
+    "epic but restrained",
+    "fully instrumental"
+  ],
+  "negative_global_styles": [
+    "vocal",
+    "singing",
+    "vocals",
+    "upbeat",
+    "happy",
+    "bright",
+    "fast drums"
+  ],
+  "sections": [
+    {
+      "section_name": "Tense Intro",
+      "positive_local_styles": [
+        "tense string ostinato",
+        "low drone",
+        "subtle low choir background",
+        "ominous building atmosphere",
+        "fully instrumental"
+      ],
+      "negative_local_styles": [
+        "drums",
+        "808 bass",
+        "screaming brass",
+        "vocals"
+      ],
+      "duration_ms": 10000,
+      "lines": []
+    },
+    {
+      "section_name": "Brass Rise",
+      "positive_local_styles": [
+        "dark brass swells",
+        "increasing orchestral tension",
+        "sub bass sweep",
+        "hybrid sound design riser",
+        "fully instrumental"
+      ],
+      "negative_local_styles": [
+        "drum beat",
+        "groove",
+        "vocals"
+      ],
+      "duration_ms": 6000,
+      "lines": []
+    },
+    {
+      "section_name": "Main Impact Drop",
+      "positive_local_styles": [
+        "powerful drop",
+        "heavy 808 sub bass impact",
+        "sparse hard hitting trap drums",
+        "halftime groove",
+        "epic brass hits",
+        "fully instrumental"
+      ],
+      "negative_local_styles": [
+        "fast percussion",
+        "vocals",
+        "melodic synth leads"
+      ],
+      "duration_ms": 16000,
+      "lines": []
+    },
+    {
+      "section_name": "Climax and Outro",
+      "positive_local_styles": [
+        "epic climax",
+        "low choir swells",
+        "heavy brass",
+        "reverb-drenched final drum hit",
+        "dramatic cinematic decay",
+        "fully instrumental"
+      ],
+      "negative_local_styles": [
+        "sustained beat",
+        "vocals",
+        "rhythm loop"
+      ],
+      "duration_ms": 10000,
+      "lines": []
+    }
+  ]
+}

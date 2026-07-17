@@ -1,0 +1,25 @@
+{
+  "bpm": 140,
+  "files": [
+    {
+      "file": "bed-low.ogg",
+      "loop": true
+    },
+    {
+      "file": "bed-mid.ogg",
+      "loop": true
+    },
+    {
+      "file": "bed-rise.ogg",
+      "loop": true
+    },
+    {
+      "file": "bed-pull.ogg",
+      "loop": true
+    },
+    {
+      "file": "close-swell.ogg",
+      "loop": false
+    }
+  ]
+}

@@ -21,6 +21,10 @@ const VOICE_I = -16;
 const VOICE_TP = -1.5;
 const SFX_I = -26;
 const SFX_TP = -3.0;
+// Music stems are mastered by make-music.mjs (static gain only: dynamic
+// loudness riding would bend a loop's ends apart); this script measures and
+// polices them so one table covers every shipped asset.
+const MUSIC_I = -28;
 const ENC = ["-ar", "44100", "-ac", "1", "-c:a", "libmp3lame", "-b:a", "128k"];
 // Downmix first, in both measurement and render: the files ship mono, so the
 // loudness math must see mono or stereo sources land ~3 dB off the law.
@@ -28,8 +32,9 @@ const MONO = "aformat=channel_layouts=mono";
 
 // Trims: type-tick is cut to the 1.4s the s4 typing animation actually runs.
 const SFX_TRIM = { "type-tick": 1.4 };
-const SFX_NAMES = ["draw", "stop-pop", "card-deal", "type-tick", "chime", "odometer", "swoosh", "swell"];
+const SFX_NAMES = ["draw", "stop-pop", "card-deal", "type-tick", "chime", "odometer", "swoosh", "swell", "open-hit"];
 const NARRATION = Array.from({ length: 10 }, (_, i) => "s" + String(i + 1).padStart(2, "0"));
+const MUSIC = ["bed-low", "bed-mid", "bed-rise", "bed-pull", "close-swell"];
 
 function ff(args) {
   return execFileSync("ffmpeg", ["-hide_banner", "-nostats", "-y", ...args], {
@@ -174,12 +179,14 @@ const jobs = [
     doVoice
       ? masterVoice(join("narration", s + ".mp3"))
       : { file: "narration/" + s + ".mp3", capped: false }),
+  ...MUSIC.map((m) => () => ({ file: "music/" + m + ".ogg", capped: false, music: true })),
 ];
 
 const rows = [];
 for (const job of jobs) {
   const r = job();
-  const v = analyze(join(AUDIO_DIR, r.file), MONO);
+  // Music ships stereo and is measured as it plays; everything else is mono.
+  const v = analyze(join(AUDIO_DIR, r.file), r.music ? null : MONO);
   rows.push({ ...r, ...v });
 }
 
@@ -188,10 +195,12 @@ for (const r of rows) {
   const flag = r.capped ? "  (peak capped below law)" : "";
   console.log(r.file.padEnd(30) + String(r.I).padStart(8) + String(r.TP).padStart(12) + flag);
 }
-const voiceRows = rows.filter((r) => !r.file.startsWith("sfx/"));
+const voiceRows = rows.filter((r) => r.file.startsWith("narration/"));
 const sfxRows = rows.filter((r) => r.file.startsWith("sfx/"));
+const musicRows = rows.filter((r) => r.file.startsWith("music/"));
 const bad =
   voiceRows.filter((r) => Math.abs(r.I - VOICE_I) > 1 || r.TP > VOICE_TP + 0.2).length +
-  sfxRows.filter((r) => !r.capped && Math.abs(r.I - SFX_I) > 1.5).length;
+  sfxRows.filter((r) => !r.capped && Math.abs(r.I - SFX_I) > 1.5).length +
+  musicRows.filter((r) => Math.abs(r.I - MUSIC_I) > 1.5).length;
 console.log(bad ? `\nFAIL: ${bad} file(s) off the law` : "\nall assets pass the one loudness law");
 process.exit(bad ? 1 : 0);

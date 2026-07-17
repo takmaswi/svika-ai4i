@@ -48,9 +48,11 @@ await page.goto("http://localhost:4173/?auto", { waitUntil: "networkidle" });
 
 // The page records itself: tab video + tab audio, the real mix.
 await page.evaluate(async () => {
+  // Processing off, or Chrome's auto gain control rides the levels and the
+  // tape stops being evidence of the real mix.
   const stream = await navigator.mediaDevices.getDisplayMedia({
     video: { frameRate: 30 },
-    audio: true,
+    audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
     preferCurrentTab: true,
     selfBrowserSurface: "include",
   });

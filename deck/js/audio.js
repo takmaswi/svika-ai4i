@@ -2,8 +2,7 @@
    and committed under assets/audio/. Narration is per scene, toggled with N
    (off by default, on by default in ?auto). SFX play whenever audio is
    unlocked, ducked under narration. Reduced motion means no audio at all.
-   Missing files (narration awaiting sign off) simply skip; the deck never
-   depends on them. */
+   A missing file simply skips; the deck never depends on one. */
 
 (function () {
   "use strict";

@@ -51,9 +51,13 @@ node evidence.mjs run     # gate evidence: video, offline proof, fps
 node press-drill.mjs      # input model proof: settle, debounce, key repeat
 node descender-snap.mjs   # titles mid reveal, descenders provably whole
 node make-audio.mjs sfx   # regenerate the sound set (key in .env.local)
+node make-audio.mjs narration takunda-man  # the approved narration set
+node master-audio.mjs     # one loudness law over every audio asset
+node record-narrated.mjs  # tape a full ?auto loop with the real tab audio
 ```
 
-Narration is generated with `node make-audio.mjs narration <voice>` only
-after the script in `narration.mjs` and the voice pick are signed off.
+The narration script in `narration.mjs` and the takunda-man voice are
+approved and final (rulings in NOTES.md). After regenerating any audio,
+always run `master-audio.mjs` and commit the mastered files it verifies.
 
 The 33.1 MB source model stays in `assets/Kombi 3d model/` and never ships.

@@ -46,10 +46,49 @@ choice taken, or a decision Mhofu may want to overrule.
   booth machine should launch Chromium with
   --autoplay-policy=no-user-gesture-required or click once, since
   browsers gate sound behind a first gesture.
-- **Awaiting Mhofu:** the voice pick (two samples in
-  deck/assets/audio/samples) and the narration script sign off
-  (tools/deck/narration.mjs). Narration audio is not generated until
-  both land.
+- **Both gates answered (2026-07-17).** Voice is takunda-man
+  (wRW2mPeN6V5fVfWsUQjX, "Takunda Zimbabwean Man"); the unused sample was
+  deleted so one Takunda lives in the repo. The narration script was
+  approved exactly as drafted. Three flags were raised and ruled on, and
+  the rulings are final, do not revisit: line 4 keeps "any place in the
+  city" as written; line 6 keeps present tense; line 10 keeps the GDG
+  win off the voice, screen only.
+
+## One piece mix (2026-07-17)
+
+- **One loudness law, applied at build.** tools/deck/master-audio.mjs
+  masters every committed asset once: voice at -16 LUFS integrated, mono,
+  true peak under -1.5 dBTP (two pass loudnorm plus a measure and correct
+  loop, because loudnorm alone drifts on takes shorter than its 3s window
+  and mp3 encoding nudges peaks up); SFX 10 dB under the voice at
+  -26 LUFS. No per file volume lives in code anymore; the old SFX gain
+  map is gone. The script prints the measured table and fails the build
+  if any file drifts. Last run: all 19 assets pass; card-deal and
+  type-tick sit slightly under the law by design (peak cap), and the
+  table says so.
+- **One room.** The whole SFX set gets the same chain: high pass 80 Hz,
+  low pass 13 kHz, 8-12 ms edge fades, mono 44.1 kHz mp3 like everything
+  else. type-tick is trimmed to the 1.4s the s4 typing actually runs.
+- **Mix feel in the runtime.** SFX duck to 40 percent under the voice,
+  ~80ms down and ~400ms back up. Narration starts 300ms after a scene's
+  entrance begins, fades out over 180ms on scene exit, and autoplay owes
+  600ms of silence after a line before it may cut. Both buses feed a
+  -3 dB master: a voice peak meeting a cue peak summed past 0 dBFS
+  (measured, not theorized) and clipped the destination.
+- **Cues sit on motion.** Every cue delay was re-derived from its tween:
+  stop pops on the back.out landing frames (0.55 and 1.8), the chime as
+  the notify card springs (0.5), odometer ticks starting with the count
+  they ride, the Flip whoosh with the motion at 0. Settle still cancels
+  pending cues silently. Audio preloads at script parse, not engine boot,
+  because scene 1's first cue lands 0.65s in, before a boot time decode
+  finished.
+- **Listening evidence.** tools/deck/record-narrated.mjs tapes one full
+  ?auto loop with the tab's real audio (capture processing disabled;
+  Chrome's default auto gain control was riding the levels and faked a
+  clip on the first tape). docs/deck-evidence/deck-narrated-run.webm:
+  integrated -16.7 LUFS, LRA 7.5, true peak -3.7 dBFS, shortest gap
+  between lines 0.88s, zero requests leaving localhost with all audio
+  loading.
 
 ## Copy and content gaps
 
